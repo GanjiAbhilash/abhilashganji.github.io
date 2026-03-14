@@ -159,8 +159,9 @@
             </div>
 
             <p class="hero-description reveal-up">
-                I architect <strong>production ML systems</strong> that scale — from <em> Agentic AI </em>
-                and fine-tuning <em> LLMs </em>  for policy optimization to building <em> Neural Network </em> damage 
+                I architect <strong>production ML systems</strong> that scale — from 
+                <em>Agentic AI</em> multi-agent orchestration and <em>RAG pipelines</em> 
+                to fine-tuning <em>LLMs</em> and building <em>Neural Network</em> damage 
                 detection saving $2M+ at Amazon. <strong>AWS Certified ML Specialist</strong> 
                 with 7+ years shipping AI that drives real business impact.
             </p>
@@ -287,9 +288,10 @@
                             engineering</em>. I don't just build models — I build 
                             complete ML systems: data pipelines, training 
                             infrastructure, serving layers, and monitoring. Whether 
-                            it's fine-tuning LLMs, architecting recommender systems, 
-                            or building forecasting engines, I obsess over taking AI 
-                            from prototype to production.
+                            it's designing <em>agentic AI workflows</em> with multi-agent 
+                            orchestration, fine-tuning LLMs with RAG architectures, 
+                            or building real-time recommender systems, I obsess over 
+                            taking AI from prototype to production.
                         </p>
 
                         <div class="about-philosophy">
@@ -321,7 +323,7 @@
                                 <div class="journey-content">
                                     <span class="journey-year">May 2025 - Present</span>
                                     <strong>Applied Science Engineer — EPAM Systems</strong>
-                                    <p>GenAI solutions, LLM-powered tools, recommender systems, and AI forecasting platforms</p>
+                                    <p>Agentic AI workflows, RAG pipelines, LLM-powered tools, recommender systems, and AI forecasting platforms</p>
                                 </div>
                             </div>
                             <div class="journey-item">
@@ -397,12 +399,12 @@
                             <i class="fas fa-robot"></i>
                         </div>
                         <h3>Large Language Models</h3>
-                        <p>Fine-tuning, prompt engineering, RAG systems, LLM evaluation, and production LLM serving infrastructure</p>
+                        <p>Fine-tuning, prompt engineering, RAG systems, LLM evaluation, guardrails, and production LLM serving infrastructure</p>
                         <div class="skill-bar">
                             <div class="skill-progress" data-width="92"></div>
                         </div>
                         <div class="skill-tags">
-                            <span>GPT</span><span>LLaMA</span><span>LangChain</span><span>Hugging Face</span>
+                            <span>GPT</span><span>Claude</span><span>LLaMA</span><span>LangChain</span><span>Hugging Face</span><span>vLLM</span>
                         </div>
                     </div>
 
@@ -412,12 +414,12 @@
                             <i class="fas fa-network-wired"></i>
                         </div>
                         <h3>Agentic AI</h3>
-                        <p>Multi-agent orchestration, tool-use frameworks, autonomous reasoning chains, and agentic workflows</p>
+                        <p>Multi-agent orchestration, tool-use frameworks, autonomous reasoning chains, memory-augmented agents, and production agentic workflows</p>
                         <div class="skill-bar">
-                            <div class="skill-progress" data-width="88"></div>
+                            <div class="skill-progress" data-width="90"></div>
                         </div>
                         <div class="skill-tags">
-                            <span>AutoGen</span><span>CrewAI</span><span>LangGraph</span><span>OpenAI Agents</span>
+                            <span>LangGraph</span><span>CrewAI</span><span>OpenAI Agents SDK</span><span>AutoGen</span><span>MCP</span>
                         </div>
                     </div>
                 </div>
@@ -540,488 +542,15 @@
             <div class="project-filters reveal-up">
                 <button class="filter-btn active" data-filter="all">All</button>
                 <button class="filter-btn" data-filter="genai">GenAI / LLMs</button>
-                <button class="filter-btn" data-filter="cv">Computer Vision</button>
                 <button class="filter-btn" data-filter="forecasting">Forecasting</button>
-                <button class="filter-btn" data-filter="recsys">RecSys</button>
+                <button class="filter-btn" data-filter="cv">Computer Vision</button>
                 <button class="filter-btn" data-filter="anomaly">Anomaly Detection</button>
+                <button class="filter-btn" data-filter="recsys">RecSys</button>
                 <button class="filter-btn" data-filter="bigdata">Big Data</button>
             </div>
 
-            <!-- Projects Grid -->
-            <div class="projects-grid">
-
-                <!-- Project 1: Attrition via GenAI (Amazon) -->
-                <article class="project-card reveal-up" data-category="genai">
-                    <div class="project-image">
-                        <img src="assets/projects/genai-attrition.svg" alt="Employee Attrition Prediction via GenAI" loading="lazy">
-                        <div class="project-overlay">
-                            <a href="https://github.com/GanjiAbhilash" class="project-overlay-btn" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i>
-                            </a>
-                        </div>
-                        <span class="project-tag">GenAI / NLP</span>
-                        <span class="project-company">Amazon</span>
-                    </div>
-                    <div class="project-body">
-                        <h3 class="project-title">Employee Attrition Prediction via GenAI</h3>
-                        <p class="project-desc">
-                            Fine-tuned transformer-based <strong>BERT LLM</strong> for sentiment 
-                            analysis on employee feedback data. Built end-to-end pipeline from 
-                            text ingestion to real-time inference, enabling proactive HR 
-                            interventions that <strong>reduced churn by 12%</strong>.
-                        </p>
-                        <div class="project-architecture">
-                            <span class="arch-label"><i class="fas fa-project-diagram"></i> Architecture</span>
-                            <div class="arch-flow">
-                                <span>Employee Feedback</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>BERT Fine-tune</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>SageMaker</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>HR Dashboard</span>
-                            </div>
-                        </div>
-                        <div class="project-tech">
-                            <span>BERT</span><span>PyTorch</span><span>Hugging Face</span>
-                            <span>SageMaker</span><span>Python</span><span>Transformers</span>
-                        </div>
-                        <div class="project-impact">
-                            <i class="fas fa-chart-line"></i> 12% reduction in employee churn
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/GanjiAbhilash" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i> Source Code
-                            </a>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Project 2: Personalized Offer Engine (EPAM) -->
-                <article class="project-card reveal-up" data-category="recsys">
-                    <div class="project-image">
-                        <img src="assets/projects/recsys-offers.svg" alt="Personalized Offer Recommendation Engine" loading="lazy">
-                        <div class="project-overlay">
-                            <a href="https://github.com/GanjiAbhilash" class="project-overlay-btn" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i>
-                            </a>
-                        </div>
-                        <span class="project-tag">Recommender System</span>
-                        <span class="project-company">EPAM</span>
-                    </div>
-                    <div class="project-body">
-                        <h3 class="project-title">Personalized Offer Recommendation Engine</h3>
-                        <p class="project-desc">
-                            Architected a <strong>LightFM matrix factorization</strong> pipeline for 
-                            personalized offer recommendations for restaurant customers. Deployed 
-                            at production scale with <strong>Snowflake integration</strong>, 
-                            boosting customer engagement by <strong>12%</strong>.
-                        </p>
-                        <div class="project-architecture">
-                            <span class="arch-label"><i class="fas fa-project-diagram"></i> Architecture</span>
-                            <div class="arch-flow">
-                                <span>User Events</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>Snowflake</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>LightFM Model</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>Serving API</span>
-                            </div>
-                        </div>
-                        <div class="project-tech">
-                            <span>LightFM</span><span>Snowflake</span><span>Python</span>
-                            <span>MLflow</span><span>Docker</span><span>FastAPI</span>
-                        </div>
-                        <div class="project-impact">
-                            <i class="fas fa-chart-line"></i> 12% boost in customer engagement
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/GanjiAbhilash" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i> Source Code
-                            </a>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Project 3: Computer Vision Package Damage (Amazon) -->
-                <article class="project-card reveal-up" data-category="cv">
-                    <div class="project-image">
-                        <img src="assets/projects/cv-damage.svg" alt="CNN Package Damage Detection System" loading="lazy">
-                        <div class="project-overlay">
-                            <a href="https://github.com/GanjiAbhilash" class="project-overlay-btn" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i>
-                            </a>
-                        </div>
-                        <span class="project-tag">Computer Vision</span>
-                        <span class="project-company">Amazon</span>
-                    </div>
-                    <div class="project-body">
-                        <h3 class="project-title">CNN Package Damage Detection System</h3>
-                        <p class="project-desc">
-                            Devised a <strong>CNN deep learning model</strong> for automated package 
-                            damage detection in Amazon fulfillment centers. Deployed on 
-                            <strong>AWS SageMaker</strong> achieving 20% improvement in damage 
-                            detection accuracy and <strong>$418K annual savings</strong>.
-                        </p>
-                        <div class="project-architecture">
-                            <span class="arch-label"><i class="fas fa-project-diagram"></i> Architecture</span>
-                            <div class="arch-flow">
-                                <span>Camera Feed</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>CNN Model</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>SageMaker</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>Alert System</span>
-                            </div>
-                        </div>
-                        <div class="project-tech">
-                            <span>CNN</span><span>TensorFlow</span><span>SageMaker</span>
-                            <span>S3</span><span>Lambda</span><span>Python</span>
-                        </div>
-                        <div class="project-impact">
-                            <i class="fas fa-chart-line"></i> $418K annual savings · 20% accuracy improvement
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/GanjiAbhilash" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i> Source Code
-                            </a>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Project 4: AI Forecasting Platform (EPAM) -->
-                <article class="project-card reveal-up" data-category="forecasting">
-                    <div class="project-image">
-                        <img src="assets/projects/forecasting-platform.svg" alt="Multi-Market AI Forecasting Platform" loading="lazy">
-                        <div class="project-overlay">
-                            <a href="https://github.com/GanjiAbhilash" class="project-overlay-btn" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i>
-                            </a>
-                        </div>
-                        <span class="project-tag">Forecasting / Bayesian</span>
-                        <span class="project-company">EPAM</span>
-                    </div>
-                    <div class="project-body">
-                        <h3 class="project-title">Multi-Market AI Forecasting Platform</h3>
-                        <p class="project-desc">
-                            Built a <strong>Streamlit-based</strong> multi-market forecasting tool 
-                            using <strong>Prophet & Bayesian Optimization</strong>. Serves 
-                            predictions across 5+ markets and 10 limited-time offers (LTOs), 
-                            improving forecast accuracy by <strong>23%</strong>.
-                        </p>
-                        <div class="project-architecture">
-                            <span class="arch-label"><i class="fas fa-project-diagram"></i> Architecture</span>
-                            <div class="arch-flow">
-                                <span>Snowflake</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>Prophet + BayesOpt</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>MLflow</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>Streamlit App</span>
-                            </div>
-                        </div>
-                        <div class="project-tech">
-                            <span>Prophet</span><span>Bayesian Optimization</span><span>Streamlit</span>
-                            <span>Snowflake</span><span>MLflow</span><span>Python</span>
-                        </div>
-                        <div class="project-impact">
-                            <i class="fas fa-chart-line"></i> 23% accuracy improvement across 5+ markets
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/GanjiAbhilash" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i> Source Code
-                            </a>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Project 5: GenAI IAM Policy Builder (EPAM) -->
-                <article class="project-card reveal-up" data-category="genai">
-                    <div class="project-image">
-                        <img src="assets/projects/genai-iam.svg" alt="GenAI Multi-Cloud IAM Policy Builder" loading="lazy">
-                        <div class="project-overlay">
-                            <a href="https://github.com/GanjiAbhilash" class="project-overlay-btn" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i>
-                            </a>
-                        </div>
-                        <span class="project-tag">GenAI / RAG</span>
-                        <span class="project-company">EPAM</span>
-                    </div>
-                    <div class="project-body">
-                        <h3 class="project-title">GenAI Multi-Cloud IAM Policy Builder</h3>
-                        <p class="project-desc">
-                            Designed a multi-cloud IAM policy generator using <strong>GPT models + 
-                            ChromaDB</strong> vector store with RAG architecture. Automates secure 
-                            policy creation for <strong>AWS, GCP, and Azure</strong>, cutting 
-                            policy creation time by <strong>80%</strong>.
-                        </p>
-                        <div class="project-architecture">
-                            <span class="arch-label"><i class="fas fa-project-diagram"></i> Architecture</span>
-                            <div class="arch-flow">
-                                <span>User Query</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>ChromaDB RAG</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>GPT Model</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>IAM Policy</span>
-                            </div>
-                        </div>
-                        <div class="project-tech">
-                            <span>GPT-4</span><span>ChromaDB</span><span>LangChain</span>
-                            <span>RAG</span><span>Python</span><span>FastAPI</span>
-                        </div>
-                        <div class="project-impact">
-                            <i class="fas fa-chart-line"></i> 80% reduction in policy creation time
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/GanjiAbhilash" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i> Source Code
-                            </a>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Project 6: Anomaly Detection (Amazon) -->
-                <article class="project-card reveal-up" data-category="anomaly">
-                    <div class="project-image">
-                        <img src="assets/projects/anomaly-detection.svg" alt="Real-Time Anomaly Detection System" loading="lazy">
-                        <div class="project-overlay">
-                            <a href="https://github.com/GanjiAbhilash" class="project-overlay-btn" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i>
-                            </a>
-                        </div>
-                        <span class="project-tag">Anomaly Detection</span>
-                        <span class="project-company">Amazon</span>
-                    </div>
-                    <div class="project-body">
-                        <h3 class="project-title">Real-Time Anomaly Detection System</h3>
-                        <p class="project-desc">
-                            Implemented a multi-variate anomaly detection system using 
-                            <strong>Isolation Forest and Autoencoders</strong> for real-time 
-                            business metrics monitoring. Reduced false positives by 
-                            <strong>20%</strong> and improved critical anomaly detection by 
-                            <strong>30%</strong>.
-                        </p>
-                        <div class="project-architecture">
-                            <span class="arch-label"><i class="fas fa-project-diagram"></i> Architecture</span>
-                            <div class="arch-flow">
-                                <span>Kinesis Stream</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>Isolation Forest</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>Autoencoder</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>SNS Alerts</span>
-                            </div>
-                        </div>
-                        <div class="project-tech">
-                            <span>Isolation Forest</span><span>Autoencoders</span><span>PyTorch</span>
-                            <span>Kinesis</span><span>Lambda</span><span>SNS</span>
-                        </div>
-                        <div class="project-impact">
-                            <i class="fas fa-chart-line"></i> 20% fewer false positives · 30% better anomaly detection
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/GanjiAbhilash" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i> Source Code
-                            </a>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Project 7: ResNet Safety Compliance (Amazon) -->
-                <article class="project-card reveal-up" data-category="cv">
-                    <div class="project-image">
-                        <img src="assets/projects/cv-resnet.svg" alt="ResNet Product Safety Compliance Automation" loading="lazy">
-                        <div class="project-overlay">
-                            <a href="https://github.com/GanjiAbhilash" class="project-overlay-btn" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i>
-                            </a>
-                        </div>
-                        <span class="project-tag">Deep Learning / CV</span>
-                        <span class="project-company">Amazon</span>
-                    </div>
-                    <div class="project-body">
-                        <h3 class="project-title">ResNet Product Safety Compliance Automation</h3>
-                        <p class="project-desc">
-                            Designed a custom <strong>ResNet deep learning model</strong> for 
-                            automating product safety compliance checks during truck loading 
-                            operations. Reduced manual annotation by <strong>18%</strong> and 
-                            improved compliance rates by <strong>10%</strong>.
-                        </p>
-                        <div class="project-architecture">
-                            <span class="arch-label"><i class="fas fa-project-diagram"></i> Architecture</span>
-                            <div class="arch-flow">
-                                <span>Image Capture</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>ResNet Model</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>SageMaker</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>Compliance API</span>
-                            </div>
-                        </div>
-                        <div class="project-tech">
-                            <span>ResNet</span><span>PyTorch</span><span>SageMaker</span>
-                            <span>S3</span><span>Lambda</span><span>Python</span>
-                        </div>
-                        <div class="project-impact">
-                            <i class="fas fa-chart-line"></i> 18% less manual annotation · 10% compliance improvement
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/GanjiAbhilash" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i> Source Code
-                            </a>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Project 8: Big Data Pipeline (Amazon) -->
-                <article class="project-card reveal-up" data-category="bigdata">
-                    <div class="project-image">
-                        <img src="assets/projects/bigdata-pipeline.svg" alt="10B+ Row Big Data Pipeline on AWS" loading="lazy">
-                        <div class="project-overlay">
-                            <a href="https://github.com/GanjiAbhilash" class="project-overlay-btn" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i>
-                            </a>
-                        </div>
-                        <span class="project-tag">Big Data Engineering</span>
-                        <span class="project-company">Amazon</span>
-                    </div>
-                    <div class="project-body">
-                        <h3 class="project-title">10B+ Row Big Data Pipeline on AWS</h3>
-                        <p class="project-desc">
-                            Built enterprise-scale data pipelines using <strong>PySpark & AWS 
-                            Glue</strong> to onboard <strong>10 billion+ rows</strong> into 
-                            Redshift data warehouse. Optimized query architecture improving 
-                            efficiency by <strong>30%</strong> for downstream ML systems.
-                        </p>
-                        <div class="project-architecture">
-                            <span class="arch-label"><i class="fas fa-project-diagram"></i> Architecture</span>
-                            <div class="arch-flow">
-                                <span>Raw Data</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>AWS Glue ETL</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>PySpark</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>Redshift</span>
-                            </div>
-                        </div>
-                        <div class="project-tech">
-                            <span>PySpark</span><span>AWS Glue</span><span>Redshift</span>
-                            <span>S3</span><span>SQL</span><span>Python</span>
-                        </div>
-                        <div class="project-impact">
-                            <i class="fas fa-chart-line"></i> 10B+ rows processed · 30% query efficiency gain
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/GanjiAbhilash" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i> Source Code
-                            </a>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Project 9: NLP Sentiment Review Analysis (EPAM) -->
-                <article class="project-card reveal-up" data-category="genai">
-                    <div class="project-image">
-                        <img src="assets/projects/nlp-sentiment.svg" alt="NLP Review Sentiment Analysis Engine" loading="lazy">
-                        <div class="project-overlay">
-                            <a href="https://github.com/GanjiAbhilash" class="project-overlay-btn" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i>
-                            </a>
-                        </div>
-                        <span class="project-tag">NLP / Transformers</span>
-                        <span class="project-company">EPAM</span>
-                    </div>
-                    <div class="project-body">
-                        <h3 class="project-title">NLP Review Sentiment Analysis Engine</h3>
-                        <p class="project-desc">
-                            Deployed a <strong>Hugging Face transformer</strong> sentiment 
-                            model for large-scale customer review analysis. Enhanced sentiment 
-                            detection accuracy by <strong>25%</strong> with fine-tuned 
-                            classification pipeline processing reviews in real-time.
-                        </p>
-                        <div class="project-architecture">
-                            <span class="arch-label"><i class="fas fa-project-diagram"></i> Architecture</span>
-                            <div class="arch-flow">
-                                <span>Review Stream</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>HF Transformer</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>Sentiment API</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>Analytics DB</span>
-                            </div>
-                        </div>
-                        <div class="project-tech">
-                            <span>Hugging Face</span><span>Transformers</span><span>Python</span>
-                            <span>Docker</span><span>FastAPI</span><span>Snowflake</span>
-                        </div>
-                        <div class="project-impact">
-                            <i class="fas fa-chart-line"></i> 25% improvement in sentiment detection
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/GanjiAbhilash" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i> Source Code
-                            </a>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Project 10: Forecasting Automation (Amazon) -->
-                <article class="project-card reveal-up" data-category="forecasting">
-                    <div class="project-image">
-                        <img src="assets/projects/forecasting-workforce.svg" alt="Prophet Workforce Forecasting Automation" loading="lazy">
-                        <div class="project-overlay">
-                            <a href="https://github.com/GanjiAbhilash" class="project-overlay-btn" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i>
-                            </a>
-                        </div>
-                        <span class="project-tag">Forecasting / Automation</span>
-                        <span class="project-company">Amazon</span>
-                    </div>
-                    <div class="project-body">
-                        <h3 class="project-title">Prophet Workforce Forecasting Automation</h3>
-                        <p class="project-desc">
-                            Developed a <strong>Prophet time series forecasting</strong> model 
-                            to predict weekly associate metrics with <strong>Bayesian 
-                            Optimization</strong> hyperparameter tuning. Reduced manual 
-                            workforce planning efforts by <strong>96%</strong>.
-                        </p>
-                        <div class="project-architecture">
-                            <span class="arch-label"><i class="fas fa-project-diagram"></i> Architecture</span>
-                            <div class="arch-flow">
-                                <span>Redshift Data</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>Prophet + BayesOpt</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>Lambda</span>
-                                <i class="fas fa-arrow-right"></i>
-                                <span>QuickSight</span>
-                            </div>
-                        </div>
-                        <div class="project-tech">
-                            <span>Prophet</span><span>Bayesian Optimization</span><span>Python</span>
-                            <span>Lambda</span><span>Redshift</span><span>QuickSight</span>
-                        </div>
-                        <div class="project-impact">
-                            <i class="fas fa-chart-line"></i> 96% reduction in manual planning effort
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/GanjiAbhilash" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i> Source Code
-                            </a>
-                        </div>
-                    </div>
-                </article>
-
-            </div>
+            <!-- Projects Grid — rendered dynamically from script.js -->
+            <div class="projects-grid" id="projectsGrid"></div>
 
             <div class="projects-cta reveal-up">
                 <a href="https://github.com/GanjiAbhilash" class="btn btn-outline" target="_blank" rel="noopener">
@@ -1042,103 +571,8 @@
                 <div class="section-line"></div>
             </div>
 
-            <div class="research-grid">
-                <article class="research-card reveal-up">
-                    <div class="research-type">
-                        <i class="fas fa-flask"></i>
-                        <span>Applied Research</span>
-                    </div>
-                    <h3>Fine-Tuning BERT for Enterprise Sentiment: Lessons from Amazon Scale</h3>
-                    <p>How we adapted transformer models for employee feedback analysis — 
-                       domain-specific tokenization, class imbalance handling, and serving 
-                       at low latency on SageMaker</p>
-                    <div class="research-meta">
-                        <span><i class="fas fa-calendar"></i> 2024</span>
-                        <span><i class="fas fa-tag"></i> NLP / Transformers</span>
-                    </div>
-                    <a href="#" class="research-link">Read More <i class="fas fa-arrow-right"></i></a>
-                </article>
-
-                <article class="research-card reveal-up">
-                    <div class="research-type">
-                        <i class="fas fa-file-alt"></i>
-                        <span>System Design</span>
-                    </div>
-                    <h3>Building RAG-Powered Policy Generators with ChromaDB & GPT</h3>
-                    <p>Architecture patterns for building retrieval-augmented generation 
-                       systems that generate cloud IAM policies — embeddings, chunking 
-                       strategies, and prompt optimization</p>
-                    <div class="research-meta">
-                        <span><i class="fas fa-calendar"></i> 2025</span>
-                        <span><i class="fas fa-tag"></i> GenAI / RAG</span>
-                    </div>
-                    <a href="#" class="research-link">Read More <i class="fas fa-arrow-right"></i></a>
-                </article>
-
-                <article class="research-card reveal-up">
-                    <div class="research-type">
-                        <i class="fas fa-flask"></i>
-                        <span>Experiment</span>
-                    </div>
-                    <h3>Isolation Forest vs Autoencoders: A Comparative Study in Anomaly Detection</h3>
-                    <p>Benchmarking traditional and deep learning anomaly detection 
-                       approaches on production business metrics — when to use what 
-                       and hybrid ensemble strategies</p>
-                    <div class="research-meta">
-                        <span><i class="fas fa-calendar"></i> 2023</span>
-                        <span><i class="fas fa-tag"></i> Anomaly Detection</span>
-                    </div>
-                    <a href="#" class="research-link">Read More <i class="fas fa-arrow-right"></i></a>
-                </article>
-
-                <article class="research-card reveal-up">
-                    <div class="research-type">
-                        <i class="fas fa-file-alt"></i>
-                        <span>Case Study</span>
-                    </div>
-                    <h3>CNN vs ResNet for Industrial Visual Inspection at Amazon</h3>
-                    <p>Comparative analysis of CNN architectures for package damage 
-                       detection and safety compliance — accuracy, latency trade-offs, 
-                       and $418K cost impact analysis</p>
-                    <div class="research-meta">
-                        <span><i class="fas fa-calendar"></i> 2023</span>
-                        <span><i class="fas fa-tag"></i> Computer Vision</span>
-                    </div>
-                    <a href="#" class="research-link">Read More <i class="fas fa-arrow-right"></i></a>
-                </article>
-
-                <article class="research-card reveal-up">
-                    <div class="research-type">
-                        <i class="fas fa-flask"></i>
-                        <span>Experiment</span>
-                    </div>
-                    <h3>LightFM vs Deep RecSys: Recommendation at Restaurant Scale</h3>
-                    <p>Evaluating matrix factorization against neural collaborative 
-                       filtering for personalized offers — cold start handling, 
-                       implicit feedback, and A/B test results</p>
-                    <div class="research-meta">
-                        <span><i class="fas fa-calendar"></i> 2025</span>
-                        <span><i class="fas fa-tag"></i> Recommender Systems</span>
-                    </div>
-                    <a href="#" class="research-link">Read More <i class="fas fa-arrow-right"></i></a>
-                </article>
-
-                <article class="research-card reveal-up">
-                    <div class="research-type">
-                        <i class="fas fa-file-alt"></i>
-                        <span>Case Study</span>
-                    </div>
-                    <h3>Processing 10B+ Rows: PySpark + AWS Glue Architecture Patterns</h3>
-                    <p>Scalable big data engineering patterns for ML feature pipelines — 
-                       partitioning strategies, Glue job optimization, and Redshift 
-                       query performance tuning</p>
-                    <div class="research-meta">
-                        <span><i class="fas fa-calendar"></i> 2022</span>
-                        <span><i class="fas fa-tag"></i> Big Data / AWS</span>
-                    </div>
-                    <a href="#" class="research-link">Read More <i class="fas fa-arrow-right"></i></a>
-                </article>
-            </div>
+            <!-- Research Grid — rendered dynamically from script.js -->
+            <div class="research-grid" id="researchGrid"></div>
         </div>
     </section>
 
@@ -1152,155 +586,8 @@
                 <div class="section-line"></div>
             </div>
 
-            <div class="blog-grid">
-                <!-- Featured Blog Post -->
-                <article class="blog-card blog-featured reveal-up">
-                    <div class="blog-image">
-                        <img src="assets/projects/genai-attrition.svg" alt="Fine-Tuning BERT for Employee Sentiment" loading="lazy">
-                        <span class="blog-category">GenAI</span>
-                    </div>
-                    <div class="blog-body">
-                        <div class="blog-meta">
-                            <span><i class="fas fa-calendar"></i> Jan 2025</span>
-                            <span><i class="fas fa-clock"></i> 15 min read</span>
-                        </div>
-                        <h3>Fine-Tuning BERT for Employee Sentiment: A Production Guide</h3>
-                        <p>How I fine-tuned transformer-based BERT at Amazon to predict 
-                           employee attrition from feedback text — data prep, training 
-                           tricks, SageMaker deployment, and the 12% churn reduction 
-                           that followed.</p>
-                        <a href="blog/bert-sentiment-production.html" class="blog-read-more">
-                            Read Article <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </article>
-
-                <!-- Blog Post 2 -->
-                <article class="blog-card reveal-up">
-                    <div class="blog-image">
-                        <img src="assets/projects/recsys-offers.svg" alt="Building a Personalized Offer Engine" loading="lazy">
-                        <span class="blog-category">RecSys</span>
-                    </div>
-                    <div class="blog-body">
-                        <div class="blog-meta">
-                            <span><i class="fas fa-calendar"></i> Dec 2024</span>
-                            <span><i class="fas fa-clock"></i> 12 min read</span>
-                        </div>
-                        <h3>Building a Personalized Offer Engine with LightFM & Snowflake</h3>
-                        <p>Architecture deep-dive into building a matrix factorization 
-                           recommender system — from feature engineering in Snowflake 
-                           to real-time serving at scale.</p>
-                        <a href="blog/lightfm-recommender-snowflake.html" class="blog-read-more">
-                            Read Article <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </article>
-
-                <!-- Blog Post 3 -->
-                <article class="blog-card reveal-up">
-                    <div class="blog-image">
-                        <img src="assets/projects/forecasting-platform.svg" alt="Prophet + Bayesian Optimization Forecasting" loading="lazy">
-                        <span class="blog-category">Forecasting</span>
-                    </div>
-                    <div class="blog-body">
-                        <div class="blog-meta">
-                            <span><i class="fas fa-calendar"></i> Nov 2024</span>
-                            <span><i class="fas fa-clock"></i> 10 min read</span>
-                        </div>
-                        <h3>Prophet + Bayesian Optimization: Forecasting That Actually Works</h3>
-                        <p>Why combining Prophet with Bayesian hyperparameter optimization 
-                           gave us 23% better forecasts — and how I reduced manual 
-                           workforce planning by 96% at Amazon.</p>
-                        <a href="blog/prophet-bayesian-forecasting.html" class="blog-read-more">
-                            Read Article <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </article>
-
-                <!-- Blog Post 4 -->
-                <article class="blog-card reveal-up">
-                    <div class="blog-image">
-                        <img src="assets/projects/cv-damage.svg" alt="CNN Package Damage Detection" loading="lazy">
-                        <span class="blog-category">Computer Vision</span>
-                    </div>
-                    <div class="blog-body">
-                        <div class="blog-meta">
-                            <span><i class="fas fa-calendar"></i> Oct 2024</span>
-                            <span><i class="fas fa-clock"></i> 14 min read</span>
-                        </div>
-                        <h3>CNN Package Damage Detection on SageMaker: $418K in Savings</h3>
-                        <p>End-to-end walkthrough of building and deploying a CNN 
-                           computer vision model for package damage detection — training, 
-                           optimization, and the business impact math.</p>
-                        <a href="blog/cnn-damage-detection-sagemaker.html" class="blog-read-more">
-                            Read Article <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </article>
-
-                <!-- Blog Post 5 -->
-                <article class="blog-card reveal-up">
-                    <div class="blog-image">
-                        <img src="assets/projects/genai-iam.svg" alt="RAG Architecture for IAM Policy Generation" loading="lazy">
-                        <span class="blog-category">GenAI / RAG</span>
-                    </div>
-                    <div class="blog-body">
-                        <div class="blog-meta">
-                            <span><i class="fas fa-calendar"></i> Sep 2024</span>
-                            <span><i class="fas fa-clock"></i> 11 min read</span>
-                        </div>
-                        <h3>RAG Architecture for IAM Policy Generation: GPT + ChromaDB</h3>
-                        <p>How I designed a retrieval-augmented generation system that 
-                           auto-generates secure IAM policies for AWS, GCP, and Azure — 
-                           embedding strategies and prompt design.</p>
-                        <a href="blog/rag-iam-policy-genai.html" class="blog-read-more">
-                            Read Article <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </article>
-
-                <!-- Blog Post 6 -->
-                <article class="blog-card reveal-up">
-                    <div class="blog-image">
-                        <img src="assets/projects/anomaly-detection.svg" alt="Anomaly Detection at Amazon Scale" loading="lazy">
-                        <span class="blog-category">Anomaly Detection</span>
-                    </div>
-                    <div class="blog-body">
-                        <div class="blog-meta">
-                            <span><i class="fas fa-calendar"></i> Aug 2024</span>
-                            <span><i class="fas fa-clock"></i> 13 min read</span>
-                        </div>
-                        <h3>Anomaly Detection at Amazon Scale: Isolation Forests + Autoencoders</h3>
-                        <p>Hybrid anomaly detection in production — combining statistical 
-                           and deep learning approaches, reducing false positives by 20%, 
-                           and the monitoring architecture behind it.</p>
-                        <a href="blog/anomaly-detection-hybrid.html" class="blog-read-more">
-                            Read Article <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </article>
-
-                <!-- Blog Post 7 -->
-                <article class="blog-card reveal-up">
-                    <div class="blog-image">
-                        <img src="assets/projects/bigdata-pipeline.svg" alt="Processing 10 Billion Rows" loading="lazy">
-                        <span class="blog-category">Big Data</span>
-                    </div>
-                    <div class="blog-body">
-                        <div class="blog-meta">
-                            <span><i class="fas fa-calendar"></i> Jul 2024</span>
-                            <span><i class="fas fa-clock"></i> 16 min read</span>
-                        </div>
-                        <h3>Processing 10 Billion Rows: PySpark + AWS Glue Architecture</h3>
-                        <p>How I built data pipelines that process 10B+ rows into 
-                           Redshift — partitioning, Glue job optimization, and the 
-                           30% query efficiency gains that followed.</p>
-                        <a href="blog/pyspark-glue-bigdata.html" class="blog-read-more">
-                            Read Article <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </article>
-            </div>
+            <!-- Blog Grid — rendered dynamically from script.js -->
+            <div class="blog-grid" id="blogGrid"></div>
 
             <div class="blog-cta reveal-up">
                 <a href="blog/index.html" class="btn btn-outline">
@@ -1465,8 +752,8 @@
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; 2025 Abhilash Ganji. Crafted with precision.</p>
-                <p class="footer-seo">AI Engineer • Applied Scientist • Machine Learning • LLMs • Generative AI • Hyderabad</p>
+                <p>&copy; 2026 Abhilash Ganji. Crafted with precision.</p>
+                <p class="footer-seo">AI Engineer • Applied Scientist • Machine Learning • LLMs • Agentic AI • Generative AI • Hyderabad</p>
             </div>
         </div>
     </footer>

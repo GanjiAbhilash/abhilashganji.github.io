@@ -1792,26 +1792,11 @@ a:hover {
     font-size: 0.85rem;
 }
 
-/* Blog grid update for more cards */
-.blog-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-}
+/* Blog grid update for more cards — overrides the earlier .blog-grid rule */
 .blog-grid .blog-featured {
     grid-column: 1 / 2;
-    grid-row: 1 / 4;
+    grid-row: 1 / 3;
 }
 .blog-grid .blog-featured .blog-image {
     height: 280px;
-}
-
-@media (max-width: 768px) {
-    .blog-grid {
-        grid-template-columns: 1fr;
-    }
-    .blog-grid .blog-featured {
-        grid-column: 1;
-        grid-row: auto;
-    }
 }

@@ -5,6 +5,329 @@
 (function () {
     'use strict';
 
+    // ======================== PROJECT DATA ========================
+    // Ordered by impact (highest first) for better visitor impression
+    const PROJECTS = [
+        {
+            category: 'forecasting',
+            image: 'assets/projects/forecasting-workforce.svg',
+            alt: 'Prophet Workforce Forecasting Automation',
+            tag: 'Forecasting / Automation',
+            company: 'Amazon',
+            title: 'Prophet Workforce Forecasting Automation',
+            desc: 'Developed a <strong>Prophet time series forecasting</strong> model to predict weekly associate metrics with <strong>Bayesian Optimization</strong> hyperparameter tuning. Reduced manual workforce planning efforts by <strong>96%</strong>.',
+            arch: ['Redshift Data', 'Prophet + BayesOpt', 'Lambda', 'QuickSight'],
+            tech: ['Prophet', 'Bayesian Optimization', 'Python', 'Lambda', 'Redshift', 'QuickSight'],
+            impact: '96% reduction in manual planning effort',
+            github: 'https://github.com/GanjiAbhilash'
+        },
+        {
+            category: 'genai',
+            image: 'assets/projects/genai-iam.svg',
+            alt: 'GenAI Multi-Cloud IAM Policy Builder',
+            tag: 'GenAI / RAG',
+            company: 'EPAM',
+            title: 'GenAI Multi-Cloud IAM Policy Builder',
+            desc: 'Designed a multi-cloud IAM policy generator using <strong>GPT models + ChromaDB</strong> vector store with RAG architecture. Automates secure policy creation for <strong>AWS, GCP, and Azure</strong>, cutting policy creation time by <strong>80%</strong>.',
+            arch: ['User Query', 'ChromaDB RAG', 'GPT Model', 'IAM Policy'],
+            tech: ['GPT-4', 'ChromaDB', 'LangChain', 'RAG', 'Python', 'FastAPI'],
+            impact: '80% reduction in policy creation time',
+            github: 'https://github.com/GanjiAbhilash'
+        },
+        {
+            category: 'cv',
+            image: 'assets/projects/cv-damage.svg',
+            alt: 'CNN Package Damage Detection System',
+            tag: 'Computer Vision',
+            company: 'Amazon',
+            title: 'CNN Package Damage Detection System',
+            desc: 'Devised a <strong>CNN deep learning model</strong> for automated package damage detection in Amazon fulfillment centers. Deployed on <strong>AWS SageMaker</strong> achieving 20% improvement in damage detection accuracy and <strong>$418K annual savings</strong>.',
+            arch: ['Camera Feed', 'CNN Model', 'SageMaker', 'Alert System'],
+            tech: ['CNN', 'TensorFlow', 'SageMaker', 'S3', 'Lambda', 'Python'],
+            impact: '$418K annual savings · 20% accuracy improvement',
+            github: 'https://github.com/GanjiAbhilash'
+        },
+        {
+            category: 'anomaly',
+            image: 'assets/projects/anomaly-detection.svg',
+            alt: 'Real-Time Anomaly Detection System',
+            tag: 'Anomaly Detection',
+            company: 'Amazon',
+            title: 'Real-Time Anomaly Detection System',
+            desc: 'Implemented a multi-variate anomaly detection system using <strong>Isolation Forest and Autoencoders</strong> for real-time business metrics monitoring. Reduced false positives by <strong>20%</strong> and improved critical anomaly detection by <strong>30%</strong>.',
+            arch: ['Kinesis Stream', 'Isolation Forest', 'Autoencoder', 'SNS Alerts'],
+            tech: ['Isolation Forest', 'Autoencoders', 'PyTorch', 'Kinesis', 'Lambda', 'SNS'],
+            impact: '20% fewer false positives · 30% better anomaly detection',
+            github: 'https://github.com/GanjiAbhilash'
+        },
+        {
+            category: 'bigdata',
+            image: 'assets/projects/bigdata-pipeline.svg',
+            alt: '10B+ Row Big Data Pipeline on AWS',
+            tag: 'Big Data Engineering',
+            company: 'Amazon',
+            title: '10B+ Row Big Data Pipeline on AWS',
+            desc: 'Built enterprise-scale data pipelines using <strong>PySpark & AWS Glue</strong> to onboard <strong>10 billion+ rows</strong> into Redshift data warehouse. Optimized query architecture improving efficiency by <strong>30%</strong> for downstream ML systems.',
+            arch: ['Raw Data', 'AWS Glue ETL', 'PySpark', 'Redshift'],
+            tech: ['PySpark', 'AWS Glue', 'Redshift', 'S3', 'SQL', 'Python'],
+            impact: '10B+ rows processed · 30% query efficiency gain',
+            github: 'https://github.com/GanjiAbhilash'
+        },
+        {
+            category: 'genai',
+            image: 'assets/projects/nlp-sentiment.svg',
+            alt: 'NLP Review Sentiment Analysis Engine',
+            tag: 'NLP / Transformers',
+            company: 'EPAM',
+            title: 'NLP Review Sentiment Analysis Engine',
+            desc: 'Deployed a <strong>Hugging Face transformer</strong> sentiment model for large-scale customer review analysis. Enhanced sentiment detection accuracy by <strong>25%</strong> with fine-tuned classification pipeline processing reviews in real-time.',
+            arch: ['Review Stream', 'HF Transformer', 'Sentiment API', 'Analytics DB'],
+            tech: ['Hugging Face', 'Transformers', 'Python', 'Docker', 'FastAPI', 'Snowflake'],
+            impact: '25% improvement in sentiment detection',
+            github: 'https://github.com/GanjiAbhilash'
+        },
+        {
+            category: 'forecasting',
+            image: 'assets/projects/forecasting-platform.svg',
+            alt: 'Multi-Market AI Forecasting Platform',
+            tag: 'Forecasting / Bayesian',
+            company: 'EPAM',
+            title: 'Multi-Market AI Forecasting Platform',
+            desc: 'Built a <strong>Streamlit-based</strong> multi-market forecasting tool using <strong>Prophet & Bayesian Optimization</strong>. Serves predictions across 5+ markets and 10 limited-time offers (LTOs), improving forecast accuracy by <strong>23%</strong>.',
+            arch: ['Snowflake', 'Prophet + BayesOpt', 'MLflow', 'Streamlit App'],
+            tech: ['Prophet', 'Bayesian Optimization', 'Streamlit', 'Snowflake', 'MLflow', 'Python'],
+            impact: '23% accuracy improvement across 5+ markets',
+            github: 'https://github.com/GanjiAbhilash'
+        },
+        {
+            category: 'cv',
+            image: 'assets/projects/cv-resnet.svg',
+            alt: 'ResNet Product Safety Compliance Automation',
+            tag: 'Deep Learning / CV',
+            company: 'Amazon',
+            title: 'ResNet Product Safety Compliance Automation',
+            desc: 'Designed a custom <strong>ResNet deep learning model</strong> for automating product safety compliance checks during truck loading operations. Reduced manual annotation by <strong>18%</strong> and improved compliance rates by <strong>10%</strong>.',
+            arch: ['Image Capture', 'ResNet Model', 'SageMaker', 'Compliance API'],
+            tech: ['ResNet', 'PyTorch', 'SageMaker', 'S3', 'Lambda', 'Python'],
+            impact: '18% less manual annotation · 10% compliance improvement',
+            github: 'https://github.com/GanjiAbhilash'
+        },
+        {
+            category: 'recsys',
+            image: 'assets/projects/recsys-offers.svg',
+            alt: 'Personalized Offer Recommendation Engine',
+            tag: 'Recommender System',
+            company: 'EPAM',
+            title: 'Personalized Offer Recommendation Engine',
+            desc: 'Architected a <strong>LightFM matrix factorization</strong> pipeline for personalized offer recommendations for restaurant customers. Deployed at production scale with <strong>Snowflake integration</strong>, boosting customer engagement by <strong>12%</strong>.',
+            arch: ['User Events', 'Snowflake', 'LightFM Model', 'Serving API'],
+            tech: ['LightFM', 'Snowflake', 'Python', 'MLflow', 'Docker', 'FastAPI'],
+            impact: '12% boost in customer engagement',
+            github: 'https://github.com/GanjiAbhilash'
+        },
+        {
+            category: 'genai',
+            image: 'assets/projects/genai-attrition.svg',
+            alt: 'Employee Attrition Prediction via GenAI',
+            tag: 'GenAI / NLP',
+            company: 'Amazon',
+            title: 'Employee Attrition Prediction via GenAI',
+            desc: 'Fine-tuned transformer-based <strong>BERT LLM</strong> for sentiment analysis on employee feedback data. Built end-to-end pipeline from text ingestion to real-time inference, enabling proactive HR interventions that <strong>reduced churn by 12%</strong>.',
+            arch: ['Employee Feedback', 'BERT Fine-tune', 'SageMaker', 'HR Dashboard'],
+            tech: ['BERT', 'PyTorch', 'Hugging Face', 'SageMaker', 'Python', 'Transformers'],
+            impact: '12% reduction in employee churn',
+            github: 'https://github.com/GanjiAbhilash'
+        }
+    ];
+
+    // ======================== BLOG DATA ========================
+    // Links point to actual existing blog pages only
+    const BLOG_POSTS = [
+        {
+            image: 'assets/projects/blog-llm.svg',
+            alt: 'LLM Architecture Deep Dive',
+            category: 'GenAI',
+            date: 'Feb 2025',
+            readTime: '18 min read',
+            title: 'LLM Architecture Deep Dive: From Attention to Production',
+            desc: 'A comprehensive walkthrough of large language model internals — attention mechanisms, tokenization, scaling laws, and how to take LLMs from research to production serving.',
+            href: 'blog/llm-architecture.html',
+            featured: true
+        },
+        {
+            image: 'assets/projects/recsys-offers.svg',
+            alt: 'Recommendation Systems in Production',
+            category: 'RecSys',
+            date: 'Jan 2025',
+            readTime: '15 min read',
+            title: 'Recommendation Systems: From Matrix Factorization to Deep Learning',
+            desc: 'How modern recommender systems work — collaborative filtering, content-based approaches, hybrid architectures, and lessons from deploying at restaurant scale.',
+            href: 'blog/recommendation-systems.html',
+            featured: false
+        },
+        {
+            image: 'assets/projects/forecasting-platform.svg',
+            alt: 'Forecasting Models That Actually Work',
+            category: 'Forecasting',
+            date: 'Dec 2024',
+            readTime: '14 min read',
+            title: 'Forecasting Models That Actually Work in Production',
+            desc: 'Prophet, ARIMA, and Bayesian methods compared — which forecasting approach wins in real-world scenarios and how to avoid common pitfalls.',
+            href: 'blog/forecasting-models.html',
+            featured: false
+        },
+        {
+            image: 'assets/projects/genai-iam.svg',
+            alt: 'ML System Design Principles',
+            category: 'System Design',
+            date: 'Nov 2024',
+            readTime: '16 min read',
+            title: 'ML System Design: Building AI That Survives Production',
+            desc: 'End-to-end ML system design patterns — from data pipelines and feature stores to model serving, monitoring, and the operational realities of ML at scale.',
+            href: 'blog/ml-system-design.html',
+            featured: false
+        }
+    ];
+
+    // ======================== RESEARCH DATA ========================
+    const RESEARCH = [
+        {
+            icon: 'fas fa-flask',
+            type: 'Applied Research',
+            title: 'Fine-Tuning BERT for Enterprise Sentiment: Lessons from Amazon Scale',
+            desc: 'How we adapted transformer models for employee feedback analysis — domain-specific tokenization, class imbalance handling, and serving at low latency on SageMaker',
+            year: '2024',
+            tag: 'NLP / Transformers',
+            href: 'blog/llm-architecture.html'
+        },
+        {
+            icon: 'fas fa-file-alt',
+            type: 'System Design',
+            title: 'Building RAG-Powered Policy Generators with ChromaDB & GPT',
+            desc: 'Architecture patterns for building retrieval-augmented generation systems that generate cloud IAM policies — embeddings, chunking strategies, and prompt optimization',
+            year: '2025',
+            tag: 'GenAI / RAG',
+            href: 'blog/ml-system-design.html'
+        },
+        {
+            icon: 'fas fa-flask',
+            type: 'Experiment',
+            title: 'Isolation Forest vs Autoencoders: A Comparative Study in Anomaly Detection',
+            desc: 'Benchmarking traditional and deep learning anomaly detection approaches on production business metrics — when to use what and hybrid ensemble strategies',
+            year: '2023',
+            tag: 'Anomaly Detection',
+            href: 'blog/ml-system-design.html'
+        },
+        {
+            icon: 'fas fa-file-alt',
+            type: 'Case Study',
+            title: 'CNN vs ResNet for Industrial Visual Inspection at Amazon',
+            desc: 'Comparative analysis of CNN architectures for package damage detection and safety compliance — accuracy, latency trade-offs, and $418K cost impact analysis',
+            year: '2023',
+            tag: 'Computer Vision',
+            href: 'blog/ml-system-design.html'
+        },
+        {
+            icon: 'fas fa-flask',
+            type: 'Experiment',
+            title: 'LightFM vs Deep RecSys: Recommendation at Restaurant Scale',
+            desc: 'Evaluating matrix factorization against neural collaborative filtering for personalized offers — cold start handling, implicit feedback, and A/B test results',
+            year: '2025',
+            tag: 'Recommender Systems',
+            href: 'blog/recommendation-systems.html'
+        },
+        {
+            icon: 'fas fa-file-alt',
+            type: 'Case Study',
+            title: 'Processing 10B+ Rows: PySpark + AWS Glue Architecture Patterns',
+            desc: 'Scalable big data engineering patterns for ML feature pipelines — partitioning strategies, Glue job optimization, and Redshift query performance tuning',
+            year: '2022',
+            tag: 'Big Data / AWS',
+            href: 'blog/ml-system-design.html'
+        }
+    ];
+
+    // ======================== RENDER HELPERS ========================
+    function escapeAttr(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    function renderProjectCard(p) {
+        const archFlow = p.arch
+            .map(s => '<span>' + escapeAttr(s) + '</span>')
+            .join('<i class="fas fa-arrow-right"></i>');
+        const techTags = p.tech.map(t => '<span>' + escapeAttr(t) + '</span>').join('');
+
+        return '<article class="project-card reveal-up" data-category="' + escapeAttr(p.category) + '">'
+            + '<div class="project-image">'
+            + '<img src="' + escapeAttr(p.image) + '" alt="' + escapeAttr(p.alt) + '" loading="lazy">'
+            + '<div class="project-overlay">'
+            + '<a href="' + escapeAttr(p.github) + '" class="project-overlay-btn" target="_blank" rel="noopener">'
+            + '<i class="fab fa-github"></i></a></div>'
+            + '<span class="project-tag">' + escapeAttr(p.tag) + '</span>'
+            + '<span class="project-company">' + escapeAttr(p.company) + '</span>'
+            + '</div>'
+            + '<div class="project-body">'
+            + '<h3 class="project-title">' + escapeAttr(p.title) + '</h3>'
+            + '<p class="project-desc">' + p.desc + '</p>'
+            + '<div class="project-architecture">'
+            + '<span class="arch-label"><i class="fas fa-project-diagram"></i> Architecture</span>'
+            + '<div class="arch-flow">' + archFlow + '</div></div>'
+            + '<div class="project-tech">' + techTags + '</div>'
+            + '<div class="project-impact"><i class="fas fa-chart-line"></i> ' + escapeAttr(p.impact) + '</div>'
+            + '<div class="project-links">'
+            + '<a href="' + escapeAttr(p.github) + '" target="_blank" rel="noopener">'
+            + '<i class="fab fa-github"></i> Source Code</a></div>'
+            + '</div></article>';
+    }
+
+    function renderBlogCard(b) {
+        return '<article class="blog-card' + (b.featured ? ' blog-featured' : '') + ' reveal-up">'
+            + '<div class="blog-image">'
+            + '<img src="' + escapeAttr(b.image) + '" alt="' + escapeAttr(b.alt) + '" loading="lazy">'
+            + '<span class="blog-category">' + escapeAttr(b.category) + '</span></div>'
+            + '<div class="blog-body">'
+            + '<div class="blog-meta">'
+            + '<span><i class="fas fa-calendar"></i> ' + escapeAttr(b.date) + '</span>'
+            + '<span><i class="fas fa-clock"></i> ' + escapeAttr(b.readTime) + '</span></div>'
+            + '<h3>' + escapeAttr(b.title) + '</h3>'
+            + '<p>' + escapeAttr(b.desc) + '</p>'
+            + '<a href="' + escapeAttr(b.href) + '" class="blog-read-more">'
+            + 'Read Article <i class="fas fa-arrow-right"></i></a>'
+            + '</div></article>';
+    }
+
+    function renderResearchCard(r) {
+        return '<article class="research-card reveal-up">'
+            + '<div class="research-type"><i class="' + escapeAttr(r.icon) + '"></i>'
+            + '<span>' + escapeAttr(r.type) + '</span></div>'
+            + '<h3>' + escapeAttr(r.title) + '</h3>'
+            + '<p>' + escapeAttr(r.desc) + '</p>'
+            + '<div class="research-meta">'
+            + '<span><i class="fas fa-calendar"></i> ' + escapeAttr(r.year) + '</span>'
+            + '<span><i class="fas fa-tag"></i> ' + escapeAttr(r.tag) + '</span></div>'
+            + '<a href="' + escapeAttr(r.href) + '" class="research-link">Read More <i class="fas fa-arrow-right"></i></a>'
+            + '</article>';
+    }
+
+    // ======================== RENDER SECTIONS ========================
+    function renderProjects() {
+        const grid = document.getElementById('projectsGrid');
+        if (grid) grid.innerHTML = PROJECTS.map(renderProjectCard).join('');
+    }
+
+    function renderBlog() {
+        const grid = document.getElementById('blogGrid');
+        if (grid) grid.innerHTML = BLOG_POSTS.map(renderBlogCard).join('');
+    }
+
+    function renderResearch() {
+        const grid = document.getElementById('researchGrid');
+        if (grid) grid.innerHTML = RESEARCH.map(renderResearchCard).join('');
+    }
+
     // ======================== LOADER ========================
     const loader = document.getElementById('loader');
     window.addEventListener('load', () => {
@@ -15,6 +338,11 @@
         }, 800);
     });
     document.body.style.overflow = 'hidden';
+
+    // Render data-driven sections immediately
+    renderProjects();
+    renderBlog();
+    renderResearch();
 
     // ======================== CURSOR GLOW ========================
     const cursorGlow = document.getElementById('cursorGlow');
@@ -43,12 +371,23 @@
     const navMenu = document.getElementById('navMenu');
     const navLinks = document.querySelectorAll('[data-nav]');
 
-    // Scroll effect
-    let lastScroll = 0;
+    // Scroll: header background + active nav link
+    const sections = document.querySelectorAll('section[id]');
     window.addEventListener('scroll', () => {
         const currentScroll = window.pageYOffset;
         header.classList.toggle('scrolled', currentScroll > 50);
-        lastScroll = currentScroll;
+
+        const scrollY = currentScroll + 100;
+        sections.forEach(section => {
+            const top = section.offsetTop;
+            const height = section.offsetHeight;
+            const id = section.getAttribute('id');
+            if (scrollY >= top && scrollY < top + height) {
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+                });
+            }
+        });
     });
 
     // Mobile toggle
@@ -65,32 +404,13 @@
         });
     });
 
-    // Active nav link on scroll
-    const sections = document.querySelectorAll('section[id]');
-    window.addEventListener('scroll', () => {
-        const scrollY = window.pageYOffset + 100;
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.offsetHeight;
-            const sectionId = section.getAttribute('id');
-
-            if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === '#' + sectionId) {
-                        link.classList.add('active');
-                    }
-                });
-            }
-        });
-    });
-
     // ======================== TYPING ANIMATION ========================
     const typingElement = document.getElementById('typingText');
     const roles = [
         'Data & Applied Scientist',
         'AI Engineer',
         'ML Systems Architect',
+        'Agentic AI Builder',
         'Generative AI Engineer',
         'Ex-Amazon Engineer'
     ];
@@ -113,12 +433,12 @@
         }
 
         if (!isDeleting && charIndex === currentRole.length) {
-            typeSpeed = 2500; // Pause at end
+            typeSpeed = 2500;
             isDeleting = true;
         } else if (isDeleting && charIndex === 0) {
             isDeleting = false;
             roleIndex = (roleIndex + 1) % roles.length;
-            typeSpeed = 300; // Pause before next word
+            typeSpeed = 300;
         }
 
         setTimeout(typeRole, typeSpeed);
@@ -144,7 +464,6 @@
                 }
             }
 
-            // Start when visible
             const observer = new IntersectionObserver((entries) => {
                 if (entries[0].isIntersecting) {
                     updateCounter();
@@ -156,19 +475,21 @@
     }
 
     // ======================== SCROLL REVEAL ========================
-    const revealElements = document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right');
-    const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('revealed');
-            }
+    function initRevealObservers() {
+        const revealElements = document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
         });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    });
-
-    revealElements.forEach(el => revealObserver.observe(el));
+        revealElements.forEach(el => revealObserver.observe(el));
+    }
+    initRevealObservers();
 
     // ======================== SKILL BARS ANIMATION ========================
     const skillBars = document.querySelectorAll('.skill-progress');
@@ -185,28 +506,30 @@
     skillBars.forEach(bar => skillObserver.observe(bar));
 
     // ======================== PROJECT FILTERING ========================
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const projectCards = document.querySelectorAll('.project-card');
+    function initProjectFiltering() {
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const projectCards = document.querySelectorAll('.project-card');
 
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Update active button
-            filterBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
 
-            const filter = btn.getAttribute('data-filter');
+                const filter = btn.getAttribute('data-filter');
 
-            projectCards.forEach(card => {
-                const category = card.getAttribute('data-category');
-                if (filter === 'all' || category === filter) {
-                    card.classList.remove('hidden');
-                    card.style.animation = 'fadeInUp 0.5s ease forwards';
-                } else {
-                    card.classList.add('hidden');
-                }
+                projectCards.forEach(card => {
+                    const category = card.getAttribute('data-category');
+                    if (filter === 'all' || category === filter) {
+                        card.classList.remove('hidden');
+                        card.style.animation = 'fadeInUp 0.5s ease forwards';
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
             });
         });
-    });
+    }
+    initProjectFiltering();
 
     // ======================== CONTACT FORM ========================
     const contactForm = document.getElementById('contactForm');
@@ -220,7 +543,6 @@
             const subject = formData.get('subject');
             const message = formData.get('message');
 
-            // Mailto fallback
             const mailtoLink = `mailto:mailabhilashganji@gmail.com?subject=${encodeURIComponent(
                 subject + ' - from ' + name
             )}&body=${encodeURIComponent(
@@ -229,7 +551,6 @@
 
             window.location.href = mailtoLink;
 
-            // Show success
             const btn = contactForm.querySelector('button[type="submit"]');
             const originalHTML = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-check"></i> <span>Opening Email Client...</span>';
@@ -294,7 +615,6 @@
             particlesContainer.appendChild(particle);
         }
 
-        // Add float animation
         const style = document.createElement('style');
         style.textContent = `
             @keyframes float {
