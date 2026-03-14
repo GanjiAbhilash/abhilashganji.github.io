@@ -28,12 +28,28 @@
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius-lg);
-            padding: 32px;
+            overflow: hidden;
             transition: all 0.3s;
         }
         .blog-list-card:hover {
             border-color: rgba(var(--accent-primary-rgb), 0.3);
             transform: translateY(-4px);
+        }
+        .blog-list-card-image {
+            height: 180px;
+            overflow: hidden;
+        }
+        .blog-list-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        .blog-list-card:hover .blog-list-card-image img {
+            transform: scale(1.05);
+        }
+        .blog-list-card-body {
+            padding: 24px 32px 32px;
         }
         .blog-list-card h3 {
             font-family: var(--font-heading);
@@ -100,6 +116,10 @@
             <div class="blog-list-grid">
 
                 <article class="blog-list-card">
+                    <div class="blog-list-card-image">
+                        <img src="../assets/projects/blog-llm.svg" alt="LLM Architecture" loading="lazy">
+                    </div>
+                    <div class="blog-list-card-body">
                     <span class="blog-list-tag">LLMs</span>
                     <h3><a href="llm-architecture.html">Demystifying LLM Architecture: From Attention to Production</a></h3>
                     <p>A deep dive into transformer internals, attention mechanisms, KV-cache optimization, and serving LLMs at scale.</p>
@@ -107,9 +127,14 @@
                         <span><i class="fas fa-calendar"></i> Jan 2025</span>
                         <span><i class="fas fa-clock"></i> 12 min</span>
                     </div>
+                    </div>
                 </article>
 
                 <article class="blog-list-card">
+                    <div class="blog-list-card-image">
+                        <img src="../assets/projects/recsys-offers.svg" alt="Recommendation Systems" loading="lazy">
+                    </div>
+                    <div class="blog-list-card-body">
                     <span class="blog-list-tag">RecSys</span>
                     <h3><a href="recommendation-systems.html">Building Recommendation Systems That Actually Scale</a></h3>
                     <p>From collaborative filtering to deep learning recommenders — architecture patterns for millions of users.</p>
@@ -117,9 +142,14 @@
                         <span><i class="fas fa-calendar"></i> Dec 2024</span>
                         <span><i class="fas fa-clock"></i> 10 min</span>
                     </div>
+                    </div>
                 </article>
 
                 <article class="blog-list-card">
+                    <div class="blog-list-card-image">
+                        <img src="../assets/projects/forecasting-platform.svg" alt="Forecasting Models" loading="lazy">
+                    </div>
+                    <div class="blog-list-card-body">
                     <span class="blog-list-tag">Forecasting</span>
                     <h3><a href="forecasting-models.html">Probabilistic Forecasting with PyMC: A Practitioner's Guide</a></h3>
                     <p>Why Bayesian forecasting wins in business — uncertainty quantification and real deployment patterns.</p>
@@ -127,15 +157,21 @@
                         <span><i class="fas fa-calendar"></i> Nov 2024</span>
                         <span><i class="fas fa-clock"></i> 8 min</span>
                     </div>
+                    </div>
                 </article>
 
                 <article class="blog-list-card">
+                    <div class="blog-list-card-image">
+                        <img src="../assets/projects/genai-attrition.svg" alt="ML System Design" loading="lazy">
+                    </div>
+                    <div class="blog-list-card-body">
                     <span class="blog-list-tag">System Design</span>
                     <h3><a href="ml-system-design.html">ML System Design: Patterns I've Used at Amazon Scale</a></h3>
                     <p>Battle-tested patterns for ML systems — feature stores, model serving, and monitoring infrastructure.</p>
                     <div class="blog-list-meta">
                         <span><i class="fas fa-calendar"></i> Oct 2024</span>
                         <span><i class="fas fa-clock"></i> 15 min</span>
+                    </div>
                     </div>
                 </article>
 

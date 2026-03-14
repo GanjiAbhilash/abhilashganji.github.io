@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a1a"/>
+      <stop offset="100%" style="stop-color:#1a0a2e"/>
+    </linearGradient>
+    <linearGradient id="acc" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ec4899"/>
+      <stop offset="100%" style="stop-color:#f472b6"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="400" fill="url(#bg)"/>
+  <g opacity="0.05" stroke="#ec4899">
+    <line x1="0" y1="80" x2="800" y2="80"/><line x1="0" y1="160" x2="800" y2="160"/>
+    <line x1="0" y1="240" x2="800" y2="240"/><line x1="0" y1="320" x2="800" y2="320"/>
+    <line x1="160" y1="0" x2="160" y2="400"/><line x1="320" y1="0" x2="320" y2="400"/>
+    <line x1="480" y1="0" x2="480" y2="400"/><line x1="640" y1="0" x2="640" y2="400"/>
+  </g>
+  <!-- Shield icon -->
+  <g transform="translate(320, 80)" opacity="0.6">
+    <path d="M80 0L160 40L160 120C160 200 80 240 80 240S0 200 0 120L0 40Z" 
+          fill="none" stroke="#ec4899" stroke-width="2.5"/>
+    <path d="M80 20L140 52L140 120C140 185 80 220 80 220S20 185 20 120L20 52Z" 
+          fill="#ec4899" opacity="0.1"/>
+    <!-- Lock icon inside shield -->
+    <rect x="55" y="90" width="50" height="40" rx="6" fill="none" stroke="#f472b6" stroke-width="2"/>
+    <path d="M65 90L65 75C65 60 95 60 95 75L95 90" fill="none" stroke="#f472b6" stroke-width="2"/>
+    <circle cx="80" cy="112" r="5" fill="#f472b6"/>
+  </g>
+  <!-- Cloud icons -->
+  <g opacity="0.2">
+    <!-- AWS -->
+    <rect x="80" y="150" width="100" height="60" rx="10" fill="#ec4899" opacity="0.3"/>
+    <text x="130" y="186" font-family="system-ui" font-size="16" fill="#f472b6" text-anchor="middle" font-weight="600">AWS</text>
+    <!-- GCP -->
+    <rect x="80" y="240" width="100" height="60" rx="10" fill="#ec4899" opacity="0.3"/>
+    <text x="130" y="276" font-family="system-ui" font-size="16" fill="#f472b6" text-anchor="middle" font-weight="600">GCP</text>
+    <!-- Azure -->
+    <rect x="620" y="150" width="100" height="60" rx="10" fill="#ec4899" opacity="0.3"/>
+    <text x="670" y="186" font-family="system-ui" font-size="16" fill="#f472b6" text-anchor="middle" font-weight="600">Azure</text>
+  </g>
+  <!-- Connection lines -->
+  <g stroke="#ec4899" stroke-width="1" opacity="0.15">
+    <line x1="180" y1="180" x2="320" y2="180"/>
+    <line x1="180" y1="270" x2="320" y2="230"/>
+    <line x1="620" y1="180" x2="480" y2="180"/>
+  </g>
+  <!-- RAG label -->
+  <g transform="translate(330, 340)">
+    <rect x="0" y="0" width="140" height="36" rx="18" fill="#ec4899" opacity="0.15"/>
+    <text x="70" y="24" font-family="system-ui" font-size="14" fill="#f472b6" text-anchor="middle" font-weight="600">RAG + GPT-4</text>
+  </g>
+</svg>
