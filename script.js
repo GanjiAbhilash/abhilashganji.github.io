@@ -88,10 +88,9 @@
     // ======================== TYPING ANIMATION ========================
     const typingElement = document.getElementById('typingText');
     const roles = [
+        'Data & Applied Scientist',
         'AI Engineer',
-        'Applied Scientist',
         'ML Systems Architect',
-        'LLM Engineer',
         'Generative AI Engineer',
         'Ex-Amazon Engineer'
     ];
