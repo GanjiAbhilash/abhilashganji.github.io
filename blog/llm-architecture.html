@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demystifying LLM Architecture — Abhilash Ganji</title>
+    <meta name="description" content="A deep dive into transformer architecture, attention mechanisms, KV-cache optimization, and serving LLMs at production scale.">
+    <link rel="canonical" href="https://abhilashganji.com/blog/llm-architecture.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .post-hero { padding: 160px 0 40px; }
+        .post-container { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
+        .post-tag {
+            display: inline-block; padding: 4px 14px;
+            background: var(--accent-subtle); color: var(--accent-light);
+            border-radius: 100px; font-size: 0.75rem; font-weight: 600;
+            text-transform: uppercase; margin-bottom: 16px; letter-spacing: 1px;
+        }
+        .post-title {
+            font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 700; color: var(--text-primary); line-height: 1.2;
+            margin-bottom: 16px; letter-spacing: -1px;
+        }
+        .post-meta {
+            display: flex; gap: 20px; color: var(--text-dim);
+            font-size: 0.85rem; margin-bottom: 40px; padding-bottom: 32px;
+            border-bottom: 1px solid var(--border);
+        }
+        .post-meta i { margin-right: 6px; color: var(--accent-primary); }
+        .post-content h2 {
+            font-family: var(--font-heading); font-size: 1.5rem; font-weight: 600;
+            color: var(--text-primary); margin: 48px 0 16px; letter-spacing: -0.5px;
+        }
+        .post-content h3 {
+            font-family: var(--font-heading); font-size: 1.2rem; font-weight: 600;
+            color: var(--text-primary); margin: 32px 0 12px;
+        }
+        .post-content p {
+            font-size: 1rem; line-height: 1.8; color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        .post-content strong { color: var(--text-primary); }
+        .post-content code {
+            font-family: var(--font-mono); font-size: 0.85em;
+            background: var(--bg-card); padding: 2px 8px;
+            border-radius: 4px; color: var(--accent-light);
+            border: 1px solid var(--border);
+        }
+        .post-content pre {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-md); padding: 24px; margin: 24px 0;
+            overflow-x: auto;
+        }
+        .post-content pre code {
+            background: none; border: none; padding: 0;
+            font-size: 0.85rem; line-height: 1.7;
+        }
+        .post-content blockquote {
+            border-left: 3px solid var(--accent-primary);
+            padding: 16px 24px; margin: 24px 0;
+            background: rgba(var(--accent-primary-rgb), 0.05);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            font-style: italic; color: var(--text-secondary);
+        }
+        .post-content ul, .post-content ol {
+            margin: 16px 0 16px 24px; color: var(--text-secondary);
+        }
+        .post-content li { margin-bottom: 8px; line-height: 1.7; }
+        .post-back {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--text-muted); font-size: 0.85rem; margin-bottom: 32px;
+        }
+        .post-back:hover { color: var(--accent-light); }
+    </style>
+
+    <!-- Article Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Demystifying LLM Architecture: From Attention to Production",
+        "author": { "@type": "Person", "name": "Abhilash Ganji" },
+        "datePublished": "2025-01-15",
+        "description": "A deep dive into transformer architecture internals.",
+        "url": "https://abhilashganji.com/blog/llm-architecture.html"
+    }
+    </script>
+</head>
+<body>
+    <header class="header scrolled" style="background:rgba(9,9,11,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(39,39,42,0.5);">
+        <nav class="nav container">
+            <a href="/" class="nav-logo"><span class="logo-bracket">{</span>AG<span class="logo-bracket">}</span></a>
+            <ul class="nav-menu" style="display:flex;">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/#projects" class="nav-link">Projects</a></li>
+                <li><a href="/blog/" class="nav-link active">Blog</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="post-hero">
+        <div class="post-container">
+            <a href="/blog/" class="post-back"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+            <span class="post-tag">LLMs</span>
+            <h1 class="post-title">Demystifying LLM Architecture: From Attention to Production</h1>
+            <div class="post-meta">
+                <span><i class="fas fa-user"></i> Abhilash Ganji</span>
+                <span><i class="fas fa-calendar"></i> January 15, 2025</span>
+                <span><i class="fas fa-clock"></i> 12 min read</span>
+            </div>
+        </div>
+    </section>
+
+    <article class="post-container">
+        <div class="post-content">
+            <p>
+                Large Language Models have fundamentally changed how we build AI systems. 
+                But beneath the hype lies elegant engineering — <strong>attention mechanisms, 
+                positional encodings, and KV-caches</strong> that make these models work at scale.
+            </p>
+
+            <p>
+                In this post, I'll break down the core architecture components that power 
+                models like GPT-4, LLaMA, and Mistral, and share practical insights from 
+                deploying LLMs in production.
+            </p>
+
+            <h2>The Transformer: A Quick Refresher</h2>
+
+            <p>
+                The transformer architecture, introduced in the landmark 
+                <em>"Attention is All You Need"</em> paper, replaced recurrence with 
+                self-attention. This single change unlocked massive parallelism and 
+                enabled training on unprecedented scales.
+            </p>
+
+            <blockquote>
+                "The key insight of transformers is that you don't need to process 
+                sequences sequentially. Every token can attend to every other token 
+                simultaneously."
+            </blockquote>
+
+            <h2>Multi-Head Attention</h2>
+
+            <p>
+                The core of the transformer is the multi-head attention mechanism. 
+                Each head learns to attend to different aspects of the input:
+            </p>
+
+            <pre><code>Attention(Q, K, V) = softmax(QK^T / √d_k) * V</code></pre>
+
+            <p>
+                Multiple heads allow the model to jointly attend to information from 
+                different representation subspaces at different positions.
+            </p>
+
+            <h2>Practical Deployment Considerations</h2>
+
+            <ul>
+                <li><strong>KV-Cache Optimization:</strong> Cache key-value pairs to avoid recomputation during autoregressive generation</li>
+                <li><strong>Quantization:</strong> Reduce model size with INT8/INT4 quantization for inference</li>
+                <li><strong>Batching:</strong> Use continuous batching for efficient GPU utilization</li>
+                <li><strong>Speculative Decoding:</strong> Use a smaller draft model to speed up generation</li>
+            </ul>
+
+            <h2>Conclusion</h2>
+
+            <p>
+                Understanding LLM architecture isn't just academic — it directly informs 
+                how you deploy, optimize, and debug these systems in production. 
+                The engineers who understand the internals build better systems.
+            </p>
+
+            <p><em>Stay tuned for the next post where I'll cover RAG system architecture patterns.</em></p>
+        </div>
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border:none;padding:0;">
+                <p>&copy; 2025 Abhilash Ganji. Crafted with precision.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

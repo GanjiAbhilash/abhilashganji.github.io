@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" rx="20" fill="#09090b"/>
+  <text x="50" y="38" font-family="monospace" font-size="20" fill="#7c3aed" 
+        text-anchor="middle" font-weight="bold">{</text>
+  <text x="50" y="62" font-family="Arial, sans-serif" font-size="28" fill="#fafafa" 
+        text-anchor="middle" font-weight="800">AG</text>
+  <text x="50" y="82" font-family="monospace" font-size="20" fill="#7c3aed" 
+        text-anchor="middle" font-weight="bold">}</text>
+</svg>

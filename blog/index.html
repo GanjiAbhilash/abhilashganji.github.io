@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog — Abhilash Ganji | AI & ML Technical Writing</title>
+    <meta name="description" content="Technical blog by Abhilash Ganji covering LLM architecture, ML system design, recommender systems, and production AI engineering.">
+    <link rel="canonical" href="https://abhilashganji.com/blog/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .blog-hero {
+            padding: 160px 0 80px;
+            text-align: center;
+        }
+        .blog-list {
+            padding: 0 0 120px;
+        }
+        .blog-list-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
+        }
+        .blog-list-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            transition: all 0.3s;
+        }
+        .blog-list-card:hover {
+            border-color: rgba(var(--accent-primary-rgb), 0.3);
+            transform: translateY(-4px);
+        }
+        .blog-list-card h3 {
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        .blog-list-card h3 a {
+            color: inherit;
+            text-decoration: none;
+        }
+        .blog-list-card h3 a:hover {
+            color: var(--accent-light);
+        }
+        .blog-list-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+        .blog-list-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+        .blog-list-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--accent-subtle);
+            color: var(--accent-light);
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header scrolled" style="background:rgba(9,9,11,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(39,39,42,0.5);">
+        <nav class="nav container">
+            <a href="/" class="nav-logo"><span class="logo-bracket">{</span>AG<span class="logo-bracket">}</span></a>
+            <ul class="nav-menu" style="display:flex;">
+                <li><a href="/#about" class="nav-link">About</a></li>
+                <li><a href="/#projects" class="nav-link">Projects</a></li>
+                <li><a href="/#blog" class="nav-link active">Blog</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="blog-hero">
+        <div class="container">
+            <span class="section-tag">// Blog</span>
+            <h1 class="section-title">Technical Writing</h1>
+            <p class="section-subtitle">Deep dives into AI engineering, ML systems, and production machine learning</p>
+            <div class="section-line"></div>
+        </div>
+    </section>
+
+    <section class="blog-list">
+        <div class="container">
+            <div class="blog-list-grid">
+
+                <article class="blog-list-card">
+                    <span class="blog-list-tag">LLMs</span>
+                    <h3><a href="llm-architecture.html">Demystifying LLM Architecture: From Attention to Production</a></h3>
+                    <p>A deep dive into transformer internals, attention mechanisms, KV-cache optimization, and serving LLMs at scale.</p>
+                    <div class="blog-list-meta">
+                        <span><i class="fas fa-calendar"></i> Jan 2025</span>
+                        <span><i class="fas fa-clock"></i> 12 min</span>
+                    </div>
+                </article>
+
+                <article class="blog-list-card">
+                    <span class="blog-list-tag">RecSys</span>
+                    <h3><a href="recommendation-systems.html">Building Recommendation Systems That Actually Scale</a></h3>
+                    <p>From collaborative filtering to deep learning recommenders — architecture patterns for millions of users.</p>
+                    <div class="blog-list-meta">
+                        <span><i class="fas fa-calendar"></i> Dec 2024</span>
+                        <span><i class="fas fa-clock"></i> 10 min</span>
+                    </div>
+                </article>
+
+                <article class="blog-list-card">
+                    <span class="blog-list-tag">Forecasting</span>
+                    <h3><a href="forecasting-models.html">Probabilistic Forecasting with PyMC: A Practitioner's Guide</a></h3>
+                    <p>Why Bayesian forecasting wins in business — uncertainty quantification and real deployment patterns.</p>
+                    <div class="blog-list-meta">
+                        <span><i class="fas fa-calendar"></i> Nov 2024</span>
+                        <span><i class="fas fa-clock"></i> 8 min</span>
+                    </div>
+                </article>
+
+                <article class="blog-list-card">
+                    <span class="blog-list-tag">System Design</span>
+                    <h3><a href="ml-system-design.html">ML System Design: Patterns I've Used at Amazon Scale</a></h3>
+                    <p>Battle-tested patterns for ML systems — feature stores, model serving, and monitoring infrastructure.</p>
+                    <div class="blog-list-meta">
+                        <span><i class="fas fa-calendar"></i> Oct 2024</span>
+                        <span><i class="fas fa-clock"></i> 15 min</span>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border:none;padding:0;">
+                <p>&copy; 2025 Abhilash Ganji. Crafted with precision.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

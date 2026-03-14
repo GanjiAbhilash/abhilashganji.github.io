@@ -1,28 +1,1101 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-theme="dark">
 <head>
-<title>Abhilash Ganji</title>
-<style>
-body{
-font-family: Arial;
-text-align:center;
-padding:50px;
-}
-</style>
-</head>
+    <!-- ======================== META & SEO ======================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
+    <title>Abhilash Ganji — AI Engineer & Applied Scientist | LLMs, ML Systems, GenAI</title>
+
+    <meta name="description" content="Abhilash Ganji is a Senior AI Engineer & Applied Scientist with 7+ years building production ML systems, LLMs, Recommender Systems, and Generative AI. Ex-Amazon. Currently at EPAM Hyderabad.">
+    <meta name="keywords" content="AI Engineer, Applied Scientist, Machine Learning Engineer, LLM Engineer, Generative AI Engineer, Recommender Systems Engineer, Abhilash Ganji, Data Scientist, Deep Learning, NLP, Computer Vision, MLOps, AWS ML, Agentic AI, Snowflake, EPAM, Amazon">
+    <meta name="author" content="Abhilash Ganji">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://abhilashganji.com/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://abhilashganji.com/">
+    <meta property="og:title" content="Abhilash Ganji — AI Engineer & Applied Scientist">
+    <meta property="og:description" content="Senior AI Engineer with 7+ years building production ML systems, LLMs, and GenAI. Ex-Amazon. Rank 1 globally among 4500+ engineers.">
+    <meta property="og:image" content="https://abhilashganji.com/assets/images/og-image.png">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:site_name" content="Abhilash Ganji Portfolio">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Abhilash Ganji — AI Engineer & Applied Scientist">
+    <meta name="twitter:description" content="Senior AI Engineer with 7+ years. Ex-Amazon. Rank 1 globally among 4500+ engineers.">
+    <meta name="twitter:image" content="https://abhilashganji.com/assets/images/og-image.png">
+
+    <!-- Structured Data / Schema.org -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Abhilash Ganji",
+        "url": "https://abhilashganji.com",
+        "image": "https://abhilashganji.com/assets/images/profile.jpg",
+        "jobTitle": "Senior AI Engineer / Applied Scientist",
+        "worksFor": {
+            "@type": "Organization",
+            "name": "EPAM Systems"
+        },
+        "alumniOf": {
+            "@type": "Organization",
+            "name": "Amazon"
+        },
+        "description": "AI Engineer & Applied Scientist with 7+ years of experience in ML Systems, LLMs, Generative AI, and Recommender Systems.",
+        "knowsAbout": ["Machine Learning", "Large Language Models", "Generative AI", "Deep Learning", "NLP", "Computer Vision", "Recommender Systems", "Data Engineering", "AWS", "Snowflake", "Agentic AI"],
+        "sameAs": [
+            "https://www.linkedin.com/in/abhilash-ganji/",
+            "https://github.com/GanjiAbhilash"
+        ],
+        "email": "mailabhilashganji@gmail.com",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Hyderabad",
+            "addressCountry": "IN"
+        }
+    }
+    </script>
+
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Favicon -->
+    <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#7c3aed">
+
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
 
-<h1>Abhilash Ganji</h1>
-<h2>AI Engineer | Applied Scientist</h2>
+    <!-- ======================== CURSOR GLOW ======================== -->
+    <div class="cursor-glow" id="cursorGlow"></div>
 
-<p>
-I work on Machine Learning, LLMs, Multimodal AI and Recommender Systems.
-</p>
+    <!-- ======================== LOADER ======================== -->
+    <div class="loader" id="loader">
+        <div class="loader-inner">
+            <div class="loader-line"></div>
+            <div class="loader-line"></div>
+            <div class="loader-line"></div>
+            <span class="loader-text">AG</span>
+        </div>
+    </div>
 
-<p>
-Welcome to my personal website.
-</p>
+    <!-- ======================== NAVIGATION ======================== -->
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="#" class="nav-logo">
+                <span class="logo-bracket">{</span>AG<span class="logo-bracket">}</span>
+            </a>
 
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#about" class="nav-link" data-nav>About</a></li>
+                <li><a href="#skills" class="nav-link" data-nav>Skills</a></li>
+                <li><a href="#projects" class="nav-link" data-nav>Projects</a></li>
+                <li><a href="#research" class="nav-link" data-nav>Research</a></li>
+                <li><a href="#blog" class="nav-link" data-nav>Blog</a></li>
+                <li><a href="#contact" class="nav-link" data-nav>Contact</a></li>
+                <li>
+                    <a href="assets/resume/Abhilash_Ganji_Resume.pdf" 
+                       class="nav-resume-btn" target="_blank" rel="noopener">
+                        <i class="fas fa-download"></i> Resume
+                    </a>
+                </li>
+            </ul>
+
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- ======================== HERO SECTION ======================== -->
+    <section class="hero" id="hero">
+        <div class="hero-bg">
+            <div class="hero-grid"></div>
+            <div class="hero-gradient"></div>
+            <div class="hero-particles" id="heroParticles"></div>
+        </div>
+
+        <div class="hero-content container">
+            <div class="hero-badge reveal-up">
+                <span class="badge-dot"></span>
+                Available for opportunities
+            </div>
+
+            <h1 class="hero-title reveal-up">
+                <span class="hero-greeting">Hello, I'm</span>
+                <span class="hero-name">
+                    <span class="name-char" style="--i:0">A</span>
+                    <span class="name-char" style="--i:1">b</span>
+                    <span class="name-char" style="--i:2">h</span>
+                    <span class="name-char" style="--i:3">i</span>
+                    <span class="name-char" style="--i:4">l</span>
+                    <span class="name-char" style="--i:5">a</span>
+                    <span class="name-char" style="--i:6">s</span>
+                    <span class="name-char" style="--i:7">h</span>
+                    <span class="name-space"> </span>
+                    <span class="name-char" style="--i:8">G</span>
+                    <span class="name-char" style="--i:9">a</span>
+                    <span class="name-char" style="--i:10">n</span>
+                    <span class="name-char" style="--i:11">j</span>
+                    <span class="name-char" style="--i:12">i</span>
+                </span>
+            </h1>
+
+            <div class="hero-role reveal-up">
+                <span class="role-line"></span>
+                <span class="role-text" id="typingText"></span>
+                <span class="typing-cursor">|</span>
+            </div>
+
+            <p class="hero-description reveal-up">
+                I architect <strong>production ML systems</strong> that scale. From 
+                <em>Large Language Models</em> to <em>Recommender Engines</em>, I transform 
+                complex data into intelligent systems that drive real business impact. 
+                <strong>7+ years</strong> of building AI that works at scale.
+            </p>
+
+            <div class="hero-stats reveal-up">
+                <div class="stat">
+                    <span class="stat-number" data-count="7">0</span>
+                    <span class="stat-plus">+</span>
+                    <span class="stat-label">Years Experience</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-number" data-count="20">0</span>
+                    <span class="stat-plus">+</span>
+                    <span class="stat-label">ML Models Deployed</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-number" data-count="1">0</span>
+                    <span class="stat-label">Global Rank (Amazon)</span>
+                </div>
+            </div>
+
+            <div class="hero-actions reveal-up">
+                <a href="#projects" class="btn btn-primary">
+                    <span>View Projects</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="#contact" class="btn btn-outline">
+                    <span>Get In Touch</span>
+                </a>
+                <a href="assets/resume/Abhilash_Ganji_Resume.pdf" class="btn btn-ghost" target="_blank" rel="noopener">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Resume</span>
+                </a>
+            </div>
+
+            <div class="hero-socials reveal-up">
+                <a href="https://www.linkedin.com/in/abhilash-ganji/" target="_blank" rel="noopener" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="https://github.com/GanjiAbhilash" target="_blank" rel="noopener" aria-label="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="mailto:mailabhilashganji@gmail.com" aria-label="Email">
+                    <i class="fas fa-envelope"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-scroll">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- ======================== ABOUT SECTION ======================== -->
+    <section class="section" id="about">
+        <div class="container">
+            <div class="section-header reveal-up">
+                <span class="section-tag">// 01</span>
+                <h2 class="section-title">About Me</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="about-grid">
+                <div class="about-image reveal-left">
+                    <div class="image-wrapper">
+                        <div class="image-placeholder">
+                            <span class="placeholder-initials">AG</span>
+                            <span class="placeholder-text">Abhilash Ganji</span>
+                        </div>
+                        <!-- Replace above div with: <img src="assets/images/profile.jpg" alt="Abhilash Ganji" loading="lazy"> -->
+                        <div class="image-border"></div>
+                        <div class="image-dots"></div>
+                    </div>
+
+                    <div class="about-achievements">
+                        <div class="achievement">
+                            <div class="achievement-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div>
+                                <strong>Rank #1 Globally</strong>
+                                <span>AI Competition — 4500+ Amazon Engineers</span>
+                            </div>
+                        </div>
+                        <div class="achievement">
+                            <div class="achievement-icon">
+                                <i class="fas fa-award"></i>
+                            </div>
+                            <div>
+                                <strong>National Winner</strong>
+                                <span>IIM Bangalore Case Study Competition</span>
+                            </div>
+                        </div>
+                        <div class="achievement">
+                            <div class="achievement-icon">
+                                <i class="fas fa-flag-checkered"></i>
+                            </div>
+                            <div>
+                                <strong>National Racer Finalist</strong>
+                                <span>Men's 200cc Category</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-content reveal-right">
+                    <div class="about-text">
+                        <h3 class="about-subtitle">
+                            Building AI systems that don't just work in notebooks — 
+                            <span class="text-gradient">they work in production.</span>
+                        </h3>
+
+                        <p>
+                            I'm Abhilash Ganji, a Senior Data Science Engineer at 
+                            <strong>EPAM Systems</strong> in Hyderabad and a former 
+                            <strong>Amazon</strong> engineer. Over the past 7+ years, 
+                            I've designed and deployed machine learning systems that 
+                            operate at massive scale — from recommendation engines 
+                            serving millions of users to transformer-based NLP models 
+                            predicting business-critical outcomes.
+                        </p>
+
+                        <p>
+                            My work sits at the intersection of <em>research and 
+                            engineering</em>. I don't just build models — I build 
+                            complete ML systems: data pipelines, training 
+                            infrastructure, serving layers, and monitoring. Whether 
+                            it's fine-tuning LLMs, architecting recommender systems, 
+                            or building forecasting engines, I obsess over taking AI 
+                            from prototype to production.
+                        </p>
+
+                        <div class="about-philosophy">
+                            <div class="philosophy-icon">
+                                <i class="fas fa-quote-left"></i>
+                            </div>
+                            <blockquote>
+                                "The best AI systems are invisible — they just make 
+                                things work better. My philosophy is to build AI that's 
+                                reliable, scalable, and creates measurable impact. 
+                                Not impressive demos, but systems that survive Monday 
+                                morning traffic."
+                            </blockquote>
+                        </div>
+
+                        <p>
+                            Beyond engineering, I'm a national-level racer and 
+                            competition winner at IIM Bangalore — I bring the same 
+                            competitive intensity and precision to every ML problem 
+                            I tackle.
+                        </p>
+                    </div>
+
+                    <div class="about-journey">
+                        <h4>My Journey</h4>
+                        <div class="journey-timeline">
+                            <div class="journey-item">
+                                <div class="journey-marker"></div>
+                                <div class="journey-content">
+                                    <span class="journey-year">Present</span>
+                                    <strong>Senior Data Science Engineer — EPAM</strong>
+                                    <p>Leading ML initiatives, LLM-based solutions, and Agentic AI systems</p>
+                                </div>
+                            </div>
+                            <div class="journey-item">
+                                <div class="journey-marker"></div>
+                                <div class="journey-content">
+                                    <span class="journey-year">Previous</span>
+                                    <strong>Engineer — Amazon</strong>
+                                    <p>Built large-scale recommender systems and ML pipelines on AWS</p>
+                                </div>
+                            </div>
+                            <div class="journey-item">
+                                <div class="journey-marker"></div>
+                                <div class="journey-content">
+                                    <span class="journey-year">Foundation</span>
+                                    <strong>Early Career</strong>
+                                    <p>Deep learning research, computer vision, and NLP foundations</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== SKILLS SECTION ======================== -->
+    <section class="section section-dark" id="skills">
+        <div class="container">
+            <div class="section-header reveal-up">
+                <span class="section-tag">// 02</span>
+                <h2 class="section-title">Technical Arsenal</h2>
+                <p class="section-subtitle">Technologies and domains I've mastered over 7+ years of building production AI systems</p>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="skills-showcase">
+                <!-- Primary Skills -->
+                <div class="skills-primary reveal-up">
+                    <div class="skill-card skill-featured" data-skill="ml">
+                        <div class="skill-icon-wrap">
+                            <div class="skill-glow"></div>
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>Machine Learning</h3>
+                        <p>End-to-end ML pipeline design, feature engineering, model optimization, A/B testing, and deployment at scale</p>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="95"></div>
+                        </div>
+                        <div class="skill-tags">
+                            <span>Scikit-learn</span><span>XGBoost</span><span>LightGBM</span><span>MLflow</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-card skill-featured" data-skill="llm">
+                        <div class="skill-icon-wrap">
+                            <div class="skill-glow"></div>
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>Large Language Models</h3>
+                        <p>Fine-tuning, prompt engineering, RAG systems, LLM evaluation, and production LLM serving infrastructure</p>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="92"></div>
+                        </div>
+                        <div class="skill-tags">
+                            <span>GPT</span><span>LLaMA</span><span>LangChain</span><span>Hugging Face</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-card skill-featured" data-skill="agent">
+                        <div class="skill-icon-wrap">
+                            <div class="skill-glow"></div>
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <h3>Agentic AI</h3>
+                        <p>Multi-agent orchestration, tool-use frameworks, autonomous reasoning chains, and agentic workflows</p>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="88"></div>
+                        </div>
+                        <div class="skill-tags">
+                            <span>AutoGen</span><span>CrewAI</span><span>LangGraph</span><span>OpenAI Agents</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skill Grid -->
+                <div class="skills-grid reveal-up">
+                    <div class="skill-card" data-skill="dl">
+                        <div class="skill-icon-wrap">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <h3>Deep Learning</h3>
+                        <p>Neural architectures, transformers, CNNs, RNNs, attention mechanisms</p>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="93"></div>
+                        </div>
+                        <div class="skill-tags">
+                            <span>PyTorch</span><span>TensorFlow</span><span>Keras</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-card" data-skill="nlp">
+                        <div class="skill-icon-wrap">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <h3>NLP</h3>
+                        <p>Text classification, NER, sentiment analysis, topic modeling, BERT fine-tuning</p>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="91"></div>
+                        </div>
+                        <div class="skill-tags">
+                            <span>BERT</span><span>spaCy</span><span>NLTK</span><span>Transformers</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-card" data-skill="recsys">
+                        <div class="skill-icon-wrap">
+                            <i class="fas fa-thumbs-up"></i>
+                        </div>
+                        <h3>Recommender Systems</h3>
+                        <p>Collaborative filtering, content-based, hybrid systems, personalization at scale</p>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="94"></div>
+                        </div>
+                        <div class="skill-tags">
+                            <span>Matrix Factorization</span><span>Deep RecSys</span><span>A/B Testing</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-card" data-skill="cv">
+                        <div class="skill-icon-wrap">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3>Computer Vision</h3>
+                        <p>Image classification, object detection, segmentation, OCR pipelines</p>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="85"></div>
+                        </div>
+                        <div class="skill-tags">
+                            <span>OpenCV</span><span>YOLO</span><span>ResNet</span><span>ViT</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-card" data-skill="de">
+                        <div class="skill-icon-wrap">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h3>Data Engineering</h3>
+                        <p>ETL pipelines, data warehousing, stream processing, data quality frameworks</p>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="88"></div>
+                        </div>
+                        <div class="skill-tags">
+                            <span>Spark</span><span>Airflow</span><span>SQL</span><span>Kafka</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-card" data-skill="cloud">
+                        <div class="skill-icon-wrap">
+                            <i class="fab fa-aws"></i>
+                        </div>
+                        <h3>Cloud & AWS</h3>
+                        <p>SageMaker, Lambda, S3, EC2, Step Functions, ML infrastructure on AWS</p>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="90"></div>
+                        </div>
+                        <div class="skill-tags">
+                            <span>SageMaker</span><span>Lambda</span><span>EC2</span><span>S3</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-card" data-skill="snowflake">
+                        <div class="skill-icon-wrap">
+                            <i class="fas fa-snowflake"></i>
+                        </div>
+                        <h3>Snowflake</h3>
+                        <p>Data warehousing, Snowpark, ML feature stores, analytics engineering</p>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="86"></div>
+                        </div>
+                        <div class="skill-tags">
+                            <span>Snowpark</span><span>SQL</span><span>dbt</span><span>Streams</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== PROJECTS SECTION ======================== -->
+    <section class="section" id="projects">
+        <div class="container">
+            <div class="section-header reveal-up">
+                <span class="section-tag">// 03</span>
+                <h2 class="section-title">Featured Projects</h2>
+                <p class="section-subtitle">Production-grade ML systems I've designed, built, and deployed</p>
+                <div class="section-line"></div>
+            </div>
+
+            <!-- Project Filters -->
+            <div class="project-filters reveal-up">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="nlp">NLP</button>
+                <button class="filter-btn" data-filter="recsys">RecSys</button>
+                <button class="filter-btn" data-filter="forecasting">Forecasting</button>
+                <button class="filter-btn" data-filter="anomaly">Anomaly Detection</button>
+            </div>
+
+            <!-- Projects Grid -->
+            <div class="projects-grid">
+
+                <!-- Project 1: Employee Attrition -->
+                <article class="project-card reveal-up" data-category="nlp">
+                    <div class="project-image">
+                        <div class="project-image-placeholder">
+                            <i class="fas fa-users-slash"></i>
+                        </div>
+                        <div class="project-overlay">
+                            <a href="https://github.com/GanjiAbhilash" class="project-overlay-btn" target="_blank" rel="noopener">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </div>
+                        <span class="project-tag">NLP / Transformers</span>
+                    </div>
+                    <div class="project-body">
+                        <h3 class="project-title">Employee Attrition Prediction Using Transformer NLP</h3>
+                        <p class="project-desc">
+                            Leveraged transformer-based models (BERT) to analyze employee 
+                            feedback text data and predict attrition risk with 94% accuracy. 
+                            Built end-to-end pipeline from data ingestion to real-time 
+                            inference API serving predictions to HR teams.
+                        </p>
+                        <div class="project-architecture">
+                            <span class="arch-label"><i class="fas fa-project-diagram"></i> Architecture</span>
+                            <div class="arch-flow">
+                                <span>Data Lake</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span>BERT Fine-tune</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span>SageMaker</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span>REST API</span>
+                            </div>
+                        </div>
+                        <div class="project-tech">
+                            <span>Python</span><span>BERT</span><span>PyTorch</span>
+                            <span>HuggingFace</span><span>AWS SageMaker</span><span>FastAPI</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/GanjiAbhilash" target="_blank" rel="noopener">
+                                <i class="fab fa-github"></i> Source Code
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 2: Recommender System -->
+                <article class="project-card reveal-up" data-category="recsys">
+                    <div class="project-image">
+                        <div class="project-image-placeholder">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="project-overlay">
+                            <a href="https://github.com/GanjiAbhilash" class="project-overlay-btn" target="_blank" rel="noopener">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </div>
+                        <span class="project-tag">Recommender Systems</span>
+                    </div>
+                    <div class="project-body">
+                        <h3 class="project-title">Large-Scale Personalised Recommender System</h3>
+                        <p class="project-desc">
+                            Built a personalised offer recommendation engine for restaurant 
+                            customers processing millions of user interactions. Implemented 
+                            hybrid collaborative filtering + deep learning approach achieving 
+                            35% improvement in offer redemption rates.
+                        </p>
+                        <div class="project-architecture">
+                            <span class="arch-label"><i class="fas fa-project-diagram"></i> Architecture</span>
+                            <div class="arch-flow">
+                                <span>Event Stream</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span>Feature Store</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span>Deep RecSys</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span>Serving Layer</span>
+                            </div>
+                        </div>
+                        <div class="project-tech">
+                            <span>Python</span><span>TensorFlow</span><span>Spark</span>
+                            <span>Airflow</span><span>Redis</span><span>AWS</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/GanjiAbhilash" target="_blank" rel="noopener">
+                                <i class="fab fa-github"></i> Source Code
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 3: Forecasting System -->
+                <article class="project-card reveal-up" data-category="forecasting">
+                    <div class="project-image">
+                        <div class="project-image-placeholder">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="project-overlay">
+                            <a href="https://github.com/GanjiAbhilash" class="project-overlay-btn" target="_blank" rel="noopener">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </div>
+                        <span class="project-tag">Bayesian Forecasting</span>
+                    </div>
+                    <div class="project-body">
+                        <h3 class="project-title">Bayesian Forecasting System for Sales Prediction</h3>
+                        <p class="project-desc">
+                            Designed a probabilistic forecasting system using PyMC Bayesian 
+                            models for sales prediction with uncertainty quantification. 
+                            Enabled business stakeholders to make data-driven inventory 
+                            decisions with confidence intervals, reducing stockouts by 28%.
+                        </p>
+                        <div class="project-architecture">
+                            <span class="arch-label"><i class="fas fa-project-diagram"></i> Architecture</span>
+                            <div class="arch-flow">
+                                <span>Snowflake</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span>PyMC Model</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span>MLflow</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span>Dashboard</span>
+                            </div>
+                        </div>
+                        <div class="project-tech">
+                            <span>Python</span><span>PyMC</span><span>Snowflake</span>
+                            <span>MLflow</span><span>Plotly</span><span>Docker</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/GanjiAbhilash" target="_blank" rel="noopener">
+                                <i class="fab fa-github"></i> Source Code
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 4: Sentiment Analysis -->
+                <article class="project-card reveal-up" data-category="nlp">
+                    <div class="project-image">
+                        <div class="project-image-placeholder">
+                            <i class="fas fa-comment-dots"></i>
+                        </div>
+                        <div class="project-overlay">
+                            <a href="https://github.com/GanjiAbhilash" class="project-overlay-btn" target="_blank" rel="noopener">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </div>
+                        <span class="project-tag">LLMs / NLP</span>
+                    </div>
+                    <div class="project-body">
+                        <h3 class="project-title">Sentiment Analysis Engine Using LLMs</h3>
+                        <p class="project-desc">
+                            Built a multi-lingual sentiment analysis system leveraging 
+                            Large Language Models with fine-tuning and prompt engineering. 
+                            Processes customer reviews at scale with nuanced aspect-level 
+                            sentiment detection and real-time classification.
+                        </p>
+                        <div class="project-architecture">
+                            <span class="arch-label"><i class="fas fa-project-diagram"></i> Architecture</span>
+                            <div class="arch-flow">
+                                <span>Kafka Stream</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span>LLM Pipeline</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span>Vector DB</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span>Analytics</span>
+                            </div>
+                        </div>
+                        <div class="project-tech">
+                            <span>Python</span><span>GPT-4</span><span>LangChain</span>
+                            <span>Pinecone</span><span>FastAPI</span><span>Docker</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/GanjiAbhilash" target="_blank" rel="noopener">
+                                <i class="fab fa-github"></i> Source Code
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 5: Anomaly Detection -->
+                <article class="project-card reveal-up" data-category="anomaly">
+                    <div class="project-image">
+                        <div class="project-image-placeholder">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="project-overlay">
+                            <a href="https://github.com/GanjiAbhilash" class="project-overlay-btn" target="_blank" rel="noopener">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </div>
+                        <span class="project-tag">Anomaly Detection</span>
+                    </div>
+                    <div class="project-body">
+                        <h3 class="project-title">Real-Time Anomaly Detection System</h3>
+                        <p class="project-desc">
+                            Developed a multi-variate anomaly detection system using 
+                            autoencoders and isolation forests for real-time monitoring 
+                            of production metrics. Detects data drift, system anomalies, 
+                            and fraud patterns with sub-second latency.
+                        </p>
+                        <div class="project-architecture">
+                            <span class="arch-label"><i class="fas fa-project-diagram"></i> Architecture</span>
+                            <div class="arch-flow">
+                                <span>Kinesis</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span>Autoencoder</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span>Alerting</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span>Dashboard</span>
+                            </div>
+                        </div>
+                        <div class="project-tech">
+                            <span>Python</span><span>PyTorch</span><span>Kinesis</span>
+                            <span>Lambda</span><span>Grafana</span><span>Docker</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/GanjiAbhilash" target="_blank" rel="noopener">
+                                <i class="fab fa-github"></i> Source Code
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+
+            <div class="projects-cta reveal-up">
+                <a href="https://github.com/GanjiAbhilash" class="btn btn-outline" target="_blank" rel="noopener">
+                    <i class="fab fa-github"></i>
+                    <span>View All Projects on GitHub</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== RESEARCH SECTION ======================== -->
+    <section class="section section-dark" id="research">
+        <div class="container">
+            <div class="section-header reveal-up">
+                <span class="section-tag">// 04</span>
+                <h2 class="section-title">Research & Experiments</h2>
+                <p class="section-subtitle">Deep dives into AI research, experiments, and technical explorations</p>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="research-grid">
+                <article class="research-card reveal-up">
+                    <div class="research-type">
+                        <i class="fas fa-flask"></i>
+                        <span>Experiment</span>
+                    </div>
+                    <h3>Transformer Architectures for Tabular Data</h3>
+                    <p>Exploring how attention mechanisms can outperform traditional 
+                       gradient boosting methods on structured enterprise data</p>
+                    <div class="research-meta">
+                        <span><i class="fas fa-calendar"></i> 2024</span>
+                        <span><i class="fas fa-tag"></i> Deep Learning</span>
+                    </div>
+                    <a href="#" class="research-link">Read More <i class="fas fa-arrow-right"></i></a>
+                </article>
+
+                <article class="research-card reveal-up">
+                    <div class="research-type">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Article</span>
+                    </div>
+                    <h3>Scaling Recommender Systems: From Matrix Factorization to Deep Learning</h3>
+                    <p>A comprehensive analysis of recommendation architecture evolution 
+                       and practical deployment considerations</p>
+                    <div class="research-meta">
+                        <span><i class="fas fa-calendar"></i> 2024</span>
+                        <span><i class="fas fa-tag"></i> RecSys</span>
+                    </div>
+                    <a href="#" class="research-link">Read More <i class="fas fa-arrow-right"></i></a>
+                </article>
+
+                <article class="research-card reveal-up">
+                    <div class="research-type">
+                        <i class="fas fa-flask"></i>
+                        <span>Experiment</span>
+                    </div>
+                    <h3>Bayesian vs Frequentist Approaches in Sales Forecasting</h3>
+                    <p>Comparative study of uncertainty quantification methods and 
+                       their impact on business decision-making</p>
+                    <div class="research-meta">
+                        <span><i class="fas fa-calendar"></i> 2024</span>
+                        <span><i class="fas fa-tag"></i> Forecasting</span>
+                    </div>
+                    <a href="#" class="research-link">Read More <i class="fas fa-arrow-right"></i></a>
+                </article>
+
+                <article class="research-card reveal-up">
+                    <div class="research-type">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Article</span>
+                    </div>
+                    <h3>Building Production-Ready RAG Systems: Lessons Learned</h3>
+                    <p>Practical insights from deploying retrieval-augmented generation 
+                       systems in enterprise environments</p>
+                    <div class="research-meta">
+                        <span><i class="fas fa-calendar"></i> 2025</span>
+                        <span><i class="fas fa-tag"></i> LLMs</span>
+                    </div>
+                    <a href="#" class="research-link">Read More <i class="fas fa-arrow-right"></i></a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== BLOG SECTION ======================== -->
+    <section class="section" id="blog">
+        <div class="container">
+            <div class="section-header reveal-up">
+                <span class="section-tag">// 05</span>
+                <h2 class="section-title">Technical Blog</h2>
+                <p class="section-subtitle">Deep technical writings on AI, ML system design, and engineering</p>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="blog-grid">
+                <article class="blog-card blog-featured reveal-up">
+                    <div class="blog-image">
+                        <div class="blog-image-placeholder">
+                            <i class="fas fa-microchip"></i>
+                        </div>
+                        <span class="blog-category">LLMs</span>
+                    </div>
+                    <div class="blog-body">
+                        <div class="blog-meta">
+                            <span><i class="fas fa-calendar"></i> Jan 2025</span>
+                            <span><i class="fas fa-clock"></i> 12 min read</span>
+                        </div>
+                        <h3>Demystifying LLM Architecture: From Attention to Production</h3>
+                        <p>A deep dive into transformer architecture internals — 
+                           multi-head attention, positional encoding, KV-cache 
+                           optimization, and what it takes to serve LLMs at scale.</p>
+                        <a href="blog/llm-architecture.html" class="blog-read-more">
+                            Read Article <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="blog-card reveal-up">
+                    <div class="blog-body">
+                        <div class="blog-meta">
+                            <span><i class="fas fa-calendar"></i> Dec 2024</span>
+                            <span><i class="fas fa-clock"></i> 10 min read</span>
+                        </div>
+                        <h3>Building Recommendation Systems That Actually Scale</h3>
+                        <p>From collaborative filtering to deep learning recommenders — 
+                           real-world architecture patterns for serving millions of users.</p>
+                        <a href="blog/recommendation-systems.html" class="blog-read-more">
+                            Read Article <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="blog-card reveal-up">
+                    <div class="blog-body">
+                        <div class="blog-meta">
+                            <span><i class="fas fa-calendar"></i> Nov 2024</span>
+                            <span><i class="fas fa-clock"></i> 8 min read</span>
+                        </div>
+                        <h3>Probabilistic Forecasting with PyMC: A Practitioner's Guide</h3>
+                        <p>Why Bayesian forecasting wins in business settings — 
+                           uncertainty quantification, prior selection, and real deployment.</p>
+                        <a href="blog/forecasting-models.html" class="blog-read-more">
+                            Read Article <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="blog-card reveal-up">
+                    <div class="blog-body">
+                        <div class="blog-meta">
+                            <span><i class="fas fa-calendar"></i> Oct 2024</span>
+                            <span><i class="fas fa-clock"></i> 15 min read</span>
+                        </div>
+                        <h3>ML System Design: Patterns I've Used at Amazon Scale</h3>
+                        <p>Battle-tested patterns for designing ML systems — 
+                           feature stores, model serving, monitoring, and the 
+                           infrastructure that keeps it all running.</p>
+                        <a href="blog/ml-system-design.html" class="blog-read-more">
+                            Read Article <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+            </div>
+
+            <div class="blog-cta reveal-up">
+                <a href="blog/index.html" class="btn btn-outline">
+                    <span>View All Articles</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== RESUME SECTION ======================== -->
+    <section class="section section-dark" id="resume">
+        <div class="container">
+            <div class="resume-banner reveal-up">
+                <div class="resume-content">
+                    <div class="resume-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div class="resume-text">
+                        <h3>Download My Resume</h3>
+                        <p>Get a comprehensive overview of my experience, skills, and achievements</p>
+                    </div>
+                    <a href="assets/resume/Abhilash_Ganji_Resume.pdf" class="btn btn-primary" target="_blank" rel="noopener">
+                        <i class="fas fa-download"></i>
+                        <span>Download PDF</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== NEWSLETTER SECTION ======================== -->
+    <section class="section" id="newsletter">
+        <div class="container">
+            <div class="newsletter-box reveal-up">
+                <div class="newsletter-content">
+                    <h3><i class="fas fa-paper-plane"></i> Stay Updated</h3>
+                    <p>Get notified about new blog posts, research, and AI insights. No spam — only signal.</p>
+                    <form class="newsletter-form" id="newsletterForm">
+                        <input type="email" placeholder="your@email.com" required aria-label="Email address">
+                        <button type="submit" class="btn btn-primary">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== CONTACT SECTION ======================== -->
+    <section class="section section-dark" id="contact">
+        <div class="container">
+            <div class="section-header reveal-up">
+                <span class="section-tag">// 06</span>
+                <h2 class="section-title">Let's Connect</h2>
+                <p class="section-subtitle">Open to opportunities, collaborations, and interesting conversations about AI</p>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="contact-grid">
+                <div class="contact-info reveal-left">
+                    <div class="contact-card">
+                        <div class="contact-card-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h4>Email</h4>
+                            <a href="mailto:mailabhilashganji@gmail.com">mailabhilashganji@gmail.com</a>
+                        </div>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="contact-card-icon">
+                            <i class="fab fa-linkedin-in"></i>
+                        </div>
+                        <div>
+                            <h4>LinkedIn</h4>
+                            <a href="https://www.linkedin.com/in/abhilash-ganji/" target="_blank" rel="noopener">linkedin.com/in/abhilash-ganji</a>
+                        </div>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="contact-card-icon">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <div>
+                            <h4>GitHub</h4>
+                            <a href="https://github.com/GanjiAbhilash" target="_blank" rel="noopener">github.com/GanjiAbhilash</a>
+                        </div>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="contact-card-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div>
+                            <h4>Location</h4>
+                            <span>Hyderabad, India</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form-wrapper reveal-right">
+                    <form class="contact-form" id="contactForm">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" placeholder="Your name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <select id="subject" name="subject" required>
+                                <option value="" disabled selected>Select a topic</option>
+                                <option value="opportunity">Job Opportunity</option>
+                                <option value="freelance">Freelance / Contract</option>
+                                <option value="collaboration">Collaboration</option>
+                                <option value="consulting">AI Consulting</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="5" placeholder="Tell me about your project or opportunity..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">
+                            <span>Send Message</span>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== FOOTER ======================== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="nav-logo">
+                        <span class="logo-bracket">{</span>AG<span class="logo-bracket">}</span>
+                    </a>
+                    <p>Building AI systems that work at scale.</p>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Navigation</h4>
+                    <a href="#about">About</a>
+                    <a href="#skills">Skills</a>
+                    <a href="#projects">Projects</a>
+                    <a href="#blog">Blog</a>
+                    <a href="#contact">Contact</a>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Connect</h4>
+                    <a href="https://www.linkedin.com/in/abhilash-ganji/" target="_blank" rel="noopener">LinkedIn</a>
+                    <a href="https://github.com/GanjiAbhilash" target="_blank" rel="noopener">GitHub</a>
+                    <a href="mailto:mailabhilashganji@gmail.com">Email</a>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Abhilash Ganji. Crafted with precision.</p>
+                <p class="footer-seo">AI Engineer • Applied Scientist • Machine Learning • LLMs • Generative AI • Hyderabad</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ======================== SCRIPTS ======================== -->
+    <script src="script.js"></script>
 </body>
 </html>
