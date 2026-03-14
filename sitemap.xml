@@ -2,37 +2,55 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
         <loc>https://abhilashganji.com/</loc>
-        <lastmod>2025-01-15</lastmod>
+        <lastmod>2025-06-01</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
         <loc>https://abhilashganji.com/blog/</loc>
-        <lastmod>2025-01-15</lastmod>
+        <lastmod>2025-06-01</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://abhilashganji.com/blog/llm-architecture.html</loc>
+        <loc>https://abhilashganji.com/blog/bert-sentiment-production.html</loc>
         <lastmod>2025-01-15</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://abhilashganji.com/blog/recommendation-systems.html</loc>
+        <loc>https://abhilashganji.com/blog/lightfm-recommender-snowflake.html</loc>
         <lastmod>2024-12-15</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://abhilashganji.com/blog/forecasting-models.html</loc>
+        <loc>https://abhilashganji.com/blog/prophet-bayesian-forecasting.html</loc>
         <lastmod>2024-11-15</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://abhilashganji.com/blog/ml-system-design.html</loc>
+        <loc>https://abhilashganji.com/blog/cnn-damage-detection-sagemaker.html</loc>
         <lastmod>2024-10-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://abhilashganji.com/blog/rag-iam-policy-genai.html</loc>
+        <lastmod>2024-09-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://abhilashganji.com/blog/anomaly-detection-hybrid.html</loc>
+        <lastmod>2024-08-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://abhilashganji.com/blog/pyspark-glue-bigdata.html</loc>
+        <lastmod>2024-07-15</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
