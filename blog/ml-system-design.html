@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML System Design: Patterns That Survive Production — Abhilash Ganji</title>
+    <meta name="description" content="End-to-end ML system design patterns — from data pipelines and feature stores to model serving, monitoring, and the operational realities of ML at scale.">
+    <link rel="canonical" href="https://abhilashganji.com/blog/ml-system-design.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .post-hero { padding: 160px 0 0; }
+        .post-hero-image {
+            max-width: 720px; margin: 32px auto 0; border-radius: 12px;
+            overflow: hidden; border: 1px solid rgba(39,39,42,0.5);
+        }
+        .post-hero-image img { width: 100%; height: auto; display: block; }
+        .post-container { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
+        .post-tag {
+            display: inline-block; padding: 4px 14px;
+            background: var(--accent-subtle); color: var(--accent-light);
+            border-radius: 100px; font-size: 0.75rem; font-weight: 600;
+            text-transform: uppercase; margin-bottom: 16px; letter-spacing: 1px;
+        }
+        .post-title {
+            font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 700; color: var(--text-primary); line-height: 1.2;
+            margin-bottom: 16px; letter-spacing: -1px;
+        }
+        .post-meta {
+            display: flex; gap: 20px; color: var(--text-dim);
+            font-size: 0.85rem; margin-bottom: 40px; padding-bottom: 32px;
+            border-bottom: 1px solid var(--border);
+        }
+        .post-meta i { margin-right: 6px; color: var(--accent-primary); }
+        .post-content h2 {
+            font-family: var(--font-heading); font-size: 1.5rem; font-weight: 600;
+            color: var(--text-primary); margin: 48px 0 16px; letter-spacing: -0.5px;
+        }
+        .post-content h3 {
+            font-family: var(--font-heading); font-size: 1.2rem; font-weight: 600;
+            color: var(--text-primary); margin: 32px 0 12px;
+        }
+        .post-content p {
+            font-size: 1rem; line-height: 1.8; color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        .post-content strong { color: var(--text-primary); }
+        .post-content code {
+            font-family: var(--font-mono); font-size: 0.85em;
+            background: var(--bg-card); padding: 2px 8px;
+            border-radius: 4px; color: var(--accent-light);
+            border: 1px solid var(--border);
+        }
+        .post-content pre {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-md); padding: 24px; margin: 24px 0;
+            overflow-x: auto;
+        }
+        .post-content pre code {
+            background: none; border: none; padding: 0;
+            font-size: 0.85rem; line-height: 1.7;
+        }
+        .post-content blockquote {
+            border-left: 3px solid var(--accent-primary);
+            padding: 16px 24px; margin: 24px 0;
+            background: rgba(var(--accent-primary-rgb), 0.05);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            font-style: italic; color: var(--text-secondary);
+        }
+        .post-content ul, .post-content ol {
+            margin: 16px 0 16px 24px; color: var(--text-secondary);
+        }
+        .post-content li { margin-bottom: 8px; line-height: 1.7; }
+        .post-back {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--text-muted); font-size: 0.85rem; margin-bottom: 32px;
+        }
+        .post-back:hover { color: var(--accent-light); }
+    </style>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "ML System Design: Patterns That Survive Production",
+        "author": { "@type": "Person", "name": "Abhilash Ganji" },
+        "datePublished": "2024-11-01",
+        "description": "End-to-end ML system design patterns from data pipelines to model serving.",
+        "url": "https://abhilashganji.com/blog/ml-system-design.html"
+    }
+    </script>
+</head>
+<body>
+    <header class="header scrolled" style="background:rgba(9,9,11,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(39,39,42,0.5);">
+        <nav class="nav container">
+            <a href="/" class="nav-logo"><span class="logo-bracket">{</span>AG<span class="logo-bracket">}</span></a>
+            <ul class="nav-menu" style="display:flex;">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/#projects" class="nav-link">Projects</a></li>
+                <li><a href="/blog/" class="nav-link active">Blog</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="post-hero">
+        <div class="post-container">
+            <a href="/blog/" class="post-back"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+            <span class="post-tag">System Design</span>
+            <h1 class="post-title">ML System Design: Patterns That Survive Production</h1>
+            <div class="post-meta">
+                <span><i class="fas fa-user"></i> Abhilash Ganji</span>
+                <span><i class="fas fa-calendar"></i> November 1, 2024</span>
+                <span><i class="fas fa-clock"></i> 16 min read</span>
+            </div>
+            <div class="post-hero-image">
+                <img src="../assets/projects/genai-iam.svg" alt="ML System Design — Production Architecture Patterns">
+            </div>
+        </div>
+    </section>
+
+    <article class="post-container">
+        <div class="post-content">
+            <p>
+                Most ML tutorials end at <code>model.predict()</code>. But in production,
+                the model is maybe 10% of the system. The other 90% is <strong>data
+                pipelines, feature engineering, serving infrastructure, monitoring, and
+                all the glue that keeps the thing running at 3 AM</strong> when something
+                breaks.
+            </p>
+
+            <p>
+                After 7+ years building ML systems at Amazon and EPAM — from 10B+ row
+                data pipelines to real-time inference APIs — here are the system design
+                patterns I keep coming back to.
+            </p>
+
+            <h2>The ML System Architecture Stack</h2>
+
+            <p>
+                Every production ML system, regardless of the model, has the same five layers:
+            </p>
+
+            <ol>
+                <li><strong>Data Layer:</strong> Where features are sourced, stored, and versioned</li>
+                <li><strong>Training Layer:</strong> Where models are trained, tuned, and validated</li>
+                <li><strong>Registry Layer:</strong> Where models are versioned, compared, and promoted</li>
+                <li><strong>Serving Layer:</strong> Where models make predictions at low latency</li>
+                <li><strong>Monitoring Layer:</strong> Where you detect when everything goes wrong</li>
+            </ol>
+
+            <p>
+                Most teams nail the training layer (that's the fun part) and completely
+                neglect monitoring. This is how you end up with a model that worked great
+                in November and is quietly making terrible predictions by February.
+            </p>
+
+            <h2>Data Pipelines: The Foundation</h2>
+
+            <p>
+                At Amazon, we built pipelines that processed <strong>10 billion+ rows</strong>
+                from S3 through AWS Glue into Redshift. The architecture pattern that
+                survived scale:
+            </p>
+
+            <pre><code>S3 (Raw Data)
+  → AWS Glue ETL (PySpark)
+    → S3 (Processed Parquet)
+      → Redshift (Feature Tables)
+        → SageMaker (Training)
+
+Key design decisions:
+- Partitioned by date for incremental processing
+- Schema validation at ingestion (catch bad data early)
+- Idempotent jobs (re-runnable without duplication)
+- Separate raw/processed/feature zones in S3</code></pre>
+
+            <p>
+                The most important principle: <strong>idempotent pipelines</strong>. If a
+                job fails halfway through, you should be able to re-run it from scratch
+                without creating duplicate data or corrupted state. We achieved this
+                with date-partitioned writes and atomic swap operations in Redshift.
+            </p>
+
+            <h3>Schema Evolution</h3>
+
+            <p>
+                Data schemas change. Source teams add columns, rename fields, change data
+                types. If your pipeline assumes a fixed schema, it will break —
+                guaranteed. We handled this with:
+            </p>
+
+            <ul>
+                <li><strong>Schema-on-read with validation:</strong> Parse the data you expect, raise alerts for unexpected changes, but don't fail on unknown columns.</li>
+                <li><strong>Data contracts:</strong> Formal agreements with upstream teams about what fields are guaranteed. Changes require a 2-week deprecation notice.</li>
+                <li><strong>Feature versioning:</strong> When a feature definition changes, create a v2 alongside v1. Don't overwrite — retrain the model on v2 and cut over cleanly.</li>
+            </ul>
+
+            <h2>Feature Engineering at Scale</h2>
+
+            <p>
+                Feature engineering is where most of the real model performance comes from.
+                But feature engineering at scale introduces a unique challenge:
+                <strong>training-serving skew</strong>.
+            </p>
+
+            <blockquote>
+                "Training-serving skew is the #1 silent killer of ML systems. Your model
+                trained on features computed in batch PySpark, but serving computes them
+                in real-time Python. The subtle differences in implementation will degrade
+                your model silently."
+            </blockquote>
+
+            <p>
+                The solution: <strong>compute features once, serve everywhere</strong>.
+                We used a feature store pattern where computed features were stored in a
+                centralized table (Redshift for batch, Redis for real-time), and both
+                training and serving read from the same source.
+            </p>
+
+            <h2>Model Training and Experimentation</h2>
+
+            <p>
+                At scale, model training is not a notebook activity. It's a pipeline:
+            </p>
+
+            <ol>
+                <li><strong>Data snapshot:</strong> Pin training data to a specific date range for reproducibility</li>
+                <li><strong>Feature computation:</strong> Generate features from the snapshot (not live data)</li>
+                <li><strong>Training:</strong> Train candidate model with logged hyperparameters</li>
+                <li><strong>Evaluation:</strong> Compare against current production model on holdout set</li>
+                <li><strong>Registration:</strong> If better, register in MLflow with metadata</li>
+                <li><strong>Approval:</strong> Human-in-the-loop review for critical models</li>
+            </ol>
+
+            <p>
+                We used <strong>SageMaker Training Jobs</strong> for compute-heavy training
+                with spot instances (70% cost reduction). MLflow tracked every experiment —
+                parameters, metrics, artifacts — so any model could be reproduced months later.
+            </p>
+
+            <h2>Model Serving Patterns</h2>
+
+            <h3>Batch Serving</h3>
+
+            <p>
+                For use cases that don't need real-time predictions (daily forecasts,
+                weekly recommendations), <strong>batch serving is simpler and cheaper</strong>.
+                Compute predictions on a schedule, store in a database, and let the
+                application query pre-computed results.
+            </p>
+
+            <p>
+                Our workforce forecasting system at Amazon ran weekly batch predictions
+                via Lambda → SageMaker Batch Transform → Redshift → QuickSight dashboard.
+                No real-time inference needed, no latency concerns.
+            </p>
+
+            <h3>Real-Time Serving</h3>
+
+            <p>
+                For real-time needs (anomaly detection, damage classification), we used
+                <strong>SageMaker Endpoints</strong> with autoscaling. Key considerations:
+            </p>
+
+            <ul>
+                <li><strong>Model size vs latency:</strong> A 500MB PyTorch model has a cold start problem. Quantize or distill for latency-critical paths.</li>
+                <li><strong>Batching:</strong> SageMaker supports server-side batching — collect requests over a short window and batch-process for GPU efficiency.</li>
+                <li><strong>Fallbacks:</strong> When the model endpoint is down, what happens? We always had a rule-based fallback that returned reasonable defaults.</li>
+                <li><strong>Shadow mode:</strong> Deploy new models in shadow mode — they receive production traffic but their predictions aren't used. Compare shadow vs production predictions to validate before cutover.</li>
+            </ul>
+
+            <h2>Monitoring: The Neglected Layer</h2>
+
+            <p>
+                Your model will degrade. It's not a question of if, but when. The patterns
+                that fail can happen in two forms:
+            </p>
+
+            <h3>Data Drift</h3>
+
+            <p>
+                The distribution of input features changes over time. Customer behavior
+                shifts, business conditions change, upstream data pipelines break subtly.
+                We monitored feature distributions using population stability index (PSI)
+                with alerts when any feature's PSI exceeded 0.2.
+            </p>
+
+            <h3>Model Drift</h3>
+
+            <p>
+                Even with stable inputs, the relationship between features and targets
+                can shift. We tracked rolling prediction accuracy (MAPE for forecasting,
+                AUC for classification) on a sliding window and set up automated
+                retraining when performance dropped below threshold.
+            </p>
+
+            <pre><code># Simplified monitoring pseudocode
+for each model in production_models:
+    recent_predictions = get_predictions(last_7_days)
+    recent_actuals = get_actuals(last_7_days)
+    
+    current_metric = compute_metric(recent_predictions, recent_actuals)
+    baseline_metric = model.baseline_metric
+    
+    if current_metric < baseline_metric * 0.85:  # 15% degradation
+        trigger_alert(model, current_metric, baseline_metric)
+        if auto_retrain_enabled:
+            trigger_retraining_pipeline(model)</code></pre>
+
+            <h2>Cost Optimization</h2>
+
+            <p>
+                ML infrastructure costs can spiral quickly. Patterns that saved us
+                significant budget:
+            </p>
+
+            <ul>
+                <li><strong>Spot instances for training:</strong> 70% cheaper, with checkpointing to handle interruptions. SageMaker Managed Spot Training handles this natively.</li>
+                <li><strong>Right-sized endpoints:</strong> A linear regression doesn't need a ml.p3.2xlarge. Start with CPU instances and only use GPU for models that need it.</li>
+                <li><strong>Autoscaling:</strong> Scale inference endpoints to zero during off-hours. Our anomaly detection system scaled from 2 instances during business hours to 0 at night.</li>
+                <li><strong>Model compression:</strong> Quantization and distillation for serving. Our CNN damage detection model was 4x smaller after INT8 quantization with negligible accuracy loss.</li>
+            </ul>
+
+            <h2>The Pattern I Keep Coming Back To</h2>
+
+            <p>
+                After building ML systems at multiple companies and scales, the pattern
+                that works is boringly consistent:
+            </p>
+
+            <ol>
+                <li>Start with a simple model and a robust pipeline</li>
+                <li>Get it to production fast (even if accuracy is mediocre)</li>
+                <li>Instrument everything — monitoring, logging, alerting</li>
+                <li>Iterate on model quality once the system is stable</li>
+                <li>Automate retraining when you trust the pipeline</li>
+            </ol>
+
+            <blockquote>
+                "Shipping a mediocre model in a robust system beats a perfect model in
+                a notebook. You can always improve the model — but you can't improve
+                a system that doesn't exist."
+            </blockquote>
+
+            <h2>Conclusion</h2>
+
+            <p>
+                ML system design is infrastructure engineering with a statistical
+                component — not the other way around. The teams that succeed are the ones
+                that invest as heavily in pipelines, monitoring, and serving as they do
+                in model development. The model is important, but the system is what
+                delivers value.
+            </p>
+
+            <p><em>If you're building ML systems and want to discuss architecture patterns, reach out — I love talking about this stuff.</em></p>
+        </div>
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border:none;padding:0;">
+                <p>&copy; 2026 Abhilash Ganji. Crafted with precision.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processing 10B+ Rows: PySpark + AWS Glue Architecture — Abhilash Ganji</title>
+    <meta name="description" content="Scalable big data engineering patterns for ML feature pipelines — partitioning strategies, Glue job optimization, and Redshift query performance tuning.">
+    <link rel="canonical" href="https://abhilashganji.com/research/pyspark-glue-architecture.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .post-hero { padding: 160px 0 0; }
+        .post-hero-image { max-width: 720px; margin: 32px auto 0; border-radius: 12px; overflow: hidden; border: 1px solid rgba(39,39,42,0.5); }
+        .post-hero-image img { width: 100%; height: auto; display: block; }
+        .post-container { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
+        .post-tag { display: inline-block; padding: 4px 14px; background: var(--accent-subtle); color: var(--accent-light); border-radius: 100px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 1px; }
+        .post-title { font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 700; color: var(--text-primary); line-height: 1.2; margin-bottom: 16px; letter-spacing: -1px; }
+        .post-meta { display: flex; gap: 20px; color: var(--text-dim); font-size: 0.85rem; margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
+        .post-meta i { margin-right: 6px; color: var(--accent-primary); }
+        .post-content h2 { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 600; color: var(--text-primary); margin: 48px 0 16px; letter-spacing: -0.5px; }
+        .post-content h3 { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 600; color: var(--text-primary); margin: 32px 0 12px; }
+        .post-content p { font-size: 1rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 20px; }
+        .post-content strong { color: var(--text-primary); }
+        .post-content code { font-family: var(--font-mono); font-size: 0.85em; background: var(--bg-card); padding: 2px 8px; border-radius: 4px; color: var(--accent-light); border: 1px solid var(--border); }
+        .post-content pre { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px; margin: 24px 0; overflow-x: auto; }
+        .post-content pre code { background: none; border: none; padding: 0; font-size: 0.85rem; line-height: 1.7; }
+        .post-content blockquote { border-left: 3px solid var(--accent-primary); padding: 16px 24px; margin: 24px 0; background: rgba(var(--accent-primary-rgb), 0.05); border-radius: 0 var(--radius-md) var(--radius-md) 0; font-style: italic; color: var(--text-secondary); }
+        .post-content ul, .post-content ol { margin: 16px 0 16px 24px; color: var(--text-secondary); }
+        .post-content li { margin-bottom: 8px; line-height: 1.7; }
+        .post-back { display: inline-flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 32px; }
+        .post-back:hover { color: var(--accent-light); }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org", "@type": "TechArticle",
+        "headline": "Processing 10B+ Rows: PySpark + AWS Glue Architecture Patterns",
+        "author": { "@type": "Person", "name": "Abhilash Ganji" },
+        "datePublished": "2022-11-01",
+        "url": "https://abhilashganji.com/research/pyspark-glue-architecture.html"
+    }
+    </script>
+</head>
+<body>
+    <header class="header scrolled" style="background:rgba(9,9,11,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(39,39,42,0.5);">
+        <nav class="nav container">
+            <a href="/" class="nav-logo"><span class="logo-bracket">{</span>AG<span class="logo-bracket">}</span></a>
+            <ul class="nav-menu" style="display:flex;">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/#projects" class="nav-link">Projects</a></li>
+                <li><a href="/#research" class="nav-link active">Research</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="post-hero">
+        <div class="post-container">
+            <a href="/#research" class="post-back"><i class="fas fa-arrow-left"></i> Back to Research</a>
+            <span class="post-tag">Big Data / AWS</span>
+            <h1 class="post-title">Processing 10B+ Rows: PySpark + AWS Glue Architecture Patterns</h1>
+            <div class="post-meta">
+                <span><i class="fas fa-user"></i> Abhilash Ganji</span>
+                <span><i class="fas fa-calendar"></i> 2022</span>
+                <span><i class="fas fa-clock"></i> 13 min read</span>
+            </div>
+        </div>
+    </section>
+
+    <article class="post-container">
+        <div class="post-content">
+            <p>
+                At Amazon, our ML models were only as good as the data feeding them. The
+                challenge: aggregate and transform <strong>10 billion+ rows</strong> from
+                multiple source systems into clean, ML-ready feature tables in Redshift —
+                reliably, cost-efficiently, and fast enough to feed daily model retraining.
+            </p>
+
+            <p>
+                This case study covers the PySpark + AWS Glue architecture we built, the
+                optimization patterns that cut job runtime by 60%, and the hard lessons
+                about building data pipelines that don't break on Monday mornings.
+            </p>
+
+            <h2>The Data Landscape</h2>
+
+            <p>
+                Our ML systems consumed data from five source systems:
+            </p>
+
+            <ul>
+                <li><strong>Operational events:</strong> Package scans, conveyor activity, equipment status — ~3B rows/month, streaming via Kinesis</li>
+                <li><strong>Workforce data:</strong> Shift schedules, attendance, productivity metrics — ~500M rows/month from internal HR systems</li>
+                <li><strong>Inventory data:</strong> SKU movements, bin occupancy, putaway/pick events — ~4B rows/month</li>
+                <li><strong>Quality metrics:</strong> Damage reports, compliance inspections, customer returns — ~200M rows/month</li>
+                <li><strong>External data:</strong> Weather, holiday calendars, demand forecasts — ~50M rows/month</li>
+            </ul>
+
+            <p>
+                Total: roughly <strong>8-10 billion new rows per month</strong> flowing into
+                S3, with historical data going back 3 years. The ML feature tables needed
+                to combine columns from multiple sources, compute rolling aggregations, and
+                be query-optimized for downstream model training.
+            </p>
+
+            <h2>Architecture: The Three-Zone Pattern</h2>
+
+            <p>
+                We organized S3 into three logical zones, each serving a different purpose:
+            </p>
+
+            <pre><code>S3 Data Lake Architecture:
+
+s3://data-lake-raw/
+  └── source=operational/year=2022/month=11/day=15/
+  └── source=workforce/year=2022/month=11/day=15/
+  └── source=inventory/...
+  (Raw, unmodified data from source systems. Immutable archive.)
+
+s3://data-lake-processed/
+  └── domain=fulfillment/table=events_cleaned/
+  └── domain=workforce/table=shifts_normalized/
+  (Cleaned, validated, standardized data. Parquet format.)
+
+s3://data-lake-features/
+  └── model=damage_detection/version=v3/
+  └── model=workforce_forecast/version=v2/
+  (ML-ready feature tables. Optimized for training reads.)
+
+Each zone has:
+  - Separate IAM policies (raw is write-once, features need careful access)
+  - Separate lifecycle rules (raw retains 3 years, processed 1 year)
+  - Separate Glue catalog databases for schema management</code></pre>
+
+            <h2>AWS Glue: The ETL Engine</h2>
+
+            <p>
+                We chose AWS Glue over EMR for several practical reasons: no cluster
+                management, automatic scaling, native S3/Redshift integration, and a
+                Glue Data Catalog that served as our unified schema registry.
+            </p>
+
+            <h3>Job Architecture</h3>
+
+            <pre><code>Pipeline Structure (daily execution):
+
+Job 1: Ingest & Validate (per source)
+  - Read new partitions from raw zone
+  - Schema validation (reject rows with missing required fields)
+  - Data type coercion and normalization
+  - Write to processed zone as Parquet with Snappy compression
+
+Job 2: Feature Engineering (per model)
+  - Read relevant tables from processed zone
+  - Join across domains (operational + workforce + quality)
+  - Compute rolling aggregations (7-day, 30-day, 90-day windows)
+  - Write to features zone, partitioned by model and date
+
+Job 3: Load to Redshift (per feature table)
+  - COPY from S3 to Redshift staging tables
+  - Merge into production tables (upsert pattern)
+  - Run data quality checks post-load
+  - Notify downstream ML pipelines</code></pre>
+
+            <h2>PySpark Optimization Patterns</h2>
+
+            <h3>1. Partition Strategy</h3>
+
+            <p>
+                The single most impactful optimization. Wrong partitioning kills everything — too few partitions cause OOM, too many cause small-file overhead.
+            </p>
+
+            <pre><code># Bad: reading entire dataset to process one day
+df = spark.read.parquet("s3://raw/operational/")
+df_today = df.filter(col("date") == "2022-11-15")
+
+# Good: partition pruning — only reads the relevant partition
+df = spark.read.parquet("s3://raw/operational/year=2022/month=11/day=15/")
+
+Impact: 95% reduction in data scanned (reads 300MB vs 6TB)</code></pre>
+
+            <h3>2. Broadcast Joins</h3>
+
+            <p>
+                When joining a large table (billions of rows) with a small reference table
+                (thousands of rows), a shuffle join sends data across the cluster needlessly.
+                Broadcasting the small table eliminates the shuffle entirely.
+            </p>
+
+            <pre><code>from pyspark.sql.functions import broadcast
+
+# Large table: 3B rows of operational events
+events = spark.read.parquet("s3://processed/events/")
+
+# Small table: 500 rows of facility metadata
+facilities = spark.read.parquet("s3://processed/facilities/")
+
+# Broadcast join — small table replicated to all executors
+result = events.join(broadcast(facilities), "facility_id")
+
+# Default threshold: 10MB. We increased to 50MB for our use case.
+spark.conf.set("spark.sql.autoBroadcastJoinThreshold", "50m")</code></pre>
+
+            <h3>3. Avoiding Shuffles in Aggregations</h3>
+
+            <p>
+                Rolling window aggregations over billions of rows cause massive shuffles.
+                Our optimization: pre-partition by the group key before windowing.
+            </p>
+
+            <pre><code># Pre-partition to co-locate data for window functions
+df = df.repartition(200, "facility_id")
+
+# Now window operations on facility_id avoid cross-partition shuffles
+window_spec = Window.partitionBy("facility_id") \
+    .orderBy("event_date") \
+    .rowsBetween(-6, 0)  # 7-day rolling window
+
+df = df.withColumn("throughput_7d_avg",
+    avg("daily_throughput").over(window_spec)
+)</code></pre>
+
+            <h3>4. File Size Optimization</h3>
+
+            <pre><code># Problem: Glue's default parallelism creates thousands of tiny files
+# 10,000 files × 1MB each = slow reads, high S3 API costs
+
+# Solution: coalesce before writing
+df.coalesce(100).write \
+    .mode("overwrite") \
+    .partitionBy("date") \
+    .parquet("s3://processed/events/")
+
+# Target: 128MB-256MB per file (matches Spark's default read partition size)
+# For 30GB daily output: 30GB / 200MB = ~150 files (use coalesce(150))</code></pre>
+
+            <h2>Redshift Loading Patterns</h2>
+
+            <h3>The COPY + Merge Pattern</h3>
+
+            <pre><code>-- Step 1: COPY from S3 to staging table (fast, parallel)
+COPY staging_features
+FROM 's3://features/workforce/date=2022-11-15/'
+IAM_ROLE 'arn:aws:iam::role/RedshiftLoadRole'
+FORMAT PARQUET;
+
+-- Step 2: Merge into production table (upsert)
+BEGIN TRANSACTION;
+
+DELETE FROM production_features
+USING staging_features
+WHERE production_features.feature_id = staging_features.feature_id
+  AND production_features.date = staging_features.date;
+
+INSERT INTO production_features
+SELECT * FROM staging_features;
+
+DROP TABLE staging_features;
+
+COMMIT;</code></pre>
+
+            <h3>Distribution and Sort Keys</h3>
+
+            <p>
+                Redshift query performance depends heavily on how data is distributed across
+                nodes and sorted within nodes:
+            </p>
+
+            <pre><code>CREATE TABLE production_features (
+    feature_id    BIGINT        ENCODE az64,
+    facility_id   VARCHAR(20)   ENCODE lzo,
+    date          DATE          ENCODE delta,
+    throughput    FLOAT         ENCODE raw,
+    headcount     INT           ENCODE az64,
+    -- ... 50+ feature columns
+)
+DISTSTYLE KEY
+DISTKEY (facility_id)           -- co-locates same facility data
+SORTKEY (date, facility_id);    -- optimizes range scans on date
+
+-- This reduced our ML training query time from 45 min to 12 min
+-- Because Redshift skips irrelevant blocks entirely</code></pre>
+
+            <h2>Data Quality: The Unglamorous Necessity</h2>
+
+            <p>
+                Data quality issues caused more ML model failures than any model bug. Our
+                quality framework:
+            </p>
+
+            <ol>
+                <li><strong>Schema validation (ingestion):</strong> Reject rows missing required fields. Log schema violations with source and timestamp for debugging.</li>
+                <li><strong>Freshness checks (daily):</strong> Alert if a source hasn't delivered data in the expected window. A "fresh" model trained on stale data is worse than no model.</li>
+                <li><strong>Distribution checks (daily):</strong> Monitor feature distributions. If throughput_7d_avg suddenly has 40% nulls, something upstream broke.</li>
+                <li><strong>Cross-source consistency (weekly):</strong> Verify that workforce headcount from HR matches operational headcount from badge scans. Discrepancies indicate data pipeline bugs.</li>
+            </ol>
+
+            <blockquote>
+                "We spent 40% of our engineering time on data quality. It's not glamorous
+                work, but it's the foundation. A sophisticated ML model trained on bad data
+                produces confidently wrong predictions — the worst possible outcome."
+            </blockquote>
+
+            <h2>Performance Results</h2>
+
+            <pre><code>Optimization Impact (daily pipeline, 10B+ row dataset):
+
+Metric                    | Before  | After   | Improvement
+Daily pipeline runtime    | 6.2 hrs | 2.4 hrs | 61% faster
+Monthly AWS Glue cost     | $4,800  | $1,900  | 60% cheaper
+Redshift query time (ML)  | 45 min  | 12 min  | 73% faster
+S3 storage cost/month     | $2,100  | $850    | 60% cheaper
+Failed job rate           | 12%/wk  | 1%/wk   | 92% more reliable
+Data freshness SLA breach | 8/month | 0/month | 100% SLA compliance</code></pre>
+
+            <h2>Key Takeaways</h2>
+
+            <ol>
+                <li><strong>Partition first, optimize second.</strong> Correct partitioning in S3 and Redshift solves 80% of performance problems. Everything else is refinement.</li>
+                <li><strong>Idempotency is non-negotiable.</strong> Every job must be safely re-runnable. Date-partitioned writes with overwrite mode guarantee this.</li>
+                <li><strong>Measure file sizes.</strong> Too many small files kills read performance. Too few large files kills write parallelism. Target 128-256MB per file.</li>
+                <li><strong>Data quality > pipeline speed.</strong> A fast pipeline that produces bad data is worse than a slow pipeline that produces correct data. Build quality checks into every stage.</li>
+                <li><strong>The three-zone pattern scales.</strong> Raw → Processed → Features with clear boundaries, separate access controls, and independent lifecycle policies. It's boring, but it works at 10B+ scale.</li>
+            </ol>
+        </div>
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border:none;padding:0;">
+                <p>&copy; 2026 Abhilash Ganji. Crafted with precision.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

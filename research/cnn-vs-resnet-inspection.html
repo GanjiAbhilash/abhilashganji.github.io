@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNN vs ResNet for Industrial Visual Inspection — Abhilash Ganji</title>
+    <meta name="description" content="Comparative analysis of CNN architectures for package damage detection and safety compliance at Amazon — accuracy, latency trade-offs, and $418K cost impact.">
+    <link rel="canonical" href="https://abhilashganji.com/research/cnn-vs-resnet-inspection.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .post-hero { padding: 160px 0 0; }
+        .post-hero-image { max-width: 720px; margin: 32px auto 0; border-radius: 12px; overflow: hidden; border: 1px solid rgba(39,39,42,0.5); }
+        .post-hero-image img { width: 100%; height: auto; display: block; }
+        .post-container { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
+        .post-tag { display: inline-block; padding: 4px 14px; background: var(--accent-subtle); color: var(--accent-light); border-radius: 100px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 1px; }
+        .post-title { font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 700; color: var(--text-primary); line-height: 1.2; margin-bottom: 16px; letter-spacing: -1px; }
+        .post-meta { display: flex; gap: 20px; color: var(--text-dim); font-size: 0.85rem; margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
+        .post-meta i { margin-right: 6px; color: var(--accent-primary); }
+        .post-content h2 { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 600; color: var(--text-primary); margin: 48px 0 16px; letter-spacing: -0.5px; }
+        .post-content h3 { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 600; color: var(--text-primary); margin: 32px 0 12px; }
+        .post-content p { font-size: 1rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 20px; }
+        .post-content strong { color: var(--text-primary); }
+        .post-content code { font-family: var(--font-mono); font-size: 0.85em; background: var(--bg-card); padding: 2px 8px; border-radius: 4px; color: var(--accent-light); border: 1px solid var(--border); }
+        .post-content pre { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px; margin: 24px 0; overflow-x: auto; }
+        .post-content pre code { background: none; border: none; padding: 0; font-size: 0.85rem; line-height: 1.7; }
+        .post-content blockquote { border-left: 3px solid var(--accent-primary); padding: 16px 24px; margin: 24px 0; background: rgba(var(--accent-primary-rgb), 0.05); border-radius: 0 var(--radius-md) var(--radius-md) 0; font-style: italic; color: var(--text-secondary); }
+        .post-content ul, .post-content ol { margin: 16px 0 16px 24px; color: var(--text-secondary); }
+        .post-content li { margin-bottom: 8px; line-height: 1.7; }
+        .post-back { display: inline-flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 32px; }
+        .post-back:hover { color: var(--accent-light); }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org", "@type": "TechArticle",
+        "headline": "CNN vs ResNet for Industrial Visual Inspection at Amazon",
+        "author": { "@type": "Person", "name": "Abhilash Ganji" },
+        "datePublished": "2023-06-01",
+        "url": "https://abhilashganji.com/research/cnn-vs-resnet-inspection.html"
+    }
+    </script>
+</head>
+<body>
+    <header class="header scrolled" style="background:rgba(9,9,11,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(39,39,42,0.5);">
+        <nav class="nav container">
+            <a href="/" class="nav-logo"><span class="logo-bracket">{</span>AG<span class="logo-bracket">}</span></a>
+            <ul class="nav-menu" style="display:flex;">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/#projects" class="nav-link">Projects</a></li>
+                <li><a href="/#research" class="nav-link active">Research</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="post-hero">
+        <div class="post-container">
+            <a href="/#research" class="post-back"><i class="fas fa-arrow-left"></i> Back to Research</a>
+            <span class="post-tag">Computer Vision</span>
+            <h1 class="post-title">CNN vs ResNet for Industrial Visual Inspection at Amazon</h1>
+            <div class="post-meta">
+                <span><i class="fas fa-user"></i> Abhilash Ganji</span>
+                <span><i class="fas fa-calendar"></i> 2023</span>
+                <span><i class="fas fa-clock"></i> 12 min read</span>
+            </div>
+        </div>
+    </section>
+
+    <article class="post-container">
+        <div class="post-content">
+            <p>
+                At Amazon fulfillment centers, visual inspection is a critical quality gate.
+                Damaged packages reaching customers cause returns, refunds, and trust erosion.
+                Manual inspection doesn't scale — with millions of packages per day, humans
+                catch maybe 60-70% of damaged items. We needed a <strong>computer vision system
+                that could classify damage in real-time at conveyor-belt speed</strong>.
+            </p>
+
+            <p>
+                This case study documents our journey from a basic CNN to a production ResNet
+                deployment — the architecture decisions, accuracy vs latency trade-offs, and
+                the <strong>$418K in annual savings</strong> that justified the infrastructure
+                investment.
+            </p>
+
+            <h2>The Problem: Package Damage Classification</h2>
+
+            <p>
+                The system needed to classify packages into three categories from camera images
+                captured at conveyor belt stations:
+            </p>
+
+            <ul>
+                <li><strong>Undamaged:</strong> Normal package, proceed through fulfillment</li>
+                <li><strong>Minor damage:</strong> Cosmetic damage (dents, scuffs) — flag for secondary review</li>
+                <li><strong>Critical damage:</strong> Structural damage (crushed, torn, wet) — divert immediately</li>
+            </ul>
+
+            <p>
+                Constraints that shaped our architecture decisions:
+            </p>
+
+            <ul>
+                <li><strong>Latency:</strong> &lt;100ms per image (conveyor belt speed doesn't wait for slow models)</li>
+                <li><strong>Accuracy:</strong> &gt;90% on critical damage (missed critical damage = customer impact)</li>
+                <li><strong>False positive tolerance:</strong> &lt;5% (too many false diversions disrupt throughput)</li>
+                <li><strong>Data:</strong> ~50K labeled images (expensive to annotate fulfillment center images)</li>
+            </ul>
+
+            <h2>Approach 1: Custom CNN</h2>
+
+            <p>
+                We started with a straightforward CNN architecture — 5 convolutional blocks
+                with batch normalization, max pooling, and a final classifier head:
+            </p>
+
+            <pre><code>Custom CNN Architecture:
+  Input (224×224×3)
+    → Conv(32, 3×3) → BN → ReLU → MaxPool(2×2)
+    → Conv(64, 3×3) → BN → ReLU → MaxPool(2×2)
+    → Conv(128, 3×3) → BN → ReLU → MaxPool(2×2)
+    → Conv(256, 3×3) → BN → ReLU → MaxPool(2×2)
+    → Conv(512, 3×3) → BN → ReLU → GlobalAvgPool
+    → FC(256) → Dropout(0.5) → FC(3) → Softmax
+
+Parameters: ~8.2M
+Model size: ~33 MB (FP32)</code></pre>
+
+            <h3>Results</h3>
+
+            <pre><code>Custom CNN Performance:
+  Overall Accuracy:     84.3%
+  Critical Damage Recall: 82.1%
+  False Positive Rate:    6.8%
+  Inference Latency:      12 ms (SageMaker ml.g4dn.xlarge)
+  Training Time:          2.5 hours (50K images)</code></pre>
+
+            <p>
+                The CNN performed reasonably but fell short of our 90% critical damage recall
+                target. Analysis of misclassifications revealed the model struggled with
+                <strong>subtle damage patterns</strong> — small tears partially hidden by tape,
+                slight crushing on edges, and water damage that only discolored one corner.
+                These require the model to learn fine-grained texture features that a 5-layer
+                CNN couldn't capture.
+            </p>
+
+            <h2>Approach 2: ResNet-50 with Transfer Learning</h2>
+
+            <p>
+                ResNet's skip connections solve the vanishing gradient problem that limits
+                deep plain CNNs. The residual blocks learn corrections to the input
+                rather than full transformations:
+            </p>
+
+            <pre><code>ResNet Residual Block:
+  Input → [Conv → BN → ReLU → Conv → BN] + Input → ReLU → Output
+                                            ↑
+                                      skip connection
+
+ResNet-50 for our task:
+  - Backbone: ImageNet pre-trained ResNet-50 (25.6M params)
+  - Replaced final FC layer: FC(2048 → 3)
+  - Fine-tuning strategy: freeze first 3 stages, fine-tune stage 4 + head
+  - Data augmentation: random crop, flip, rotation, color jitter, brightness</code></pre>
+
+            <h3>Results</h3>
+
+            <pre><code>ResNet-50 Performance:
+  Overall Accuracy:     92.7%  (+8.4% vs CNN)
+  Critical Damage Recall: 94.2%  (+12.1% vs CNN)
+  False Positive Rate:    3.1%   (-3.7% vs CNN)
+  Inference Latency:      28 ms  (SageMaker ml.g4dn.xlarge)
+  Training Time:          4 hours (50K images, fine-tuned)
+
+Per-class breakdown:
+  Undamaged:      Precision 0.95 | Recall 0.96
+  Minor Damage:   Precision 0.87 | Recall 0.84
+  Critical Damage: Precision 0.91 | Recall 0.94</code></pre>
+
+            <p>
+                The jump from 82% to 94% critical damage recall was dramatic. Transfer
+                learning was the key — ImageNet pre-training gave the model rich texture
+                and edge features that a model trained only on 50K fulfillment images
+                couldn't learn from scratch.
+            </p>
+
+            <h2>The Latency vs Accuracy Trade-off</h2>
+
+            <p>
+                ResNet-50 hit 28ms inference — well within our 100ms budget. But we also
+                evaluated lighter alternatives:
+            </p>
+
+            <pre><code>Architecture Comparison:
+  Model           | Accuracy | Critical Recall | Latency | Model Size
+  Custom CNN      |  84.3%   |     82.1%       |  12 ms  |   33 MB
+  ResNet-18       |  89.1%   |     89.8%       |  15 ms  |   45 MB
+  ResNet-50       |  92.7%   |     94.2%       |  28 ms  |   98 MB
+  ResNet-101      |  93.1%   |     94.6%       |  52 ms  |  171 MB
+  EfficientNet-B0 |  91.8%   |     93.5%       |  22 ms  |   21 MB</code></pre>
+
+            <p>
+                ResNet-101 only gained 0.4% over ResNet-50 while nearly doubling latency.
+                Not worth it. EfficientNet-B0 was interesting — competitive accuracy with
+                the smallest model size — but ResNet-50's maturity and well-understood
+                deployment on SageMaker tipped the scale.
+            </p>
+
+            <blockquote>
+                "In production ML, the right model isn't the one with the highest accuracy
+                on a test set. It's the one that meets your accuracy threshold with
+                acceptable latency, fits your deployment infrastructure, and has a track
+                record of stable inference. ResNet-50 checks all those boxes."
+            </blockquote>
+
+            <h2>Production Deployment on SageMaker</h2>
+
+            <p>
+                The deployment architecture:
+            </p>
+
+            <ol>
+                <li><strong>Image capture:</strong> Industrial cameras at conveyor belt stations capture images triggered by proximity sensors.</li>
+                <li><strong>Preprocessing:</strong> Lambda function resizes images to 224x224 and normalizes pixel values. Runs in &lt;5ms.</li>
+                <li><strong>Inference:</strong> SageMaker real-time endpoint with ResNet-50. Auto-scaling based on throughput — 2 instances during peak, 1 during off-hours.</li>
+                <li><strong>Action:</strong> Critical damage predictions trigger a divert signal to the conveyor system. Minor damage flags are queued for human review.</li>
+                <li><strong>Monitoring:</strong> Prediction distribution tracked hourly. If the model starts classifying &gt;10% as critical (normal is ~3%), an alarm fires — likely a data quality issue (dirty camera lens, lighting change).</li>
+            </ol>
+
+            <h3>INT8 Quantization for Cost Optimization</h3>
+
+            <p>
+                Post-training quantization (PTQ) reduced the model from FP32 to INT8:
+            </p>
+
+            <pre><code>Quantization Impact:
+  FP32: 98 MB, 28 ms inference, ml.g4dn.xlarge ($0.526/hr)
+  INT8: 25 MB, 18 ms inference, ml.g4dn.xlarge ($0.526/hr)
+
+  Accuracy drop: 92.7% → 92.3% (negligible)
+  Latency improvement: 36% faster
+  Can run on CPU: ml.c5.xlarge ($0.17/hr) at 45 ms → 68% cost savings</code></pre>
+
+            <h2>Business Impact: The $418K Story</h2>
+
+            <p>
+                The cost impact breakdown that justified the project:
+            </p>
+
+            <ul>
+                <li><strong>Reduced damage-related returns:</strong> $285K/year — catching critical damage before shipping eliminated 65% of damage-related returns.</li>
+                <li><strong>Reduced manual inspection labor:</strong> $98K/year — automated classification reduced the manual inspection headcount by 3 FTE equivalents.</li>
+                <li><strong>Reduced re-shipping costs:</strong> $35K/year — packages diverted at the fulfillment center cost far less than returns from customers.</li>
+                <li><strong>Infrastructure cost:</strong> -$52K/year — SageMaker endpoints, S3 storage, and Lambda execution.</li>
+                <li><strong>Net annual savings: $418K</strong></li>
+            </ul>
+
+            <h2>Safety Compliance Extension</h2>
+
+            <p>
+                After the damage detection system proved its value, we extended the same
+                ResNet architecture for <strong>truck loading safety compliance</strong>.
+                The model classifies whether packages are loaded following safety protocols
+                (stacking patterns, weight distribution, securing methods).
+            </p>
+
+            <p>
+                For compliance, we fine-tuned from our damage detection model rather than
+                from ImageNet — the domain similarity (fulfillment center imagery) meant
+                our features transferred better than generic ImageNet features. This reduced
+                training data requirements from 50K to 15K labeled images for comparable
+                accuracy, and manual annotation effort dropped by 18%.
+            </p>
+
+            <h2>Key Takeaways</h2>
+
+            <ol>
+                <li><strong>Transfer learning is not optional for small datasets.</strong> With 50K images, training from scratch topped out at 84%. Pre-trained ResNet hit 93%. The features learned from ImageNet's 1.2M images are remarkably transferable.</li>
+                <li><strong>Don't over-architect.</strong> ResNet-50 from 2015 beat our custom CNN by 8.4%. Sometimes the boring, well-understood model is the right choice.</li>
+                <li><strong>Quantize for deployment.</strong> INT8 quantization saved 68% on serving costs with negligible accuracy loss. This should be the default for classification models.</li>
+                <li><strong>Build the monitoring before the model.</strong> We caught two production issues through monitoring (dirty camera lenses, lighting changes) that would have silently degraded accuracy for weeks.</li>
+            </ol>
+        </div>
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border:none;padding:0;">
+                <p>&copy; 2026 Abhilash Ganji. Crafted with precision.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

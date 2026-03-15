@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Recommendation Systems That Actually Scale — Abhilash Ganji</title>
+    <meta name="description" content="From collaborative filtering to deep learning recommenders — architecture patterns, cold-start solutions, and lessons from deploying at restaurant scale.">
+    <link rel="canonical" href="https://abhilashganji.com/blog/recommendation-systems.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .post-hero { padding: 160px 0 0; }
+        .post-hero-image {
+            max-width: 720px; margin: 32px auto 0; border-radius: 12px;
+            overflow: hidden; border: 1px solid rgba(39,39,42,0.5);
+        }
+        .post-hero-image img { width: 100%; height: auto; display: block; }
+        .post-container { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
+        .post-tag {
+            display: inline-block; padding: 4px 14px;
+            background: var(--accent-subtle); color: var(--accent-light);
+            border-radius: 100px; font-size: 0.75rem; font-weight: 600;
+            text-transform: uppercase; margin-bottom: 16px; letter-spacing: 1px;
+        }
+        .post-title {
+            font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 700; color: var(--text-primary); line-height: 1.2;
+            margin-bottom: 16px; letter-spacing: -1px;
+        }
+        .post-meta {
+            display: flex; gap: 20px; color: var(--text-dim);
+            font-size: 0.85rem; margin-bottom: 40px; padding-bottom: 32px;
+            border-bottom: 1px solid var(--border);
+        }
+        .post-meta i { margin-right: 6px; color: var(--accent-primary); }
+        .post-content h2 {
+            font-family: var(--font-heading); font-size: 1.5rem; font-weight: 600;
+            color: var(--text-primary); margin: 48px 0 16px; letter-spacing: -0.5px;
+        }
+        .post-content h3 {
+            font-family: var(--font-heading); font-size: 1.2rem; font-weight: 600;
+            color: var(--text-primary); margin: 32px 0 12px;
+        }
+        .post-content p {
+            font-size: 1rem; line-height: 1.8; color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        .post-content strong { color: var(--text-primary); }
+        .post-content code {
+            font-family: var(--font-mono); font-size: 0.85em;
+            background: var(--bg-card); padding: 2px 8px;
+            border-radius: 4px; color: var(--accent-light);
+            border: 1px solid var(--border);
+        }
+        .post-content pre {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-md); padding: 24px; margin: 24px 0;
+            overflow-x: auto;
+        }
+        .post-content pre code {
+            background: none; border: none; padding: 0;
+            font-size: 0.85rem; line-height: 1.7;
+        }
+        .post-content blockquote {
+            border-left: 3px solid var(--accent-primary);
+            padding: 16px 24px; margin: 24px 0;
+            background: rgba(var(--accent-primary-rgb), 0.05);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            font-style: italic; color: var(--text-secondary);
+        }
+        .post-content ul, .post-content ol {
+            margin: 16px 0 16px 24px; color: var(--text-secondary);
+        }
+        .post-content li { margin-bottom: 8px; line-height: 1.7; }
+        .post-back {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--text-muted); font-size: 0.85rem; margin-bottom: 32px;
+        }
+        .post-back:hover { color: var(--accent-light); }
+    </style>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Building Recommendation Systems That Actually Scale",
+        "author": { "@type": "Person", "name": "Abhilash Ganji" },
+        "datePublished": "2025-01-01",
+        "description": "From collaborative filtering to deep learning recommenders — architecture patterns and production lessons.",
+        "url": "https://abhilashganji.com/blog/recommendation-systems.html"
+    }
+    </script>
+</head>
+<body>
+    <header class="header scrolled" style="background:rgba(9,9,11,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(39,39,42,0.5);">
+        <nav class="nav container">
+            <a href="/" class="nav-logo"><span class="logo-bracket">{</span>AG<span class="logo-bracket">}</span></a>
+            <ul class="nav-menu" style="display:flex;">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/#projects" class="nav-link">Projects</a></li>
+                <li><a href="/blog/" class="nav-link active">Blog</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="post-hero">
+        <div class="post-container">
+            <a href="/blog/" class="post-back"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+            <span class="post-tag">RecSys</span>
+            <h1 class="post-title">Building Recommendation Systems That Actually Scale</h1>
+            <div class="post-meta">
+                <span><i class="fas fa-user"></i> Abhilash Ganji</span>
+                <span><i class="fas fa-calendar"></i> January 1, 2025</span>
+                <span><i class="fas fa-clock"></i> 15 min read</span>
+            </div>
+            <div class="post-hero-image">
+                <img src="../assets/projects/recsys-offers.svg" alt="Recommendation Systems Architecture">
+            </div>
+        </div>
+    </section>
+
+    <article class="post-container">
+        <div class="post-content">
+            <p>
+                Recommendation systems power some of the most impactful features in modern
+                products — from Netflix's "For You" row to Amazon's "Customers who bought
+                this also bought." But building a recommender that works in a notebook is
+                trivially different from one that <strong>scales to millions of users in
+                production</strong>.
+            </p>
+
+            <p>
+                In this post, I'll walk through the major recommendation paradigms, share
+                the architecture that powered our restaurant-scale personalized offer engine
+                at EPAM, and cover the hard lessons I learned deploying recommenders that
+                actually survive real traffic.
+            </p>
+
+            <h2>The Three Paradigms</h2>
+
+            <h3>1. Collaborative Filtering</h3>
+
+            <p>
+                Collaborative filtering is the workhorse of recommendation systems. The
+                core idea: <strong>users who agreed in the past will agree in the future</strong>.
+                There are two main approaches:
+            </p>
+
+            <ul>
+                <li><strong>User-based CF:</strong> Find users similar to the target user and recommend what they liked. Simple but doesn't scale — computing user-user similarity across millions of users is expensive.</li>
+                <li><strong>Item-based CF:</strong> Find items similar to what the user already liked. More stable and cacheable. Amazon popularized this approach in their 2003 paper.</li>
+            </ul>
+
+            <p>
+                The fundamental limitation of CF is the <strong>cold start problem</strong>.
+                A new user with no interaction history gets no signal. A new item with no
+                ratings gets no recommendations. This is where content-based approaches help.
+            </p>
+
+            <h3>2. Content-Based Filtering</h3>
+
+            <p>
+                Content-based systems recommend items similar to what the user has liked
+                before, using <strong>item features</strong> rather than community behavior.
+                For restaurant offers, this means matching cuisine preferences, price
+                sensitivity, location patterns, and time-of-day habits.
+            </p>
+
+            <p>
+                The advantage: no cold start for items (we know item features from day one).
+                The disadvantage: limited discovery — users get trapped in a "filter bubble"
+                of things they already like.
+            </p>
+
+            <h3>3. Hybrid Approaches</h3>
+
+            <p>
+                Production systems almost always use hybrid approaches. At EPAM, we combined
+                collaborative signals with content features using <strong>LightFM</strong>,
+                a hybrid matrix factorization model that handles both interaction data and
+                side features natively.
+            </p>
+
+            <h2>Matrix Factorization: The Foundation</h2>
+
+            <p>
+                Matrix factorization decomposes the user-item interaction matrix into two
+                lower-dimensional matrices — user embeddings and item embeddings. The dot
+                product of these embeddings predicts the interaction score:
+            </p>
+
+            <pre><code>R ≈ U × V^T
+
+where:
+  R = user-item interaction matrix (m × n)
+  U = user latent factors (m × k)
+  V = item latent factors (n × k)
+  k = embedding dimension (typically 32-128)</code></pre>
+
+            <p>
+                LightFM extends this by incorporating <strong>feature embeddings</strong>.
+                Each user and item is represented not just by their ID embedding, but by the
+                sum of their feature embeddings. This is what solves cold start — a new user
+                with known demographics gets a meaningful embedding from day one.
+            </p>
+
+            <h2>Our Production Architecture at EPAM</h2>
+
+            <p>
+                Here's the architecture we deployed for personalized restaurant offer
+                recommendations, serving predictions to thousands of customers daily:
+            </p>
+
+            <ol>
+                <li><strong>Data Layer (Snowflake):</strong> User interaction events (clicks, redemptions, ignores), user profiles, and offer metadata stored in Snowflake with incremental refresh.</li>
+                <li><strong>Training Pipeline:</strong> LightFM model trained on implicit feedback (offer clicks and redemptions). We used WARP loss for ranking optimization, which directly optimizes for top-K recommendation quality.</li>
+                <li><strong>Model Registry (MLflow):</strong> Versioned models with A/B test metadata. Every model gets evaluated against a holdout set before promotion.</li>
+                <li><strong>Serving Layer (FastAPI + Docker):</strong> Pre-computed recommendations cached in Redis for sub-10ms latency. Real-time re-ranking for context-dependent features (time of day, location).</li>
+            </ol>
+
+            <h2>Handling Implicit Feedback</h2>
+
+            <p>
+                In most real-world systems, you don't have explicit ratings — you have
+                <strong>implicit feedback</strong>: clicks, views, purchases, time spent.
+                This changes everything about how you train the model.
+            </p>
+
+            <blockquote>
+                "The absence of a click doesn't mean the user dislikes the item — it might
+                mean they never saw it. Treating all missing interactions as negative
+                examples is the most common mistake in production recommender systems."
+            </blockquote>
+
+            <p>
+                We handled this with <strong>negative sampling</strong> — for each positive
+                interaction, we sampled a fixed number of negative items the user hadn't
+                interacted with, weighted by item popularity. This gives the model a
+                realistic view of what "not interested" looks like.
+            </p>
+
+            <h2>The Cold Start Problem in Practice</h2>
+
+            <p>
+                Cold start isn't one problem — it's three:
+            </p>
+
+            <ul>
+                <li><strong>New user cold start:</strong> We used feature-based embeddings (age group, location, signup source) to bootstrap new user representations. After 3-5 interactions, the collaborative signal takes over.</li>
+                <li><strong>New item cold start:</strong> Offer metadata (cuisine type, discount percentage, restaurant category) provides immediate item embeddings. New offers get a "exploration bonus" in the re-ranking layer.</li>
+                <li><strong>System cold start:</strong> When launching in a new market with zero data, we used popularity-based fallbacks and gradually transitioned to personalized recommendations as interaction data accumulated.</li>
+            </ul>
+
+            <h2>Evaluation: Beyond Accuracy Metrics</h2>
+
+            <p>
+                Offline metrics like precision@K, recall@K, and NDCG tell you if the model
+                is learning. But they don't tell you if users are happy. We tracked:
+            </p>
+
+            <ul>
+                <li><strong>Offer redemption rate:</strong> The ultimate business metric — did the user actually use the recommended offer?</li>
+                <li><strong>Diversity:</strong> Are we recommending variety or the same 5 restaurants? We measured intra-list diversity using genre entropy.</li>
+                <li><strong>Coverage:</strong> What percentage of total offers appear in at least one user's recommendations? Low coverage means long-tail items are invisible.</li>
+                <li><strong>Freshness:</strong> Are we surfacing new offers or just recommending established ones?</li>
+            </ul>
+
+            <h2>Lessons Learned</h2>
+
+            <ol>
+                <li><strong>Start simple.</strong> Our first version was item-based CF with popularity fallback. It beat "show random offers" by 8%. We added LightFM later and gained another 4%. Don't architect for deep learning day one.</li>
+                <li><strong>Feature engineering matters more than model choice.</strong> Adding "days since last visit" as a user feature improved redemption rate more than switching from ALS to LightFM did.</li>
+                <li><strong>Cache aggressively.</strong> Pre-compute top-50 recommendations per user nightly. Re-rank on-the-fly for context. This kept P99 latency under 15ms.</li>
+                <li><strong>Monitor for feedback loops.</strong> Recommenders create their own training data. If you only show popular items, you only get signal on popular items. We added exploration (10% random) to break the loop.</li>
+                <li><strong>A/B test everything.</strong> What looks good in offline metrics can underperform online. We ran every model change through a 2-week A/B test before promotion.</li>
+            </ol>
+
+            <h2>What's Next: Deep Learning RecSys</h2>
+
+            <p>
+                Matrix factorization works remarkably well for its simplicity, but the field
+                is moving toward deep learning approaches — <strong>two-tower models</strong>,
+                <strong>transformer-based sequential recommendation</strong>, and
+                <strong>graph neural networks</strong> for capturing complex user-item-context
+                relationships.
+            </p>
+
+            <p>
+                The key question isn't "is deep learning better?" — it's "do you have enough
+                data and complexity to justify the infrastructure cost?" For most mid-scale
+                systems, LightFM or a well-tuned ALS model will outperform a poorly-tuned
+                deep model every time.
+            </p>
+
+            <p><em>Next up: how we built forecasting models that actually work in production — and why Bayesian methods win.</em></p>
+        </div>
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border:none;padding:0;">
+                <p>&copy; 2026 Abhilash Ganji. Crafted with precision.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -116,7 +116,7 @@
             <div class="post-meta">
                 <span><i class="fas fa-user"></i> Abhilash Ganji</span>
                 <span><i class="fas fa-calendar"></i> January 15, 2025</span>
-                <span><i class="fas fa-clock"></i> 12 min read</span>
+                <span><i class="fas fa-clock"></i> 18 min read</span>
             </div>
             <div class="post-hero-image">
                 <img src="../assets/projects/blog-llm.svg" alt="LLM Architecture — Attention Mechanisms and Transformer Internals">
@@ -127,71 +127,438 @@
     <article class="post-container">
         <div class="post-content">
             <p>
-                Large Language Models have fundamentally changed how we build AI systems. 
-                But beneath the hype lies elegant engineering — <strong>attention mechanisms, 
-                positional encodings, and KV-caches</strong> that make these models work at scale.
+                Large Language Models have fundamentally changed how we build AI systems.
+                But beneath the hype lies elegant engineering — <strong>attention mechanisms,
+                positional encodings, KV-caches, and inference optimization</strong> that
+                make these models work at scale. Most practitioners use LLMs as black boxes.
+                The engineers who understand the internals build dramatically better systems.
             </p>
 
             <p>
-                In this post, I'll break down the core architecture components that power 
-                models like GPT-4, LLaMA, and Mistral, and share practical insights from 
-                deploying LLMs in production.
+                In this post, I'll break down every core architecture component that powers
+                models like GPT-4, LLaMA 3, Claude, and Mistral — and share practical
+                insights from deploying LLMs in production at EPAM, where I built
+                RAG-powered policy generators and agentic AI workflows.
             </p>
 
-            <h2>The Transformer: A Quick Refresher</h2>
+            <h2>The Transformer: Why It Won</h2>
 
             <p>
-                The transformer architecture, introduced in the landmark 
-                <em>"Attention is All You Need"</em> paper, replaced recurrence with 
-                self-attention. This single change unlocked massive parallelism and 
-                enabled training on unprecedented scales.
+                The transformer architecture, introduced in the landmark
+                <em>"Attention is All You Need"</em> (Vaswani et al., 2017), replaced
+                recurrence with self-attention. Before transformers, RNNs and LSTMs
+                processed sequences one token at a time — a fundamental bottleneck for
+                parallelism. Transformers process all tokens simultaneously.
             </p>
 
             <blockquote>
-                "The key insight of transformers is that you don't need to process 
-                sequences sequentially. Every token can attend to every other token 
-                simultaneously."
+                "The key insight of transformers is that you don't need to process
+                sequences sequentially. Every token can attend to every other token
+                simultaneously. This single change unlocked training on billions of
+                parameters."
             </blockquote>
 
-            <h2>Multi-Head Attention</h2>
-
             <p>
-                The core of the transformer is the multi-head attention mechanism. 
-                Each head learns to attend to different aspects of the input:
+                A transformer block consists of two sub-layers: <strong>multi-head
+                self-attention</strong> and a <strong>position-wise feed-forward
+                network</strong>. Each sub-layer has a residual connection and layer
+                normalization. Stack 32–128 of these blocks, and you get a modern LLM.
             </p>
 
-            <pre><code>Attention(Q, K, V) = softmax(QK^T / √d_k) * V</code></pre>
+            <pre><code>Transformer Block:
+  Input → LayerNorm → Multi-Head Attention → + (residual)
+        → LayerNorm → Feed-Forward Network  → + (residual)
+        → Output
+
+Modern LLMs (LLaMA, GPT):
+  - Pre-norm (LayerNorm before attention, not after)
+  - RMSNorm instead of LayerNorm (faster, equally effective)
+  - SwiGLU activation in FFN (replaces ReLU)
+  - Grouped Query Attention (reduces KV-cache memory)</code></pre>
+
+            <h2>Tokenization: Where It All Starts</h2>
 
             <p>
-                Multiple heads allow the model to jointly attend to information from 
-                different representation subspaces at different positions.
+                Before a single attention computation happens, text must be converted
+                into tokens. This step is deceptively important — <strong>tokenization
+                quality directly affects model performance, cost, and latency</strong>.
             </p>
 
-            <h2>Practical Deployment Considerations</h2>
+            <p>
+                Modern LLMs use subword tokenization algorithms:
+            </p>
 
             <ul>
-                <li><strong>KV-Cache Optimization:</strong> Cache key-value pairs to avoid recomputation during autoregressive generation</li>
-                <li><strong>Quantization:</strong> Reduce model size with INT8/INT4 quantization for inference</li>
-                <li><strong>Batching:</strong> Use continuous batching for efficient GPU utilization</li>
-                <li><strong>Speculative Decoding:</strong> Use a smaller draft model to speed up generation</li>
+                <li><strong>Byte-Pair Encoding (BPE):</strong> Used by GPT models. Starts with individual characters and iteratively merges the most frequent pairs. "unhappiness" might become ["un", "happiness"] or ["unhapp", "iness"] depending on the vocabulary.</li>
+                <li><strong>SentencePiece:</strong> Used by LLaMA, T5. Language-agnostic — works directly on raw text without pre-tokenization. Better for multilingual models.</li>
+                <li><strong>tiktoken:</strong> OpenAI's fast BPE implementation. GPT-4 uses ~100K vocabulary tokens.</li>
             </ul>
+
+            <p>
+                Why this matters in production: <strong>token count = cost</strong>. A
+                poorly tokenized prompt with 2000 tokens might only need 1200 with a better
+                tokenizer. At scale, that's a 40% cost reduction. When we built the RAG
+                policy generator at EPAM, optimizing prompt tokenization saved meaningful
+                API costs.
+            </p>
+
+            <h2>Multi-Head Attention: The Core Mechanism</h2>
+
+            <p>
+                Self-attention is what gives transformers their power. For each token, the
+                model computes how much it should "attend to" every other token in the
+                sequence. The math:
+            </p>
+
+            <pre><code>Attention(Q, K, V) = softmax(QK^T / √d_k) · V
+
+where:
+  Q = query matrix  (what am I looking for?)
+  K = key matrix    (what do I contain?)
+  V = value matrix  (what information do I provide?)
+  d_k = key dimension (scaling factor to prevent gradient vanishing)</code></pre>
+
+            <p>
+                <strong>Multi-head attention</strong> runs this computation multiple times
+                in parallel with different learned projections. Each "head" learns to attend
+                to different types of relationships:
+            </p>
+
+            <ul>
+                <li>Head 1 might learn syntactic relationships (subject-verb agreement)</li>
+                <li>Head 2 might learn positional patterns (nearby tokens)</li>
+                <li>Head 3 might learn semantic relationships (coreference resolution)</li>
+            </ul>
+
+            <pre><code>MultiHead(Q, K, V) = Concat(head_1, ..., head_h) · W_O
+
+where head_i = Attention(Q·W_Q_i, K·W_K_i, V·W_V_i)
+
+GPT-4 (estimated):  96 heads, d_model = 12288
+LLaMA 3 70B:        64 heads, d_model = 8192
+Mistral 7B:         32 heads, d_model = 4096</code></pre>
+
+            <h3>Grouped Query Attention (GQA)</h3>
+
+            <p>
+                Standard multi-head attention uses separate K and V projections per head.
+                This means the <strong>KV-cache grows linearly with the number of
+                heads</strong> — a major memory bottleneck during inference.
+            </p>
+
+            <p>
+                <strong>Grouped Query Attention</strong> (used by LLaMA 2/3, Mistral)
+                shares K and V projections across groups of query heads. LLaMA 3 70B uses
+                64 query heads but only 8 KV heads — an 8x reduction in KV-cache memory
+                with minimal quality loss.
+            </p>
+
+            <h2>Positional Encoding: Teaching Order</h2>
+
+            <p>
+                Self-attention is permutation-invariant — it doesn't know token order.
+                The model can't distinguish "dog bites man" from "man bites dog." Positional
+                encodings solve this.
+            </p>
+
+            <h3>Absolute Positional Encoding (Original Transformer)</h3>
+
+            <p>
+                The original paper used sinusoidal functions of different frequencies added
+                to token embeddings. Simple, but limited — the model can't generalize to
+                sequences longer than it was trained on.
+            </p>
+
+            <h3>Rotary Position Embedding (RoPE)</h3>
+
+            <p>
+                Modern LLMs use <strong>RoPE</strong> (Rotary Position Embedding), which
+                encodes position by rotating the query and key vectors in pairs of
+                dimensions. The key property: the attention score between two tokens depends
+                only on their <em>relative</em> distance, not absolute position.
+            </p>
+
+            <pre><code>RoPE: rotate Q and K by position-dependent angles
+
+Benefits:
+  - Relative position awareness (distance-based attention decay)
+  - Extrapolates to longer sequences than training length
+  - Compatible with linear attention approximations
+  
+Used by: LLaMA, Mistral, Qwen, PaLM, Gemma</code></pre>
+
+            <p>
+                RoPE's extrapolation ability is why techniques like <strong>YaRN</strong>
+                and <strong>NTK-aware scaling</strong> can extend context windows to 128K+
+                tokens without retraining from scratch — just by adjusting the rotation
+                frequencies.
+            </p>
+
+            <h2>The Feed-Forward Network: Where Knowledge Lives</h2>
+
+            <p>
+                After attention, each token passes through a position-wise feed-forward
+                network (FFN). This is where a large portion of the model's "knowledge"
+                is stored — factual information, world knowledge, and learned patterns
+                are encoded in the FFN weight matrices.
+            </p>
+
+            <pre><code>Original: FFN(x) = ReLU(xW₁ + b₁)W₂ + b₂
+
+Modern (SwiGLU, used in LLaMA/Mistral):
+  FFN(x) = (Swish(xW₁) ⊙ xW₃)W₂
+
+  - ⊙ = element-wise multiplication (gating)
+  - Swish(x) = x · sigmoid(x)
+  - W₃ adds a gating mechanism for better gradient flow</code></pre>
+
+            <p>
+                The FFN typically has a hidden dimension 4x the model dimension. For
+                LLaMA 3 70B with d_model=8192, the FFN hidden dimension is 28672 — each
+                FFN layer has over 470 million parameters. This is where most of the
+                parameters (and compute) live.
+            </p>
+
+            <h2>Scaling Laws: When to Use What Size</h2>
+
+            <p>
+                Kaplan et al. (2020) and the Chinchilla paper (Hoffmann et al., 2022)
+                established that LLM performance follows predictable power laws based
+                on three variables: <strong>parameters, data, and compute</strong>.
+            </p>
+
+            <ul>
+                <li><strong>Chinchilla scaling:</strong> For compute-optimal training, tokens should scale proportionally with parameters. A 70B model needs ~1.4T tokens. Most early LLMs were undertrained by this metric.</li>
+                <li><strong>Inference scaling:</strong> For serving, smaller models are dramatically cheaper. A 7B model costs ~10x less per token than a 70B model. When accuracy difference is marginal for your task, go small.</li>
+                <li><strong>Practical rule:</strong> Start with the smallest model that meets your accuracy threshold. Fine-tune a 7B model before reaching for a 70B model — domain-specific fine-tuning often closes the gap.</li>
+            </ul>
+
+            <blockquote>
+                "At EPAM, our RAG-powered IAM policy generator uses GPT-4 for complex
+                multi-cloud policies but routes simple single-service policies to a
+                fine-tuned smaller model. This model routing saved 60% on API costs
+                while maintaining quality."
+            </blockquote>
+
+            <h2>KV-Cache: The Inference Bottleneck</h2>
+
+            <p>
+                During autoregressive generation, the model generates one token at a time.
+                For each new token, it needs to compute attention over all previous tokens.
+                Without caching, this means re-computing the key and value projections for
+                the entire sequence at every step — O(n²) computation for n tokens.
+            </p>
+
+            <p>
+                The <strong>KV-cache</strong> stores previously computed key and value
+                tensors so they don't need to be recomputed. This reduces per-step
+                computation to O(n) but introduces a memory problem: the cache grows with
+                sequence length × batch size × number of layers × number of heads.
+            </p>
+
+            <pre><code>KV-Cache Memory per request:
+  = 2 × num_layers × num_kv_heads × d_head × seq_len × bytes_per_param
+
+Example (LLaMA 3 70B, 4K context, FP16):
+  = 2 × 80 × 8 × 128 × 4096 × 2 bytes
+  = ~1.3 GB per request
+
+With GQA (8 KV heads instead of 64):
+  = ~1.3 GB (vs ~10.5 GB with standard MHA)
+
+This is why GQA matters — it's the difference between serving
+8 concurrent requests vs 1 on a single GPU.</code></pre>
+
+            <h3>KV-Cache Optimization Techniques</h3>
+
+            <ul>
+                <li><strong>PagedAttention (vLLM):</strong> Manages KV-cache like virtual memory pages. Eliminates memory fragmentation and enables sharing cache across requests with common prefixes (system prompts). This is the single biggest inference optimization in production.</li>
+                <li><strong>Sliding Window Attention (Mistral):</strong> Only cache the last W tokens instead of the full sequence. Reduces memory from O(n) to O(W). Works well because most attention is local anyway.</li>
+                <li><strong>KV-Cache Quantization:</strong> Store cached keys/values in INT8 instead of FP16. 2x memory reduction with minimal quality loss. Supported in vLLM and TensorRT-LLM.</li>
+            </ul>
+
+            <h2>Quantization: Shrinking Models for Production</h2>
+
+            <p>
+                A 70B parameter model in FP16 requires 140 GB of GPU memory — that's two
+                A100 80GB GPUs just to load the weights. <strong>Quantization</strong>
+                reduces precision to make models fit on fewer (or cheaper) GPUs.
+            </p>
+
+            <ul>
+                <li><strong>INT8 (W8A8):</strong> 2x compression. Negligible quality loss for most tasks. Supported natively by TensorRT-LLM and vLLM.</li>
+                <li><strong>INT4 (GPTQ, AWQ):</strong> 4x compression. A 70B model fits on a single A100. Small accuracy degradation — fine for retrieval and classification, less ideal for complex reasoning.</li>
+                <li><strong>GGUF (llama.cpp):</strong> Mixed quantization — important layers keep higher precision while less critical layers are quantized more aggressively. Runs on consumer hardware.</li>
+            </ul>
+
+            <pre><code>Memory requirements for LLaMA 3 70B:
+  FP32:  280 GB  (impractical)
+  FP16:  140 GB  (2× A100 80GB)
+  INT8:   70 GB  (1× A100 80GB)
+  INT4:   35 GB  (1× A100 40GB or 2× RTX 4090)
+
+Production recommendation:
+  - Serving: INT8 for quality-sensitive tasks, INT4 for throughput
+  - Fine-tuning: Always in FP16/BF16 (quantization hurts gradients)</code></pre>
+
+            <h2>Serving Infrastructure: Getting to Production</h2>
+
+            <p>
+                The model is maybe 30% of the production LLM story. The rest is serving
+                infrastructure. Here are the patterns I've used:
+            </p>
+
+            <h3>vLLM: The Production Standard</h3>
+
+            <p>
+                <strong>vLLM</strong> has become the de facto serving engine for most
+                LLM deployments. Its key innovations:
+            </p>
+
+            <ul>
+                <li><strong>PagedAttention:</strong> 2-4x throughput improvement over naive serving by eliminating KV-cache memory waste.</li>
+                <li><strong>Continuous batching:</strong> Instead of waiting for a full batch, new requests join in-flight batches as slots open up. This keeps GPU utilization above 80%.</li>
+                <li><strong>Prefix caching:</strong> Requests sharing the same system prompt share KV-cache entries. Critical for RAG systems where every request has the same context preamble.</li>
+                <li><strong>Tensor parallelism:</strong> Split the model across multiple GPUs for models that don't fit on one.</li>
+            </ul>
+
+            <h3>Speculative Decoding</h3>
+
+            <p>
+                Autoregressive generation is inherently sequential — you can't generate
+                token N+1 without token N. <strong>Speculative decoding</strong> works
+                around this by using a small "draft" model to generate K candidate tokens
+                quickly, then verifying them in parallel with the large model.
+            </p>
+
+            <p>
+                When the draft model's guesses are correct (which happens 60-80% of the
+                time for well-matched models), you get K tokens for the cost of one large
+                model forward pass. In practice, this yields <strong>2-3x latency
+                improvement</strong> for time-to-first-token.
+            </p>
+
+            <h3>Model Routing</h3>
+
+            <p>
+                Not every request needs GPT-4. A production LLM system should route
+                requests to the right model:
+            </p>
+
+            <pre><code>Request Router Architecture:
+  User Query
+    → Complexity Classifier (lightweight model)
+      → Simple: Route to 7B fine-tuned model (~$0.001/request)
+      → Medium: Route to 70B model (~$0.01/request)
+      → Complex: Route to GPT-4 / Claude (~$0.05/request)
+
+This saved us ~60% on API costs at EPAM.
+The classifier itself is a fine-tuned DistilBERT — 
+sub-millisecond inference, trivial cost.</code></pre>
+
+            <h2>RAG: Grounding LLMs in Your Data</h2>
+
+            <p>
+                Retrieval-Augmented Generation is how you make LLMs useful for
+                domain-specific tasks without retraining. The architecture:
+            </p>
+
+            <ol>
+                <li><strong>Indexing:</strong> Chunk your documents, embed them with a model like BGE or E5, store in a vector database (ChromaDB, Pinecone, Weaviate).</li>
+                <li><strong>Retrieval:</strong> At query time, embed the user's question, find the K most similar chunks via approximate nearest neighbor search.</li>
+                <li><strong>Generation:</strong> Concatenate retrieved chunks into the prompt context and let the LLM generate a grounded answer.</li>
+            </ol>
+
+            <p>
+                The critical engineering decisions: <strong>chunk size</strong> (too small
+                loses context, too large dilutes relevance), <strong>embedding model
+                choice</strong> (domain-specific vs general-purpose), and
+                <strong>reranking</strong> (a cross-encoder reranker after initial retrieval
+                dramatically improves precision).
+            </p>
+
+            <blockquote>
+                "For our IAM policy generator, we found that 512-token chunks with 50-token
+                overlap and a BGE-reranker gave the best policy accuracy. Larger chunks
+                included too much irrelevant AWS documentation; smaller chunks lost the
+                context needed for multi-service policies."
+            </blockquote>
+
+            <h2>Fine-Tuning: When RAG Isn't Enough</h2>
+
+            <p>
+                RAG handles factual grounding, but sometimes you need the model to learn
+                a new <em>behavior</em> — a specific output format, domain jargon, or
+                reasoning pattern. That's where fine-tuning comes in.
+            </p>
+
+            <ul>
+                <li><strong>Full fine-tuning:</strong> Update all parameters. Best quality, but requires the same GPU memory as training from scratch. Practical only for 7B models on most budgets.</li>
+                <li><strong>LoRA (Low-Rank Adaptation):</strong> Freeze the base model, add small trainable matrices to attention layers. 10-100x less memory, ~95% of full fine-tuning quality. This is the production standard.</li>
+                <li><strong>QLoRA:</strong> LoRA on a quantized (4-bit) base model. Fine-tune a 70B model on a single GPU. Quality is surprisingly close to full LoRA.</li>
+            </ul>
+
+            <pre><code>LoRA Configuration (what worked for us):
+  rank: 16-64 (higher = more capacity, more memory)
+  alpha: 32 (scaling factor, typically 2x rank)
+  target_modules: ["q_proj", "v_proj", "k_proj", "o_proj"]
+  learning_rate: 2e-4
+  epochs: 3-5 (watch for overfitting on small datasets)
+  
+Dataset size guidelines:
+  - Instruction tuning: 1K-10K examples
+  - Domain adaptation: 10K-100K examples
+  - Style/format tuning: 500-2K examples</code></pre>
+
+            <p>
+                At Amazon, we fine-tuned BERT (a smaller transformer) for employee
+                sentiment analysis. The key lesson: <strong>data quality matters more
+                than data quantity</strong>. 2000 carefully curated, domain-specific
+                examples outperformed 20000 noisy examples from a general sentiment
+                dataset.
+            </p>
+
+            <h2>The Production Checklist</h2>
+
+            <p>
+                After deploying LLMs across multiple systems, here's the checklist I
+                run through before any production launch:
+            </p>
+
+            <ol>
+                <li><strong>Guardrails:</strong> Input validation, output filtering, PII detection. LLMs will generate harmful content if you don't constrain them. Use tools like NeMo Guardrails or build custom classifiers.</li>
+                <li><strong>Rate limiting:</strong> LLM inference is expensive. Rate limit per user, per API key, and set hard cost ceilings.</li>
+                <li><strong>Fallbacks:</strong> When the LLM API is down (and it will be), what happens? Have a cached response, a simpler model, or a graceful degradation path.</li>
+                <li><strong>Observability:</strong> Log every request/response (redacted for PII), track latency percentiles, monitor token usage, alert on quality regression.</li>
+                <li><strong>Evaluation:</strong> Automated eval suites that run on every model update. Human eval for edge cases. Never deploy a model you haven't evaluated systematically.</li>
+                <li><strong>Cost tracking:</strong> Token-level cost attribution per feature/user. It's easy to burn $10K/month on LLM APIs without realizing it.</li>
+            </ol>
 
             <h2>Conclusion</h2>
 
             <p>
-                Understanding LLM architecture isn't just academic — it directly informs 
-                how you deploy, optimize, and debug these systems in production. 
-                The engineers who understand the internals build better systems.
+                Understanding LLM architecture isn't just academic — it directly informs
+                how you deploy, optimize, and debug these systems in production. Knowing
+                why GQA reduces memory tells you when to trade off quality for throughput.
+                Understanding KV-cache tells you why long prompts are expensive. Knowing
+                RoPE tells you why context extension works.
             </p>
 
-            <p><em>Stay tuned for the next post where I'll cover RAG system architecture patterns.</em></p>
+            <p>
+                The engineers who understand the internals don't just use LLMs — they
+                build systems that use LLMs <em>efficiently</em>, <em>reliably</em>,
+                and <em>cost-effectively</em>. That's the difference between a demo and
+                a product.
+            </p>
+
+            <p><em>Next up: Building Recommendation Systems That Actually Scale — from matrix factorization to deep learning at restaurant scale.</em></p>
         </div>
     </article>
 
     <footer class="footer">
         <div class="container">
             <div class="footer-bottom" style="border:none;padding:0;">
-                <p>&copy; 2025 Abhilash Ganji. Crafted with precision.</p>
+                <p>&copy; 2026 Abhilash Ganji. Crafted with precision.</p>
             </div>
         </div>
     </footer>

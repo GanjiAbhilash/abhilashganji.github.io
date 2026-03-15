@@ -190,24 +190,16 @@
     ];
 
     // ======================== RESEARCH DATA ========================
+    // Topics here are distinct from the blog section — no overlap
     const RESEARCH = [
         {
-            icon: 'fas fa-flask',
+            icon: 'fas fa-network-wired',
             type: 'Applied Research',
-            title: 'Fine-Tuning BERT for Enterprise Sentiment: Lessons from Amazon Scale',
-            desc: 'How we adapted transformer models for employee feedback analysis — domain-specific tokenization, class imbalance handling, and serving at low latency on SageMaker',
-            year: '2024',
-            tag: 'NLP / Transformers',
-            href: 'blog/llm-architecture.html'
-        },
-        {
-            icon: 'fas fa-file-alt',
-            type: 'System Design',
-            title: 'Building RAG-Powered Policy Generators with ChromaDB & GPT',
-            desc: 'Architecture patterns for building retrieval-augmented generation systems that generate cloud IAM policies — embeddings, chunking strategies, and prompt optimization',
+            title: 'Agentic AI: Multi-Agent Orchestration Patterns with LangGraph',
+            desc: 'Designing autonomous agent workflows — tool-use routing, memory management, human-in-the-loop fallbacks, and production patterns for multi-agent orchestration at EPAM',
             year: '2025',
-            tag: 'GenAI / RAG',
-            href: 'blog/ml-system-design.html'
+            tag: 'Agentic AI',
+            href: 'research/agentic-ai-orchestration.html'
         },
         {
             icon: 'fas fa-flask',
@@ -216,7 +208,7 @@
             desc: 'Benchmarking traditional and deep learning anomaly detection approaches on production business metrics — when to use what and hybrid ensemble strategies',
             year: '2023',
             tag: 'Anomaly Detection',
-            href: 'blog/ml-system-design.html'
+            href: 'research/anomaly-detection-comparison.html'
         },
         {
             icon: 'fas fa-file-alt',
@@ -225,16 +217,16 @@
             desc: 'Comparative analysis of CNN architectures for package damage detection and safety compliance — accuracy, latency trade-offs, and $418K cost impact analysis',
             year: '2023',
             tag: 'Computer Vision',
-            href: 'blog/ml-system-design.html'
+            href: 'research/cnn-vs-resnet-inspection.html'
         },
         {
             icon: 'fas fa-flask',
             type: 'Experiment',
-            title: 'LightFM vs Deep RecSys: Recommendation at Restaurant Scale',
-            desc: 'Evaluating matrix factorization against neural collaborative filtering for personalized offers — cold start handling, implicit feedback, and A/B test results',
+            title: 'LoRA vs Full Fine-Tuning: Parameter-Efficient LLM Adaptation',
+            desc: 'Comparing LoRA, QLoRA, and full fine-tuning on domain-specific tasks — memory footprint, training speed, downstream accuracy, and when each approach wins',
             year: '2025',
-            tag: 'Recommender Systems',
-            href: 'blog/recommendation-systems.html'
+            tag: 'LLM Fine-Tuning',
+            href: 'research/lora-vs-full-finetuning.html'
         },
         {
             icon: 'fas fa-file-alt',
@@ -243,7 +235,16 @@
             desc: 'Scalable big data engineering patterns for ML feature pipelines — partitioning strategies, Glue job optimization, and Redshift query performance tuning',
             year: '2022',
             tag: 'Big Data / AWS',
-            href: 'blog/ml-system-design.html'
+            href: 'research/pyspark-glue-architecture.html'
+        },
+        {
+            icon: 'fas fa-flask',
+            type: 'Experiment',
+            title: 'RAG Chunking Strategies: Semantic vs Fixed-Size vs Recursive Splitting',
+            desc: 'Evaluating chunk size, overlap, and splitting strategies on retrieval quality — embedding models, rerankers, and real-world accuracy on enterprise document search',
+            year: '2025',
+            tag: 'RAG / Retrieval',
+            href: 'research/rag-chunking-strategies.html'
         }
     ];
 

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forecasting Models That Actually Work in Production — Abhilash Ganji</title>
+    <meta name="description" content="Prophet, ARIMA, and Bayesian methods compared — which forecasting approach wins in real-world scenarios and how to avoid common pitfalls.">
+    <link rel="canonical" href="https://abhilashganji.com/blog/forecasting-models.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .post-hero { padding: 160px 0 0; }
+        .post-hero-image {
+            max-width: 720px; margin: 32px auto 0; border-radius: 12px;
+            overflow: hidden; border: 1px solid rgba(39,39,42,0.5);
+        }
+        .post-hero-image img { width: 100%; height: auto; display: block; }
+        .post-container { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
+        .post-tag {
+            display: inline-block; padding: 4px 14px;
+            background: var(--accent-subtle); color: var(--accent-light);
+            border-radius: 100px; font-size: 0.75rem; font-weight: 600;
+            text-transform: uppercase; margin-bottom: 16px; letter-spacing: 1px;
+        }
+        .post-title {
+            font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 700; color: var(--text-primary); line-height: 1.2;
+            margin-bottom: 16px; letter-spacing: -1px;
+        }
+        .post-meta {
+            display: flex; gap: 20px; color: var(--text-dim);
+            font-size: 0.85rem; margin-bottom: 40px; padding-bottom: 32px;
+            border-bottom: 1px solid var(--border);
+        }
+        .post-meta i { margin-right: 6px; color: var(--accent-primary); }
+        .post-content h2 {
+            font-family: var(--font-heading); font-size: 1.5rem; font-weight: 600;
+            color: var(--text-primary); margin: 48px 0 16px; letter-spacing: -0.5px;
+        }
+        .post-content h3 {
+            font-family: var(--font-heading); font-size: 1.2rem; font-weight: 600;
+            color: var(--text-primary); margin: 32px 0 12px;
+        }
+        .post-content p {
+            font-size: 1rem; line-height: 1.8; color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        .post-content strong { color: var(--text-primary); }
+        .post-content code {
+            font-family: var(--font-mono); font-size: 0.85em;
+            background: var(--bg-card); padding: 2px 8px;
+            border-radius: 4px; color: var(--accent-light);
+            border: 1px solid var(--border);
+        }
+        .post-content pre {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-md); padding: 24px; margin: 24px 0;
+            overflow-x: auto;
+        }
+        .post-content pre code {
+            background: none; border: none; padding: 0;
+            font-size: 0.85rem; line-height: 1.7;
+        }
+        .post-content blockquote {
+            border-left: 3px solid var(--accent-primary);
+            padding: 16px 24px; margin: 24px 0;
+            background: rgba(var(--accent-primary-rgb), 0.05);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            font-style: italic; color: var(--text-secondary);
+        }
+        .post-content ul, .post-content ol {
+            margin: 16px 0 16px 24px; color: var(--text-secondary);
+        }
+        .post-content li { margin-bottom: 8px; line-height: 1.7; }
+        .post-back {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--text-muted); font-size: 0.85rem; margin-bottom: 32px;
+        }
+        .post-back:hover { color: var(--accent-light); }
+    </style>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Forecasting Models That Actually Work in Production",
+        "author": { "@type": "Person", "name": "Abhilash Ganji" },
+        "datePublished": "2024-12-01",
+        "description": "Prophet, ARIMA, and Bayesian methods compared for real-world forecasting.",
+        "url": "https://abhilashganji.com/blog/forecasting-models.html"
+    }
+    </script>
+</head>
+<body>
+    <header class="header scrolled" style="background:rgba(9,9,11,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(39,39,42,0.5);">
+        <nav class="nav container">
+            <a href="/" class="nav-logo"><span class="logo-bracket">{</span>AG<span class="logo-bracket">}</span></a>
+            <ul class="nav-menu" style="display:flex;">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/#projects" class="nav-link">Projects</a></li>
+                <li><a href="/blog/" class="nav-link active">Blog</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="post-hero">
+        <div class="post-container">
+            <a href="/blog/" class="post-back"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+            <span class="post-tag">Forecasting</span>
+            <h1 class="post-title">Forecasting Models That Actually Work in Production</h1>
+            <div class="post-meta">
+                <span><i class="fas fa-user"></i> Abhilash Ganji</span>
+                <span><i class="fas fa-calendar"></i> December 1, 2024</span>
+                <span><i class="fas fa-clock"></i> 14 min read</span>
+            </div>
+            <div class="post-hero-image">
+                <img src="../assets/projects/forecasting-platform.svg" alt="Forecasting Models — Prophet, ARIMA, and Bayesian Methods">
+            </div>
+        </div>
+    </section>
+
+    <article class="post-container">
+        <div class="post-content">
+            <p>
+                Every data science team eventually needs to forecast something — sales,
+                demand, workforce headcount, server load. And every team eventually discovers
+                the same painful truth: <strong>the model that wins on Kaggle usually fails
+                in production</strong>.
+            </p>
+
+            <p>
+                I've deployed forecasting systems at both Amazon (workforce planning
+                automation) and EPAM (multi-market demand), and the lessons were hard-won.
+                This post covers what actually works, what doesn't, and why Bayesian
+                hyperparameter tuning changed everything for us.
+            </p>
+
+            <h2>The Forecasting Landscape</h2>
+
+            <p>
+                There are three main families of time series forecasting models you'll
+                encounter in production:
+            </p>
+
+            <ul>
+                <li><strong>Statistical models:</strong> ARIMA, ETS, Theta — mathematically elegant, well-understood, but rigid.</li>
+                <li><strong>Decomposition models:</strong> Prophet, STL — break time series into trend, seasonality, and residual components. Flexible and interpretable.</li>
+                <li><strong>Machine learning models:</strong> XGBoost, LightGBM with lag features, or deep learning approaches like N-BEATS and Temporal Fusion Transformers.</li>
+            </ul>
+
+            <h2>ARIMA: The Classic That Struggles</h2>
+
+            <p>
+                ARIMA (AutoRegressive Integrated Moving Average) is the textbook starting
+                point. It models the time series as a function of its own past values and
+                past forecast errors:
+            </p>
+
+            <pre><code>ARIMA(p, d, q):
+  p = number of autoregressive terms
+  d = degree of differencing (for stationarity)
+  q = number of moving average terms
+
+Example: ARIMA(2, 1, 1)
+  y'(t) = c + φ₁y'(t-1) + φ₂y'(t-2) + θ₁ε(t-1) + ε(t)</code></pre>
+
+            <p>
+                <strong>When it works:</strong> Univariate series with stable patterns, no
+                external regressors needed, short-term forecasts (1–4 steps ahead).
+            </p>
+
+            <p>
+                <strong>When it fails:</strong> Multiple seasonalities (daily + weekly +
+                yearly), missing data, outliers, or when business context matters (holidays,
+                promotions, events). Basically, most real-world scenarios.
+            </p>
+
+            <p>
+                The biggest operational pain with ARIMA is <strong>parameter selection</strong>.
+                Auto-ARIMA helps, but it's slow and doesn't always converge. When you're
+                forecasting 500+ time series across multiple markets, ARIMA's manual
+                tuning becomes untenable.
+            </p>
+
+            <h2>Prophet: The 80/20 Solution</h2>
+
+            <p>
+                Facebook Prophet (now Meta Prophet) took a different approach. Instead of
+                modeling autocorrelation directly, it decomposes the time series into
+                additive (or multiplicative) components:
+            </p>
+
+            <pre><code>y(t) = g(t) + s(t) + h(t) + ε(t)
+
+where:
+  g(t) = trend (piecewise linear or logistic growth)
+  s(t) = seasonality (Fourier series)
+  h(t) = holiday/event effects
+  ε(t) = error term</code></pre>
+
+            <p>
+                This decomposition is what makes Prophet <strong>production-friendly</strong>.
+                Business stakeholders understand "trend is going up, there's a weekly
+                pattern, and Thanksgiving causes a spike." Try explaining an ARIMA(2,1,1)
+                to a VP.
+            </p>
+
+            <blockquote>
+                "The best forecasting model is the one your stakeholders trust enough to
+                act on. Interpretability isn't optional — it's a deployment requirement."
+            </blockquote>
+
+            <h3>Why We Chose Prophet at Amazon</h3>
+
+            <p>
+                For our workforce forecasting automation at Amazon, we chose Prophet for
+                several practical reasons:
+            </p>
+
+            <ul>
+                <li><strong>Handles missing data gracefully.</strong> Amazon fulfillment center data has gaps — holidays, shutdowns, system outages. Prophet just works through them.</li>
+                <li><strong>Multiple seasonality.</strong> Weekly, monthly, and yearly patterns all captured with Fourier components. This was critical for workforce planning.</li>
+                <li><strong>Changepoint detection.</strong> When Covid hit, demand patterns shifted overnight. Prophet's automatic changepoint detection adapted without manual intervention.</li>
+                <li><strong>Regressors.</strong> We added external variables like planned promotions and scheduled events as additional regressors.</li>
+            </ul>
+
+            <h2>Bayesian Optimization: The Secret Sauce</h2>
+
+            <p>
+                The model alone wasn't enough. Prophet has ~15 tunable hyperparameters
+                (changepoint_prior_scale, seasonality_prior_scale, fourier_order, etc.),
+                and the defaults don't always work.
+            </p>
+
+            <p>
+                Grid search across 500+ time series was computationally infeasible. Random
+                search was wasteful. <strong>Bayesian Optimization</strong> was the answer.
+            </p>
+
+            <pre><code># Bayesian Optimization with Optuna
+import optuna
+
+def objective(trial):
+    params = {
+        'changepoint_prior_scale': trial.suggest_float(
+            'changepoint_prior_scale', 0.001, 0.5, log=True
+        ),
+        'seasonality_prior_scale': trial.suggest_float(
+            'seasonality_prior_scale', 0.01, 10, log=True
+        ),
+        'holidays_prior_scale': trial.suggest_float(
+            'holidays_prior_scale', 0.01, 10, log=True
+        ),
+        'seasonality_mode': trial.suggest_categorical(
+            'seasonality_mode', ['additive', 'multiplicative']
+        ),
+    }
+    model = Prophet(**params)
+    model.fit(train_df)
+    forecast = model.predict(val_df)
+    return mean_absolute_percentage_error(val_df['y'], forecast['yhat'])</code></pre>
+
+            <p>
+                Bayesian Optimization builds a <strong>surrogate model</strong> (typically a
+                Gaussian Process) that maps hyperparameters to performance. Each iteration
+                balances exploring unknown regions and exploiting known good regions. In
+                practice, it found optimal parameters in 30–50 trials versus 500+ for grid search.
+            </p>
+
+            <p>
+                The result: <strong>96% reduction in manual workforce planning effort</strong>
+                at Amazon, with forecast accuracy that stakeholders trusted enough to
+                automate decisions on.
+            </p>
+
+            <h2>Multi-Market Forecasting at EPAM</h2>
+
+            <p>
+                At EPAM, the challenge was different: forecast demand across 5+ restaurant
+                markets and 10 limited-time offers (LTOs) simultaneously. Each market had
+                different seasonality patterns, different holiday calendars, and different
+                customer behavior.
+            </p>
+
+            <p>
+                We built a <strong>Streamlit-based forecasting platform</strong> that:
+            </p>
+
+            <ol>
+                <li>Pulled historical data from Snowflake per market/LTO combination</li>
+                <li>Automatically tuned Prophet hyperparameters using BayesOpt per series</li>
+                <li>Generated forecasts with uncertainty intervals</li>
+                <li>Tracked model performance over time with MLflow</li>
+                <li>Let business users adjust assumptions via a visual interface</li>
+            </ol>
+
+            <p>
+                The "let business users adjust" part was critical. No forecast is perfect.
+                Giving stakeholders a way to incorporate their domain knowledge (e.g., "we
+                know this LTO will have a bigger marketing push than last time") dramatically
+                increased adoption. The result: <strong>23% improvement in forecast accuracy</strong>.
+            </p>
+
+            <h2>When to Use What: A Decision Framework</h2>
+
+            <ul>
+                <li><strong>ARIMA/ETS:</strong> Single univariate series, clean data, short horizon, statistical rigor needed. Good for benchmarking.</li>
+                <li><strong>Prophet:</strong> Multiple seasonalities, missing data, holidays matter, interpretability needed, dozens to hundreds of series. The production workhorse.</li>
+                <li><strong>ML Models (XGBoost/LightGBM):</strong> Rich exogenous features, cross-series learning possible, you have feature engineering expertise. Often wins on accuracy but loses on interpretability.</li>
+                <li><strong>Deep Learning (N-BEATS, TFT):</strong> Thousands of related series, massive data, GPU budget available, and you need to learn cross-series patterns automatically. Overkill for most business forecasting.</li>
+            </ul>
+
+            <h2>Common Production Pitfalls</h2>
+
+            <ol>
+                <li><strong>Overfitting on training data.</strong> An MAPE of 2% on training data means nothing if validation MAPE is 15%. Always use time-based cross-validation, never random splits.</li>
+                <li><strong>Ignoring uncertainty.</strong> Point forecasts without confidence intervals are dangerous. Prophet's built-in uncertainty quantification was one of its biggest selling points for us.</li>
+                <li><strong>Not monitoring forecast drift.</strong> Production forecasts degrade over time as patterns change. We set up automated alerts when rolling MAPE exceeded 1.5x the baseline.</li>
+                <li><strong>Forecasting too far ahead.</strong> Accuracy degrades exponentially with horizon length. A 4-week workforce forecast is useful; a 6-month one is fiction. Know your model's reliable horizon.</li>
+            </ol>
+
+            <h2>Conclusion</h2>
+
+            <p>
+                The lesson from deploying forecasting systems across two companies is
+                simple: <strong>production constraints dominate model choice</strong>. The
+                best forecasting model isn't the one with the lowest error on a test set —
+                it's the one that handles your data's messiness, scales to your number of
+                series, produces interpretable results, and runs reliably every week without
+                manual intervention.
+            </p>
+
+            <p>
+                For most business forecasting problems, Prophet with Bayesian hyperparameter
+                tuning is the sweet spot. It's not the most sophisticated approach, but it's
+                the one that actually works on Monday morning.
+            </p>
+
+            <p><em>Up next: ML System Design — the architecture patterns that keep AI systems alive in production.</em></p>
+        </div>
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border:none;padding:0;">
+                <p>&copy; 2026 Abhilash Ganji. Crafted with precision.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Chunking Strategies: Semantic vs Fixed-Size vs Recursive — Abhilash Ganji</title>
+    <meta name="description" content="Evaluating chunking strategies for RAG systems — chunk size, overlap, splitting methods, embedding models, and real-world retrieval accuracy on enterprise document search.">
+    <link rel="canonical" href="https://abhilashganji.com/research/rag-chunking-strategies.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .post-hero { padding: 160px 0 0; }
+        .post-hero-image { max-width: 720px; margin: 32px auto 0; border-radius: 12px; overflow: hidden; border: 1px solid rgba(39,39,42,0.5); }
+        .post-hero-image img { width: 100%; height: auto; display: block; }
+        .post-container { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
+        .post-tag { display: inline-block; padding: 4px 14px; background: var(--accent-subtle); color: var(--accent-light); border-radius: 100px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 1px; }
+        .post-title { font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 700; color: var(--text-primary); line-height: 1.2; margin-bottom: 16px; letter-spacing: -1px; }
+        .post-meta { display: flex; gap: 20px; color: var(--text-dim); font-size: 0.85rem; margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
+        .post-meta i { margin-right: 6px; color: var(--accent-primary); }
+        .post-content h2 { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 600; color: var(--text-primary); margin: 48px 0 16px; letter-spacing: -0.5px; }
+        .post-content h3 { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 600; color: var(--text-primary); margin: 32px 0 12px; }
+        .post-content p { font-size: 1rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 20px; }
+        .post-content strong { color: var(--text-primary); }
+        .post-content code { font-family: var(--font-mono); font-size: 0.85em; background: var(--bg-card); padding: 2px 8px; border-radius: 4px; color: var(--accent-light); border: 1px solid var(--border); }
+        .post-content pre { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px; margin: 24px 0; overflow-x: auto; }
+        .post-content pre code { background: none; border: none; padding: 0; font-size: 0.85rem; line-height: 1.7; }
+        .post-content blockquote { border-left: 3px solid var(--accent-primary); padding: 16px 24px; margin: 24px 0; background: rgba(var(--accent-primary-rgb), 0.05); border-radius: 0 var(--radius-md) var(--radius-md) 0; font-style: italic; color: var(--text-secondary); }
+        .post-content ul, .post-content ol { margin: 16px 0 16px 24px; color: var(--text-secondary); }
+        .post-content li { margin-bottom: 8px; line-height: 1.7; }
+        .post-back { display: inline-flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 32px; }
+        .post-back:hover { color: var(--accent-light); }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org", "@type": "TechArticle",
+        "headline": "RAG Chunking Strategies: Semantic vs Fixed-Size vs Recursive Splitting",
+        "author": { "@type": "Person", "name": "Abhilash Ganji" },
+        "datePublished": "2025-07-01",
+        "url": "https://abhilashganji.com/research/rag-chunking-strategies.html"
+    }
+    </script>
+</head>
+<body>
+    <header class="header scrolled" style="background:rgba(9,9,11,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(39,39,42,0.5);">
+        <nav class="nav container">
+            <a href="/" class="nav-logo"><span class="logo-bracket">{</span>AG<span class="logo-bracket">}</span></a>
+            <ul class="nav-menu" style="display:flex;">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/#projects" class="nav-link">Projects</a></li>
+                <li><a href="/#research" class="nav-link active">Research</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="post-hero">
+        <div class="post-container">
+            <a href="/#research" class="post-back"><i class="fas fa-arrow-left"></i> Back to Research</a>
+            <span class="post-tag">RAG / Retrieval</span>
+            <h1 class="post-title">RAG Chunking Strategies: Semantic vs Fixed-Size vs Recursive Splitting</h1>
+            <div class="post-meta">
+                <span><i class="fas fa-user"></i> Abhilash Ganji</span>
+                <span><i class="fas fa-calendar"></i> 2025</span>
+                <span><i class="fas fa-clock"></i> 14 min read</span>
+            </div>
+        </div>
+    </section>
+
+    <article class="post-container">
+        <div class="post-content">
+            <p>
+                In any RAG system, the chunking strategy determines <strong>the ceiling
+                of your retrieval quality</strong>. You can have the best embedding model
+                and the fastest vector database, but if your chunks don't capture the right
+                information at the right granularity, the LLM will generate responses based
+                on irrelevant or fragmented context.
+            </p>
+
+            <p>
+                When building the RAG-powered IAM policy generator at EPAM, chunking was
+                the component we iterated on most. This post documents our systematic
+                evaluation of three chunking strategies across two real-world corpora,
+                and the surprising results that challenged our assumptions.
+            </p>
+
+            <h2>The Three Strategies</h2>
+
+            <h3>1. Fixed-Size Chunking</h3>
+
+            <p>
+                The simplest approach: split text into chunks of exactly N tokens (or
+                characters) with an overlap of M tokens between consecutive chunks.
+            </p>
+
+            <pre><code>from langchain.text_splitter import CharacterTextSplitter
+
+splitter = CharacterTextSplitter(
+    chunk_size=512,       # tokens per chunk
+    chunk_overlap=50,     # overlap between consecutive chunks
+    separator="\n"        # prefer splitting at newlines
+)
+chunks = splitter.split_text(document)</code></pre>
+
+            <p>
+                <strong>Pros:</strong> Predictable chunk sizes, simple to implement,
+                consistent embedding vector quality (embedding models have optimal input
+                lengths). <strong>Cons:</strong> Splits mid-sentence, mid-paragraph, even
+                mid-concept. A policy definition spanning 600 tokens gets arbitrarily cut
+                into two chunks, neither of which captures the complete policy.
+            </p>
+
+            <h3>2. Recursive Character Splitting</h3>
+
+            <p>
+                LangChain's recursive splitter tries a hierarchy of separators — first
+                double newlines (paragraph boundaries), then single newlines, then
+                sentences, then characters — to find natural break points:
+            </p>
+
+            <pre><code>from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=512,
+    chunk_overlap=50,
+    separators=["\n\n", "\n", ". ", " ", ""]
+)
+chunks = splitter.split_text(document)</code></pre>
+
+            <p>
+                <strong>Pros:</strong> Respects document structure (paragraphs stay intact
+                when possible). Much better than fixed-size for prose-heavy documents.
+                <strong>Cons:</strong> Chunk sizes vary significantly (200-512 tokens).
+                Short chunks embed poorly. Long chunks dilute relevance. Still structure-blind
+                for technical documents with headers and code blocks.
+            </p>
+
+            <h3>3. Semantic Chunking</h3>
+
+            <p>
+                Uses the embedding model itself to determine chunk boundaries. Compute
+                embeddings for each sentence, then measure cosine similarity between
+                consecutive sentences. Split where similarity drops significantly — these
+                are topic boundaries.
+            </p>
+
+            <pre><code>from langchain_experimental.text_splitter import SemanticChunker
+from langchain_openai import OpenAIEmbeddings
+
+splitter = SemanticChunker(
+    embeddings=OpenAIEmbeddings(),
+    breakpoint_threshold_type="percentile",
+    breakpoint_threshold_amount=75    # split at bottom 25% similarity
+)
+chunks = splitter.split_text(document)</code></pre>
+
+            <p>
+                <strong>Pros:</strong> Chunks are semantically coherent — each chunk
+                discusses one topic. Dramatically better for documents covering multiple
+                topics in sequence. <strong>Cons:</strong> Slow (requires embedding every
+                sentence), chunk sizes are unpredictable (could be 100 or 2000 tokens),
+                and sensitive to the embedding model used for boundary detection.
+            </p>
+
+            <h2>Experimental Setup</h2>
+
+            <h3>Corpora</h3>
+
+            <ul>
+                <li><strong>Corpus A — AWS IAM Documentation:</strong> 2,400 pages of AWS, GCP, and Azure IAM documentation. Highly structured with headers, code examples, JSON policies, and cross-references. Used for our policy generator RAG system.</li>
+                <li><strong>Corpus B — Internal Knowledge Base:</strong> 800 pages of enterprise technical documentation. Mix of prose (architecture decisions), tables (API references), and code snippets.</li>
+            </ul>
+
+            <h3>Evaluation</h3>
+
+            <p>
+                We created a test set of 200 questions per corpus with gold-standard
+                retrieved chunks (annotated by domain experts). Metrics:
+            </p>
+
+            <ul>
+                <li><strong>Recall@5:</strong> Is the correct chunk in the top-5 retrieved? (Measures the chunking + retrieval pipeline)</li>
+                <li><strong>Answer accuracy:</strong> Does the LLM generate the correct answer given the retrieved chunks? (End-to-end quality)</li>
+                <li><strong>Chunking time:</strong> How long to process the full corpus?</li>
+            </ul>
+
+            <h2>Results</h2>
+
+            <pre><code>Corpus A: AWS IAM Documentation (2,400 pages)
+Strategy    | Chunk Size | Recall@5 | Answer Acc | Chunk Time | Total Chunks
+Fixed-512   |    512     |  62.5%   |   58.0%    |   12 sec   |   18,400
+Recursive   |  200-512   |  71.0%   |   67.5%    |   15 sec   |   16,200
+Semantic    |  100-2000  |  68.5%   |   65.0%    |   45 min   |   12,800
+
+Corpus B: Internal Knowledge Base (800 pages)
+Strategy    | Chunk Size | Recall@5 | Answer Acc | Chunk Time | Total Chunks
+Fixed-512   |    512     |  58.0%   |   54.5%    |    4 sec   |    6,100
+Recursive   |  200-512   |  69.5%   |   66.0%    |    5 sec   |    5,400
+Semantic    |  100-2000  |  74.0%   |   71.5%    |   18 min   |    4,200</code></pre>
+
+            <h2>Analysis: The Surprising Findings</h2>
+
+            <h3>Semantic chunking doesn't always win</h3>
+
+            <p>
+                On <strong>Corpus A</strong> (structured IAM docs), recursive chunking
+                outperformed semantic chunking. Why? AWS documentation is already well-structured
+                with clear section headers. Recursive splitting naturally follows this
+                structure. Semantic chunking sometimes merged unrelated but superficially
+                similar sections (e.g., two different AWS services both discussing "policy
+                attachments").
+            </p>
+
+            <p>
+                On <strong>Corpus B</strong> (mixed knowledge base), semantic chunking won
+                decisively. The prose-heavy content had topic shifts within long paragraphs
+                that recursive splitting missed.
+            </p>
+
+            <blockquote>
+                "Match your chunking strategy to your document structure. Structured docs
+                (headers, sections, code blocks) → recursive splitting is sufficient and
+                100× faster. Unstructured prose → semantic chunking is worth the cost."
+            </blockquote>
+
+            <h3>The overlap sweet spot</h3>
+
+            <pre><code>Overlap Ablation (Recursive, Corpus A):
+Overlap | Recall@5 | Storage Overhead
+  0     |  65.0%   |   baseline
+ 25     |  69.0%   |   +5%
+ 50     |  71.0%   |   +10%
+100     |  71.5%   |   +20%
+200     |  70.0%   |   +40%  (diminishing returns)
+
+Sweet spot: 50 tokens overlap (~10% of chunk size)
+Higher overlap increases storage and index size with minimal gain.</code></pre>
+
+            <h3>Chunk size matters more than strategy</h3>
+
+            <pre><code>Chunk Size Ablation (Recursive, Corpus A):
+Size  | Recall@5 | Answer Acc
+ 128  |  53.0%   |   48.5%     (too short, no context)
+ 256  |  64.5%   |   60.0%
+ 512  |  71.0%   |   67.5%     (best balance)
+ 768  |  69.0%   |   66.0%     (diluted relevance)
+1024  |  64.5%   |   62.0%     (too much noise in each chunk)
+
+512 tokens is the sweet spot for these corpora.
+This aligns with most embedding models' optimal input length.</code></pre>
+
+            <h2>The Reranker Effect</h2>
+
+            <p>
+                Adding a cross-encoder reranker (BGE-reranker-v2) after initial retrieval
+                improved accuracy across all strategies:
+            </p>
+
+            <pre><code>Impact of Reranking (Corpus A, top-5 retrieval):
+Strategy    | Recall@5 (no rerank) | Recall@5 (reranked) | Δ
+Fixed-512   |       62.5%          |       72.0%         | +9.5%
+Recursive   |       71.0%          |       79.5%         | +8.5%
+Semantic    |       68.5%          |       78.0%         | +9.5%
+
+The reranker closed the gap between strategies by ~50%.
+With reranking, recursive (79.5%) nearly matches the best
+possible setup (semantic + rerank at 78.0%).</code></pre>
+
+            <p>
+                <strong>Key insight:</strong> If you're going to use a reranker (and you
+                should), the chunking strategy matters less. The reranker compensates for
+                imperfect chunk boundaries by re-scoring based on the full query-chunk
+                relationship.
+            </p>
+
+            <h2>Our Production Configuration</h2>
+
+            <p>
+                Based on these experiments, our production RAG pipeline for the IAM policy
+                generator uses:
+            </p>
+
+            <pre><code>Production RAG Chunking Pipeline:
+
+1. Document Preprocessing:
+   - Strip boilerplate (nav, footer, breadcrumbs)
+   - Extract code blocks separately (embed with code-specific model)
+   - Preserve headers as metadata (used for filtering)
+
+2. Chunking:
+   - Strategy: RecursiveCharacterTextSplitter
+   - chunk_size: 512 tokens
+   - chunk_overlap: 50 tokens
+   - Additional: prepend section header to each chunk for context
+
+3. Embedding:
+   - Model: BGE-large-en-v1.5 (1024-dim)
+   - Code chunks: CodeBERT embeddings separately
+
+4. Retrieval:
+   - Initial: top-20 from ChromaDB (cosine similarity)
+   - Reranking: BGE-reranker-v2, return top-5
+   - Metadata filtering: filter by cloud provider before search
+
+5. Result:
+   - Recall@5: 79.5%
+   - End-to-end policy accuracy: 86.4%</code></pre>
+
+            <h2>Lessons Learned</h2>
+
+            <ol>
+                <li><strong>Start with recursive, not semantic.</strong> Recursive chunking is 100× faster to iterate on and gives 90% of semantic chunking's quality for structured documents.</li>
+                <li><strong>Invest in reranking.</strong> A cross-encoder reranker added 8-10% recall improvement regardless of chunking strategy. It's the highest-ROI component after the initial chunking.</li>
+                <li><strong>Chunk size > chunk strategy.</strong> Getting from 128 to 512 tokens improved recall more than switching from fixed to semantic chunking. Tune chunk size first.</li>
+                <li><strong>Prepend metadata.</strong> Adding the section header to each chunk's text (e.g., "AWS IAM > Policy Types > Resource-based policies: ...") gave a free 3-4% retrieval boost.</li>
+                <li><strong>Separate code chunks.</strong> Code blocks embedded with prose models retrieve poorly. Use a code-specific embedding model for code chunks and merge results at retrieval time.</li>
+            </ol>
+
+            <blockquote>
+                "Chunking is the unsexy part of RAG that determines 70% of your system's
+                quality. Most teams spend weeks on prompt engineering and 10 minutes on
+                chunking. Invert that ratio."
+            </blockquote>
+        </div>
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border:none;padding:0;">
+                <p>&copy; 2026 Abhilash Ganji. Crafted with precision.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

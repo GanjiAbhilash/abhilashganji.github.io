@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isolation Forest vs Autoencoders: Anomaly Detection — Abhilash Ganji</title>
+    <meta name="description" content="Benchmarking Isolation Forest and Autoencoder anomaly detection on production business metrics — when to use which and hybrid ensemble strategies.">
+    <link rel="canonical" href="https://abhilashganji.com/research/anomaly-detection-comparison.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .post-hero { padding: 160px 0 0; }
+        .post-hero-image { max-width: 720px; margin: 32px auto 0; border-radius: 12px; overflow: hidden; border: 1px solid rgba(39,39,42,0.5); }
+        .post-hero-image img { width: 100%; height: auto; display: block; }
+        .post-container { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
+        .post-tag { display: inline-block; padding: 4px 14px; background: var(--accent-subtle); color: var(--accent-light); border-radius: 100px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 1px; }
+        .post-title { font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 700; color: var(--text-primary); line-height: 1.2; margin-bottom: 16px; letter-spacing: -1px; }
+        .post-meta { display: flex; gap: 20px; color: var(--text-dim); font-size: 0.85rem; margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
+        .post-meta i { margin-right: 6px; color: var(--accent-primary); }
+        .post-content h2 { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 600; color: var(--text-primary); margin: 48px 0 16px; letter-spacing: -0.5px; }
+        .post-content h3 { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 600; color: var(--text-primary); margin: 32px 0 12px; }
+        .post-content p { font-size: 1rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 20px; }
+        .post-content strong { color: var(--text-primary); }
+        .post-content code { font-family: var(--font-mono); font-size: 0.85em; background: var(--bg-card); padding: 2px 8px; border-radius: 4px; color: var(--accent-light); border: 1px solid var(--border); }
+        .post-content pre { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px; margin: 24px 0; overflow-x: auto; }
+        .post-content pre code { background: none; border: none; padding: 0; font-size: 0.85rem; line-height: 1.7; }
+        .post-content blockquote { border-left: 3px solid var(--accent-primary); padding: 16px 24px; margin: 24px 0; background: rgba(var(--accent-primary-rgb), 0.05); border-radius: 0 var(--radius-md) var(--radius-md) 0; font-style: italic; color: var(--text-secondary); }
+        .post-content ul, .post-content ol { margin: 16px 0 16px 24px; color: var(--text-secondary); }
+        .post-content li { margin-bottom: 8px; line-height: 1.7; }
+        .post-back { display: inline-flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 32px; }
+        .post-back:hover { color: var(--accent-light); }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org", "@type": "TechArticle",
+        "headline": "Isolation Forest vs Autoencoders: A Comparative Study in Anomaly Detection",
+        "author": { "@type": "Person", "name": "Abhilash Ganji" },
+        "datePublished": "2023-08-01",
+        "url": "https://abhilashganji.com/research/anomaly-detection-comparison.html"
+    }
+    </script>
+</head>
+<body>
+    <header class="header scrolled" style="background:rgba(9,9,11,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(39,39,42,0.5);">
+        <nav class="nav container">
+            <a href="/" class="nav-logo"><span class="logo-bracket">{</span>AG<span class="logo-bracket">}</span></a>
+            <ul class="nav-menu" style="display:flex;">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/#projects" class="nav-link">Projects</a></li>
+                <li><a href="/#research" class="nav-link active">Research</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="post-hero">
+        <div class="post-container">
+            <a href="/#research" class="post-back"><i class="fas fa-arrow-left"></i> Back to Research</a>
+            <span class="post-tag">Anomaly Detection</span>
+            <h1 class="post-title">Isolation Forest vs Autoencoders: A Comparative Study in Anomaly Detection</h1>
+            <div class="post-meta">
+                <span><i class="fas fa-user"></i> Abhilash Ganji</span>
+                <span><i class="fas fa-calendar"></i> 2023</span>
+                <span><i class="fas fa-clock"></i> 14 min read</span>
+            </div>
+        </div>
+    </section>
+
+    <article class="post-container">
+        <div class="post-content">
+            <p>
+                Anomaly detection in production business metrics is deceptively hard. The
+                data is noisy, seasonal, and non-stationary. True anomalies are rare (by
+                definition), and the cost of missed detections varies wildly — a missed
+                revenue dip at Amazon could mean millions, while a false alarm at 2 AM
+                costs nothing but sleep.
+            </p>
+
+            <p>
+                At Amazon, I built and deployed a real-time anomaly detection system
+                monitoring fulfillment center metrics. This post documents our systematic
+                comparison of <strong>Isolation Forest</strong> (the classical approach)
+                and <strong>Autoencoders</strong> (the deep learning approach), what we
+                learned, and why we ended up using both.
+            </p>
+
+            <h2>The Problem: Business Metric Anomalies</h2>
+
+            <p>
+                We monitored 50+ metrics across multiple fulfillment centers: throughput
+                rates, processing times, error rates, headcount efficiency, and equipment
+                utilization. An anomaly might be:
+            </p>
+
+            <ul>
+                <li><strong>Point anomaly:</strong> A single metric value that's wildly out of range (throughput drops 50% in one hour)</li>
+                <li><strong>Contextual anomaly:</strong> A value that's normal in absolute terms but unusual given the context (high throughput at 3 AM when the facility should be idle)</li>
+                <li><strong>Collective anomaly:</strong> Multiple metrics deviating together in a pattern that's individually unremarkable but collectively suspicious</li>
+            </ul>
+
+            <p>
+                Our legacy system used static thresholds (alert if metric > X or < Y).
+                It generated <strong>hundreds of false positives per week</strong> because
+                thresholds can't account for seasonality, day-of-week effects, or
+                gradual trend changes.
+            </p>
+
+            <h2>Isolation Forest: The Tree-Based Approach</h2>
+
+            <p>
+                Isolation Forest works on a beautiful insight: <strong>anomalies are
+                easier to isolate than normal points</strong>. Build random trees that
+                recursively split the feature space. Anomalies, being different from the
+                majority, get isolated in fewer splits.
+            </p>
+
+            <pre><code>from sklearn.ensemble import IsolationForest
+
+model = IsolationForest(
+    n_estimators=200,
+    contamination=0.01,    # expected % of anomalies
+    max_samples='auto',
+    max_features=1.0,
+    random_state=42
+)
+
+# Training on normal data
+model.fit(X_train)
+
+# Prediction: -1 = anomaly, 1 = normal
+predictions = model.predict(X_new)
+anomaly_scores = model.decision_function(X_new)  # continuous scores</code></pre>
+
+            <h3>Strengths</h3>
+
+            <ul>
+                <li><strong>Fast training and inference:</strong> Trains in seconds on millions of rows. Inference is sub-millisecond. Critical for real-time monitoring.</li>
+                <li><strong>No assumption on data distribution:</strong> Unlike statistical methods (z-score, Gaussian mixtures), Isolation Forest works on any distribution shape.</li>
+                <li><strong>Handles high-dimensional data:</strong> Performs well even with 50+ features without dimensionality reduction.</li>
+                <li><strong>Interpretable scores:</strong> The anomaly score has a natural interpretation — shorter average path length = more anomalous.</li>
+            </ul>
+
+            <h3>Weaknesses</h3>
+
+            <ul>
+                <li><strong>Blind to temporal patterns:</strong> It treats each observation independently. A metric slowly drifting 2% per day won't trigger until it crosses the anomaly boundary — by which time the problem has been building for weeks.</li>
+                <li><strong>Contamination parameter sensitivity:</strong> You need to estimate what percentage of your data is anomalous. Get this wrong and you either miss anomalies or generate floods of false positives.</li>
+                <li><strong>Struggles with correlated features:</strong> When anomalies manifest as unusual feature correlations (metric A is normal, metric B is normal, but A and B moving in opposite directions is anomalous), IF often misses them.</li>
+            </ul>
+
+            <h2>Autoencoders: The Reconstruction Approach</h2>
+
+            <p>
+                An autoencoder learns to compress (encode) and reconstruct (decode) normal
+                data. The key insight: <strong>anomalies will have high reconstruction
+                error</strong> because the model has never learned to reconstruct abnormal
+                patterns.
+            </p>
+
+            <pre><code>import torch
+import torch.nn as nn
+
+class AnomalyAutoencoder(nn.Module):
+    def __init__(self, input_dim, hidden_dim=32, latent_dim=8):
+        super().__init__()
+        self.encoder = nn.Sequential(
+            nn.Linear(input_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(hidden_dim, latent_dim),
+            nn.ReLU()
+        )
+        self.decoder = nn.Sequential(
+            nn.Linear(latent_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(hidden_dim, input_dim)
+        )
+
+    def forward(self, x):
+        encoded = self.encoder(x)
+        decoded = self.decoder(encoded)
+        return decoded
+
+# Anomaly score = reconstruction error per sample
+def anomaly_score(model, x):
+    reconstructed = model(x)
+    return torch.mean((x - reconstructed) ** 2, dim=1)</code></pre>
+
+            <h3>Strengths</h3>
+
+            <ul>
+                <li><strong>Captures complex correlations:</strong> The autoencoder learns the normal relationships between all features simultaneously. Unusual correlations produce high reconstruction error even when individual features are within range.</li>
+                <li><strong>Temporal awareness (with LSTM):</strong> By using LSTM or Transformer encoder layers, the autoencoder can learn temporal patterns — detecting slow drifts and sequence-level anomalies that Isolation Forest misses.</li>
+                <li><strong>Flexible reconstruction targets:</strong> You can weight features differently in the loss function — giving higher penalty to business-critical metrics and lower penalty to noisy ones.</li>
+            </ul>
+
+            <h3>Weaknesses</h3>
+
+            <ul>
+                <li><strong>Training complexity:</strong> Requires careful hyperparameter tuning (architecture, learning rate, latent dimension, dropout). Underfitting misses anomalies; overfitting reconstructs anomalies perfectly, defeating the purpose.</li>
+                <li><strong>Threshold selection:</strong> The reconstruction error is a continuous score. Choosing the right threshold requires labeled validation data or statistical methods (percentile-based). This is the hardest part in practice.</li>
+                <li><strong>Training data quality:</strong> If the training data contains undetected anomalies, the autoencoder learns to reconstruct them as normal. Data cleaning before training is critical.</li>
+                <li><strong>Slower inference:</strong> A forward pass through a neural network is 100-1000x slower than Isolation Forest. Still fast enough for real-time (5-10ms), but matters at very high throughput.</li>
+            </ul>
+
+            <h2>Head-to-Head: Our Benchmark Results</h2>
+
+            <p>
+                We benchmarked both approaches on 6 months of labeled production data
+                (850K data points, 1.2% anomaly rate, labeled by domain experts):
+            </p>
+
+            <pre><code>Metric              | Isolation Forest | Autoencoder (LSTM) | Hybrid
+--------------------|-----------------|--------------------|---------
+Precision           |     0.72        |       0.81         |  0.88
+Recall              |     0.68        |       0.79         |  0.85
+F1 Score            |     0.70        |       0.80         |  0.86
+False Positive Rate |     0.08        |       0.05         |  0.03
+Avg Detection Delay |     12 min      |       5 min        |  4 min
+Inference Latency   |     0.2 ms      |       8 ms         |  9 ms
+Training Time       |     30 sec      |       45 min       |  46 min</code></pre>
+
+            <h2>The Hybrid Approach: Best of Both</h2>
+
+            <p>
+                Neither model alone was sufficient. Our production system uses a
+                <strong>two-stage hybrid ensemble</strong>:
+            </p>
+
+            <ol>
+                <li><strong>Stage 1 — Isolation Forest (fast filter):</strong> Runs on every incoming data point at sub-millisecond latency. Catches obvious point anomalies immediately. High recall, moderate precision.</li>
+                <li><strong>Stage 2 — LSTM Autoencoder (deep analysis):</strong> Runs on windowed data (last 1 hour) for points flagged by IF or on a periodic schedule. Catches contextual and collective anomalies. Higher precision, catches slow drifts.</li>
+                <li><strong>Ensemble scoring:</strong> Final anomaly score = weighted combination. Both models agreeing = high-confidence alert (pages on-call). Only one model flagging = medium-confidence alert (notification, no page).</li>
+            </ol>
+
+            <blockquote>
+                "The hybrid system reduced false positives by 20% over either model alone
+                and improved critical anomaly detection by 30%. The key insight: use
+                Isolation Forest for speed and recall, Autoencoders for depth and precision.
+                Don't make it an either/or choice."
+            </blockquote>
+
+            <h2>Lessons for Production Anomaly Detection</h2>
+
+            <ol>
+                <li><strong>Start with Isolation Forest.</strong> It's fast, works out of the box, and catches 70% of real anomalies. Add deep learning only when you've proven IF's limitations on your specific data.</li>
+                <li><strong>Invest in labeling.</strong> Without labeled anomaly data, you can't properly tune thresholds or compare models. We had domain experts label 3 months of data — costly but essential.</li>
+                <li><strong>Seasonality is the enemy.</strong> Remove daily, weekly, and yearly seasonality before feeding data to anomaly detectors. Otherwise, every Monday morning looks anomalous compared to Sunday.</li>
+                <li><strong>Alert fatigue kills systems.</strong> A system with 50 false alarms per day gets ignored within a week. Optimize for precision first, recall second. A missed anomaly is bad; a team that ignores all alerts is worse.</li>
+                <li><strong>Retrain continuously.</strong> Business metrics evolve. A model trained on 2022 data won't detect 2023 anomalies accurately. We retrain monthly on a rolling 6-month window.</li>
+            </ol>
+        </div>
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border:none;padding:0;">
+                <p>&copy; 2026 Abhilash Ganji. Crafted with precision.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
