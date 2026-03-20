@@ -13,7 +13,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forecasting Models That Actually Work in Production — Abhilash Ganji</title>
-    <meta name="description" content="Prophet, ARIMA, and Bayesian methods compared — which forecasting approach wins in real-world scenarios and how to avoid common pitfalls.">
+    <meta name="description" content="Prophet, ARIMA, Bayesian (PyMC) methods compared — which forecasting approach wins in real-world multi-market sales forecasting and how to avoid common pitfalls.">
     <link rel="canonical" href="https://abhilashganji.com/blog/forecasting-models.html">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -89,6 +89,12 @@
             color: var(--text-muted); font-size: 0.85rem; margin-bottom: 32px;
         }
         .post-back:hover { color: var(--accent-light); }
+        .architecture-diagram {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-md); padding: 24px; margin: 24px 0;
+            font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.6;
+            overflow-x: auto; color: var(--accent-light);
+        }
     </style>
 
     <script type="application/ld+json">
@@ -98,7 +104,8 @@
         "headline": "Forecasting Models That Actually Work in Production",
         "author": { "@type": "Person", "name": "Abhilash Ganji" },
         "datePublished": "2024-12-01",
-        "description": "Prophet, ARIMA, and Bayesian methods compared for real-world forecasting.",
+        "dateModified": "2026-03-20",
+        "description": "Prophet, ARIMA, and Bayesian methods compared for real-world multi-market sales forecasting.",
         "url": "https://abhilashganji.com/blog/forecasting-models.html"
     }
     </script>
@@ -123,8 +130,8 @@
             <h1 class="post-title">Forecasting Models That Actually Work in Production</h1>
             <div class="post-meta">
                 <span><i class="fas fa-user"></i> Abhilash Ganji</span>
-                <span><i class="fas fa-calendar"></i> December 1, 2024</span>
-                <span><i class="fas fa-clock"></i> 14 min read</span>
+                <span><i class="fas fa-calendar"></i> December 1, 2024 (Updated Mar 2026)</span>
+                <span><i class="fas fa-clock"></i> 18 min read</span>
             </div>
             <div class="post-hero-image">
                 <img src="../assets/projects/forecasting-platform.svg" alt="Forecasting Models — Prophet, ARIMA, and Bayesian Methods">
@@ -142,10 +149,11 @@
             </p>
 
             <p>
-                I've deployed forecasting systems at both Amazon (workforce planning
-                automation) and EPAM (multi-market demand), and the lessons were hard-won.
-                This post covers what actually works, what doesn't, and why Bayesian
-                hyperparameter tuning changed everything for us.
+                I've deployed forecasting systems at Amazon (workforce planning
+                automation), EPAM (multi-market demand), and most recently led the Bayesian
+                sales forecasting platform at RBI International across 5 European markets.
+                This post covers what actually works, what doesn't, and how
+                Bayesian structural modeling changed the game.
             </p>
 
             <h2>The Forecasting Landscape</h2>
@@ -159,6 +167,7 @@
                 <li><strong>Statistical models:</strong> ARIMA, ETS, Theta — mathematically elegant, well-understood, but rigid.</li>
                 <li><strong>Decomposition models:</strong> Prophet, STL — break time series into trend, seasonality, and residual components. Flexible and interpretable.</li>
                 <li><strong>Machine learning models:</strong> XGBoost, LightGBM with lag features, or deep learning approaches like N-BEATS and Temporal Fusion Transformers.</li>
+                <li><strong>Bayesian structural models:</strong> PyMC, Stan — encode domain knowledge as priors, decompose effects explicitly, and quantify uncertainty natively. The production powerhouse when interpretability and causal reasoning matter.</li>
             </ul>
 
             <h2>ARIMA: The Classic That Struggles</h2>
@@ -314,11 +323,170 @@ def objective(trial):
                 increased adoption. The result: <strong>23% improvement in forecast accuracy</strong>.
             </p>
 
+            <!-- NEW SECTION: Bayesian Sales Forecasting at RBI International -->
+            <h2>Bayesian Sales Forecasting at Scale: RBI International</h2>
+
+            <p>
+                The most technically ambitious forecasting system I've led was the
+                <strong>daily sales forecasting platform for a global QSR brand</strong> — a
+                Bayesian structural model predicting daily comparable sales across multiple European
+                markets. This wasn't just a model; it
+                was a full production system that finance, marketing, and operations teams
+                relied on for real-time decision-making.
+            </p>
+
+            <h3>Why Bayesian? Why Not Prophet or XGBoost?</h3>
+
+            <p>
+                The core problem demanded something Prophet couldn't deliver: <strong>explicit
+                causal decomposition of activation (promotion) effects with cannibalization
+                modeling</strong>. When a restaurant chain runs a promotional deal, it drives
+                traffic to a specific menu segment — but it also cannibalizes baseline sales.
+                We needed a model that could separately estimate both effects and let business
+                users adjust individual activation assumptions for future forecasts.
+            </p>
+
+            <p>
+                We chose <strong>PyMC</strong> with Maximum A Posteriori (MAP) inference
+                to build a multi-headed probabilistic model that decomposes daily log-sales
+                into interpretable additive components:
+            </p>
+
+            <pre><code>log(sales) = α_segment          # per-segment intercepts
+           + β_slope · t         # per-segment trends
+           + β_seasonality · S(t) # Fourier seasonality
+           + β_holiday · H(t)    # holiday effects
+           + β_act_segment · A(t) # activation → segment effects
+           + β_act_baseline · B(t) # activation → baseline (cannibalization)
+           + ε</code></pre>
+
+            <p>
+                Each component has a clear business interpretation. The
+                <strong>activation-to-baseline coefficients</strong> directly measure
+                cannibalization — how much a promotion eats into organic sales. The
+                <strong>activation-to-segment coefficients</strong> measure the lift. This
+                dual-headed structure is what makes the model uniquely useful: you can
+                estimate net incrementality per promotion, not just gross lift.
+            </p>
+
+            <h3>System Architecture</h3>
+
+            <div class="architecture-diagram">
+<pre>┌─────────────────────────────────────────────────────────────────┐
+│                     Snowflake Data Platform                     │
+│  ┌──────────────────┐  ┌───────────────────┐  ┌──────────────┐  │
+│  │   Daily Sales    │  │ Promotion         │  │ Holiday      │  │
+│  │                  │  │ Calendar          │  │ Calendar     │  │
+│  └────────┬─────────┘  └────────┬──────────┘  └──────┬───────┘  │
+│           └──────────────┬──────┘                    │          │
+│                    ┌─────▼─────┐                     │          │
+│                    │ Feature   │◄────────────────────┘          │
+│                    │ Store     │                                │
+│                    └─────┬─────┘                                │
+├──────────────────────────┼──────────────────────────────────────┤
+│              ┌───────────▼───────────┐                          │
+│              │  PyMC MAP Model       │                          │
+│              │  (per-market)         │                          │
+│              │  • Segment intercepts │                          │
+│              │  • Fourier seasonality│                          │
+│              │  • Holiday effects    │                          │
+│              │  • Activation effects │                          │
+│              │  • Cannibalization    │                          │
+│              └───────────┬───────────┘                          │
+│    ┌─────────────────────┼─────────────────────┐                │
+│    ▼                     ▼                     ▼                │
+│ Model              Forecast             Activation              │
+│ Coefficients       Results              Effect Tables           │
+├─────────────────────────────────────────────────────────────────┤
+│                  Streamlit Dashboard                            │
+│  ┌────────────┐  ┌──────────────┐  ┌───────────────────────┐    │
+│  │ Main       │  │ Activations  │  │ Model Coefficients    │    │
+│  │ Dashboard  │  │ Deep Dive    │  │ (Adjust & Re-forecast)│    │
+│  └────────────┘  └──────────────┘  └───────────────────────┘    │
+└─────────────────────────────────────────────────────────────────┘</pre>
+            </div>
+
+            <h3>Key Technical Decisions</h3>
+
+            <ul>
+                <li>
+                    <strong>MAP instead of full MCMC.</strong> With multiple markets and dozens of
+                    activations per market, full posterior sampling was too slow for a system
+                    that needed to retrain weekly. MAP inference gave us point estimates with
+                    prior regularization — fast enough for production, principled enough for
+                    the statistics to hold.
+                </li>
+                <li>
+                    <strong>Separate baseline modeling.</strong> The baseline segment (organic
+                    sales with no active promotion) gets its own intercept with a scaling
+                    factor to make cannibalization effects more pronounced. This was a deliberate
+                    modeling choice — business stakeholders wanted to see worst-case
+                    cannibalization to make conservative promotion decisions.
+                </li>
+                <li>
+                    <strong>User-adjustable coefficients.</strong> The Streamlit dashboard
+                    lets marketing teams override activation strength and incrementality
+                    estimates for future promotions. These adjustments are versioned in
+                    Snowflake and automatically consolidated with model outputs on the next training run.
+                </li>
+                <li>
+                    <strong>Pandera schema validation.</strong> Every data handoff between
+                    repositories, transformations, and the dashboard is validated with strict
+                    Pandera schemas. No silent data corruption. When activation calendars
+                    changed upstream, we caught it immediately instead of producing garbage
+                    forecasts.
+                </li>
+            </ul>
+
+            <h3>The Activation Coefficient Pipeline</h3>
+
+            <p>
+                The most intricate part of the system is how activation effects flow from
+                raw model coefficients to business-facing metrics:
+            </p>
+
+            <ol>
+                <li>The PyMC model outputs raw coefficients encoding each activation's
+                    effect type and name in a structured naming convention.</li>
+                <li>The pipeline parses these, pivots by coefficient type
+                    (baseline effect vs segment effect),
+                    and merges with the promotion calendar to get date ranges.</li>
+                <li>Business metrics are derived:
+                    <strong>Estimated Activation Strength</strong> = exp(segment effect),
+                    <strong>Estimated Incrementality</strong> = (1 + baseline effect) × 100.</li>
+                <li>User adjustments are layered on top via a merge-edit-delete paradigm,
+                    stored as versioned history.</li>
+                <li>On the next model run, the consolidated table reconciles model estimates
+                    with user overrides — model wins where data exists, user inputs preserved
+                    for future activations.</li>
+            </ol>
+
+            <h3>Results</h3>
+
+            <p>
+                The system achieved a <strong>23% improvement in forecast accuracy</strong>
+                over the previous approach, with comparable sales decomposition
+                that finance teams used directly in monthly reporting. The interactive
+                adjustment capability increased stakeholder adoption significantly —
+                marketing teams went from ignoring model outputs to actively using them for
+                promotion planning across all markets.
+            </p>
+
+            <blockquote>
+                "The model that wins isn't the most accurate on backtests — it's the
+                one that marketing, finance, and ops all trust enough to change their
+                decisions. Bayesian decomposition gave us the interpretability to earn
+                that trust."
+            </blockquote>
+
+            <!-- END NEW SECTION -->
+
             <h2>When to Use What: A Decision Framework</h2>
 
             <ul>
                 <li><strong>ARIMA/ETS:</strong> Single univariate series, clean data, short horizon, statistical rigor needed. Good for benchmarking.</li>
                 <li><strong>Prophet:</strong> Multiple seasonalities, missing data, holidays matter, interpretability needed, dozens to hundreds of series. The production workhorse.</li>
+                <li><strong>Bayesian Structural (PyMC/Stan):</strong> You need causal decomposition, explicit priors from domain knowledge, cannibalization or cross-effect modeling, and user-adjustable assumptions. Best when stakeholder trust matters as much as accuracy.</li>
                 <li><strong>ML Models (XGBoost/LightGBM):</strong> Rich exogenous features, cross-series learning possible, you have feature engineering expertise. Often wins on accuracy but loses on interpretability.</li>
                 <li><strong>Deep Learning (N-BEATS, TFT):</strong> Thousands of related series, massive data, GPU budget available, and you need to learn cross-series patterns automatically. Overkill for most business forecasting.</li>
             </ul>
@@ -330,12 +498,13 @@ def objective(trial):
                 <li><strong>Ignoring uncertainty.</strong> Point forecasts without confidence intervals are dangerous. Prophet's built-in uncertainty quantification was one of its biggest selling points for us.</li>
                 <li><strong>Not monitoring forecast drift.</strong> Production forecasts degrade over time as patterns change. We set up automated alerts when rolling MAPE exceeded 1.5x the baseline.</li>
                 <li><strong>Forecasting too far ahead.</strong> Accuracy degrades exponentially with horizon length. A 4-week workforce forecast is useful; a 6-month one is fiction. Know your model's reliable horizon.</li>
+                <li><strong>Ignoring cannibalization.</strong> Promotions don't just add sales — they shift them between segments. If your model can't decompose gross lift from net incrementality, you're overstating promotion ROI.</li>
             </ol>
 
             <h2>Conclusion</h2>
 
             <p>
-                The lesson from deploying forecasting systems across two companies is
+                The lesson from deploying forecasting systems across three companies is
                 simple: <strong>production constraints dominate model choice</strong>. The
                 best forecasting model isn't the one with the lowest error on a test set —
                 it's the one that handles your data's messiness, scales to your number of
@@ -345,8 +514,11 @@ def objective(trial):
 
             <p>
                 For most business forecasting problems, Prophet with Bayesian hyperparameter
-                tuning is the sweet spot. It's not the most sophisticated approach, but it's
-                the one that actually works on Monday morning.
+                tuning is the sweet spot. But when you need causal decomposition, explicit
+                promotion effect modeling, and user-adjustable assumptions — a Bayesian
+                structural model with PyMC is worth the extra engineering investment. It's
+                the difference between a model that predicts and a system that stakeholders
+                actually use to make decisions.
             </p>
 
             <p><em>Up next: ML System Design — the architecture patterns that keep AI systems alive in production.</em></p>
