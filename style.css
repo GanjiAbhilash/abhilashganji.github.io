@@ -258,6 +258,44 @@ a:hover {
     color: white !important;
 }
 
+/* Play button in nav */
+.nav-play-btn {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #f0abfc !important;
+    padding: 7px 18px;
+    border: 1px solid rgba(192, 132, 252, 0.4);
+    border-radius: 100px;
+    transition: all var(--transition-fast);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(192, 132, 252, 0.08);
+    position: relative;
+    animation: playBtnPulse 3s ease-in-out infinite;
+}
+.nav-play-btn i {
+    font-size: 0.75rem;
+    animation: playIconWiggle 2s ease-in-out infinite;
+}
+.nav-play-btn:hover {
+    background: rgba(192, 132, 252, 0.2);
+    border-color: rgba(192, 132, 252, 0.6);
+    color: #e9d5ff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(192, 132, 252, 0.25);
+}
+@keyframes playBtnPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); }
+    50% { box-shadow: 0 0 12px 2px rgba(192, 132, 252, 0.15); }
+}
+@keyframes playIconWiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-8deg); }
+    75% { transform: rotate(8deg); }
+}
+
 .nav-toggle {
     display: none;
     flex-direction: column;
