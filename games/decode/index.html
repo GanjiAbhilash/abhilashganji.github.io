@@ -72,7 +72,7 @@
 
         /* ======================== RESET ======================== */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--accent-primary) var(--bg-primary); }
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--accent-primary) var(--bg-primary); -webkit-text-size-adjust: 100%; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-primary); }
         ::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 3px; }
@@ -84,6 +84,8 @@
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
             min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         ::selection { background: var(--accent-primary); color: var(--text-primary); }
 
@@ -112,7 +114,29 @@
             transition: all var(--transition-fast); text-decoration: none;
         }
         .nav-links a:hover, .nav-links a.active { color: var(--text-primary); background: var(--accent-subtle); }
-        @media (max-width: 600px) { .nav-links { display: none; } }
+
+        /* Mobile hamburger menu */
+        .nav-toggle {
+            display: none; background: none; border: none; cursor: pointer;
+            padding: 8px; color: var(--text-primary); font-size: 1.4rem;
+            -webkit-tap-highlight-color: transparent;
+        }
+        @media (max-width: 600px) {
+            .nav-toggle { display: block; }
+            .nav-links {
+                display: none; position: absolute; top: 72px; left: 0; right: 0;
+                flex-direction: column; gap: 0;
+                background: rgba(9,9,11,0.98);
+                backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+                border-bottom: 1px solid var(--border);
+                padding: 8px 0;
+            }
+            .nav-links.open { display: flex; }
+            .nav-links a {
+                padding: 14px 24px; border-radius: 0;
+                font-size: 1rem;
+            }
+        }
 
         /* ======================== BG EFFECTS ======================== */
         .bg-grid {
@@ -152,6 +176,7 @@
         /* Orbiting rings on intro */
         .orbit-container {
             position: absolute; top: 50%; left: 50%; width: 500px; height: 500px;
+            max-width: 90vw; max-height: 90vw;
             transform: translate(-50%, -50%); pointer-events: none; z-index: 0;
             opacity: 0.15;
         }
@@ -553,15 +578,70 @@
         .footer-copy { font-size: 0.75rem; color: var(--text-dim); }
 
         /* ======================== RESPONSIVE ======================== */
+        @media (max-width: 768px) {
+            .orbit-container { width: 320px; height: 320px; }
+            .analyzing-visual { width: 110px; height: 110px; }
+            .analyzing-brain { font-size: 2.8rem; }
+            .analyzing-title { font-size: 1.25rem; }
+            .result-card { padding: 32px 24px; }
+            .btn-start { padding: 16px 36px; font-size: 1.05rem; }
+            .btn-q { padding: 14px 24px; min-height: 48px; }
+        }
         @media (max-width: 480px) {
             .game-wrapper { padding: 100px 16px 60px; }
-            .result-card { padding: 28px 20px; }
+            .result-card { padding: 24px 16px; }
             .share-grid { grid-template-columns: 1fr; }
             .intro-stats { flex-direction: column; }
             .intro-stat { border-right: none; border-bottom: 1px solid var(--border); padding: 12px; }
             .intro-stat:last-child { border-bottom: none; }
-            .trait-name { min-width: 65px; font-size: 0.72rem; }
-            .orbit-container { width: 300px; height: 300px; }
+            .trait-name { min-width: 60px; font-size: 0.72rem; }
+            .orbit-container { width: 240px; height: 240px; }
+            .btn-start { width: 100%; justify-content: center; padding: 16px 24px; font-size: 1rem; }
+            .btn-q { flex: 1; justify-content: center; }
+            .q-nav { gap: 10px; }
+            .slider-labels { font-size: 0.78rem; gap: 12px; }
+            .prediction-box { padding: 16px; }
+            .prediction-text { font-size: 0.92rem; }
+            .result-tagline { font-size: 0.95rem; }
+            .share-btn { padding: 14px 16px; min-height: 48px; }
+            .btn-retake { min-height: 48px; }
+            .intro-desc { font-size: 1rem; }
+            .analyzing-screen { padding-top: 40px; }
+            .analyzing-visual { width: 100px; height: 100px; }
+            .analyzing-brain { font-size: 2.4rem; }
+            .analyzing-title { font-size: 1.1rem; }
+            .analyzing-sub { font-size: 0.82rem; }
+            .analyzing-steps li { font-size: 0.78rem; }
+        }
+
+        /* Larger slider thumb for touch devices */
+        @media (pointer: coarse) {
+            input[type="range"]::-webkit-slider-thumb {
+                width: 32px; height: 32px; border-width: 4px;
+            }
+            input[type="range"]::-moz-range-thumb {
+                width: 32px; height: 32px; border-width: 4px;
+            }
+            input[type="range"] { height: 8px; }
+        }
+
+        /* Disable hover effects on touch */
+        @media (hover: none) {
+            .btn-start:hover { transform: none; box-shadow: none; }
+            .btn-start:active {
+                transform: scale(0.97);
+                box-shadow: 0 4px 20px rgba(var(--accent-primary-rgb),0.3);
+            }
+            .share-btn:hover { transform: none; }
+            .share-btn:active { transform: scale(0.97); }
+            .btn-q:hover { transform: none; }
+            .btn-next:active { transform: scale(0.97); }
+        }
+
+        /* Safe area for notched phones */
+        @supports (padding: env(safe-area-inset-bottom)) {
+            .footer { padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
+            .game-wrapper { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
         }
     </style>
 
@@ -588,7 +668,8 @@
 <header class="header">
     <nav class="nav">
         <a href="/" class="nav-logo"><span class="logo-bracket">{</span>AG<span class="logo-bracket">}</span></a>
-        <ul class="nav-links">
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+        <ul class="nav-links" id="navLinks">
             <li><a href="/">Home</a></li>
             <li><a href="/blog/">Blog</a></li>
             <li><a href="/games/decode/" class="active">Play</a></li>
@@ -1080,9 +1161,18 @@
     });
 
     $('#shareLinkedin').addEventListener('click', function() {
-        var text = encodeURIComponent(getShareText('linkedin'));
+        var text = getShareText('linkedin');
+        var copied = false;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function() {
+                showToast('✓ Text copied — paste it into the LinkedIn post');
+            });
+            copied = true;
+        }
         var url = encodeURIComponent('https://abhilashganji.com/games/decode/');
-        openShareWindow('https://www.linkedin.com/shareArticle?mini=true&url=' + url + '&text=' + text);
+        setTimeout(function() {
+            openShareWindow('https://www.linkedin.com/sharing/share-offsite/?url=' + url);
+        }, copied ? 300 : 0);
     });
 
     $('#shareWhatsapp').addEventListener('click', function() {
@@ -1143,6 +1233,25 @@
         var seed = d.getFullYear() * 10000 + (d.getMonth()+1) * 100 + d.getDate();
         var count = 1200 + (seed % 3000);
         el.textContent = count.toLocaleString();
+    })();
+
+    /* ======================== MOBILE NAV TOGGLE ======================== */
+    (function initMobileNav() {
+        var toggle = document.getElementById('navToggle');
+        var links = document.getElementById('navLinks');
+        if (!toggle || !links) return;
+        toggle.addEventListener('click', function() {
+            links.classList.toggle('open');
+            var icon = toggle.querySelector('i');
+            icon.className = links.classList.contains('open') ? 'fas fa-times' : 'fas fa-bars';
+        });
+        // Close menu when a link is tapped
+        links.querySelectorAll('a').forEach(function(a) {
+            a.addEventListener('click', function() {
+                links.classList.remove('open');
+                toggle.querySelector('i').className = 'fas fa-bars';
+            });
+        });
     })();
 
 })();
