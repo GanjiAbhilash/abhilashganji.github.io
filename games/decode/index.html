@@ -999,13 +999,13 @@
         var url = 'https://abhilashganji.com/games/decode/';
 
         if (platform === 'twitter') {
-            return 'I\'m "' + a.name + '" on the Life Decision Decoder\n\n"' + a.shareQuip + '"\n\nRisk ' + t.risk + '% · Ambition ' + t.ambition + '% · Speed ' + t.speed + '%\n\nWhat are you? ' + a.emoji + '\n' + url;
+            return a.emoji + ' I took the Life Decision Decoder and got:\n\n"' + a.name.toUpperCase() + '"\n\n"' + a.shareQuip + '"\n\nRisk ' + t.risk + '% · Ambition ' + t.ambition + '% · Speed ' + t.speed + '%\n\n7 questions. Scarily accurate.\nWhat are you? ↓\n' + url;
         }
         if (platform === 'linkedin') {
-            return 'Just tried this Life Decision Decoder — scarily accurate.\n\nI\'m "' + a.name + '" — "' + a.tagline + '"\n\nRisk: ' + t.risk + '% · Ambition: ' + t.ambition + '% · Meaning: ' + t.meaning + '%\n\nCurious what you get → ' + url;
+            return 'I just took the Life Decision Decoder — 7 questions that analyze how you actually make decisions.\n\nMy result: ' + a.emoji + ' ' + a.name.toUpperCase() + '\n\n"' + a.shareQuip + '"\n\nMy scores:\n→ Risk tolerance: ' + t.risk + '%\n→ Ambition: ' + t.ambition + '%\n→ Need for meaning: ' + t.meaning + '%\n→ Speed: ' + t.speed + '%\n\nTook me 60 seconds and was scarily accurate.\n\nCurious what you\'d get? Play it here → ' + url;
         }
         if (platform === 'whatsapp') {
-            return a.emoji + ' I got "' + a.name + '" on the Life Decision Decoder\n\n"' + a.tagline + '"\n\nRisk ' + t.risk + '% · Speed ' + t.speed + '% · Ambition ' + t.ambition + '%\n\nTry it, it\'s weirdly accurate: ' + url;
+            return a.emoji + ' I just took this Life Decision Decoder quiz\n\nI got: *' + a.name + '*\n\n"' + a.shareQuip + '"\n\nRisk ' + t.risk + '% · Speed ' + t.speed + '% · Ambition ' + t.ambition + '%\n\nOnly 7 questions, weirdly accurate — try it: ' + url;
         }
         if (platform === 'copy') {
             var bar = function(v) {
@@ -1016,7 +1016,7 @@
                 for (var j = 0; j < empty; j++) s += '░';
                 return s;
             };
-            return a.emoji + ' Life Decision Decoder\n\nI\'m: ' + a.name.toUpperCase() + '\n"' + a.tagline + '"\n\nRisk      ' + bar(t.risk) + ' ' + t.risk + '%\nChaos     ' + bar(t.chaos) + ' ' + t.chaos + '%\nAmbition  ' + bar(t.ambition) + ' ' + t.ambition + '%\nSpeed     ' + bar(t.speed) + ' ' + t.speed + '%\nMeaning   ' + bar(t.meaning) + ' ' + t.meaning + '%\n\nTry it → ' + url;
+            return a.emoji + ' Life Decision Decoder\n\n' + a.name.toUpperCase() + '\n"' + a.tagline + '"\n\nRisk      ' + bar(t.risk) + ' ' + t.risk + '%\nChaos     ' + bar(t.chaos) + ' ' + t.chaos + '%\nAmbition  ' + bar(t.ambition) + ' ' + t.ambition + '%\nSpeed     ' + bar(t.speed) + ' ' + t.speed + '%\nMeaning   ' + bar(t.meaning) + ' ' + t.meaning + '%\n\n7 questions. 60 seconds. Scarily accurate.\nTry it → ' + url;
         }
         return '';
     }
@@ -1025,10 +1025,11 @@
         window.open(url, '_blank', 'width=600,height=500,noopener,noreferrer');
     }
 
-    function showToast() {
+    function showToast(msg) {
         var toast = $('#copyToast');
+        toast.textContent = msg || 'Copied to clipboard!';
         toast.classList.add('show');
-        setTimeout(function() { toast.classList.remove('show'); }, 2000);
+        setTimeout(function() { toast.classList.remove('show'); }, 2500);
     }
 
     /* ======================== EVENT LISTENERS ======================== */
@@ -1079,8 +1080,9 @@
     });
 
     $('#shareLinkedin').addEventListener('click', function() {
+        var text = encodeURIComponent(getShareText('linkedin'));
         var url = encodeURIComponent('https://abhilashganji.com/games/decode/');
-        openShareWindow('https://www.linkedin.com/sharing/share-offsite/?url=' + url);
+        openShareWindow('https://www.linkedin.com/shareArticle?mini=true&url=' + url + '&text=' + text);
     });
 
     $('#shareWhatsapp').addEventListener('click', function() {
