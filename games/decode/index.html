@@ -1083,7 +1083,7 @@
             return a.emoji + ' I took the Life Decision Decoder and got:\n\n"' + a.name.toUpperCase() + '"\n\n"' + a.shareQuip + '"\n\nRisk ' + t.risk + '% · Ambition ' + t.ambition + '% · Speed ' + t.speed + '%\n\n7 questions. Scarily accurate.\nWhat are you? ↓\n' + url;
         }
         if (platform === 'linkedin') {
-            return 'I just took the Life Decision Decoder — 7 questions that analyze how you actually make decisions.\n\nMy result: ' + a.emoji + ' ' + a.name.toUpperCase() + '\n\n"' + a.shareQuip + '"\n\nMy scores:\n→ Risk tolerance: ' + t.risk + '%\n→ Ambition: ' + t.ambition + '%\n→ Need for meaning: ' + t.meaning + '%\n→ Speed: ' + t.speed + '%\n\nTook me 60 seconds and was scarily accurate.\n\nCurious what you\'d get? Play it here → ' + url;
+            return 'I just took the Life Decision Decoder — 7 questions that analyze how you actually make decisions.\n\nMy result: ' + a.emoji + ' ' + a.name.toUpperCase() + '\n\n"' + a.shareQuip + '"\n\nMy scores:\n→ Risk tolerance: ' + t.risk + '%\n→ Ambition: ' + t.ambition + '%\n→ Need for meaning: ' + t.meaning + '%\n→ Speed: ' + t.speed + '%\n\nTook me 60 seconds and was scarily accurate.\n\nCurious what you\'d get? Play using this link → ' + url;
         }
         if (platform === 'whatsapp') {
             return a.emoji + ' I just took this Life Decision Decoder quiz\n\nI got: *' + a.name + '*\n\n"' + a.shareQuip + '"\n\nRisk ' + t.risk + '% · Speed ' + t.speed + '% · Ambition ' + t.ambition + '%\n\nOnly 7 questions, weirdly accurate — try it: ' + url;
@@ -1161,18 +1161,8 @@
     });
 
     $('#shareLinkedin').addEventListener('click', function() {
-        var text = getShareText('linkedin');
-        var copied = false;
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(function() {
-                showToast('✓ Text copied — paste it into the LinkedIn post');
-            });
-            copied = true;
-        }
-        var url = encodeURIComponent('https://abhilashganji.com/games/decode/');
-        setTimeout(function() {
-            openShareWindow('https://www.linkedin.com/sharing/share-offsite/?url=' + url);
-        }, copied ? 300 : 0);
+        var text = encodeURIComponent(getShareText('linkedin'));
+        openShareWindow('https://www.linkedin.com/feed/?shareActive=true&text=' + text);
     });
 
     $('#shareWhatsapp').addEventListener('click', function() {
