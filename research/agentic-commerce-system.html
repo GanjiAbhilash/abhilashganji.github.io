@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5R5X8679DV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-5R5X8679DV');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic Commerce: Multi-Stage Retrieval for Conversational Product Discovery — Abhilash Ganji</title>
+    <meta name="description" content="Designing multi-stage retrieval + ranking pipelines for conversational product discovery — embeddings, intent extraction, LLM reasoning, and re-ranking across 10K+ product lines.">
+    <link rel="canonical" href="https://abhilashganji.com/research/agentic-commerce-system.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .post-hero { padding: 160px 0 0; }
+        .post-hero-image { max-width: 720px; margin: 32px auto 0; border-radius: 12px; overflow: hidden; border: 1px solid rgba(39,39,42,0.5); }
+        .post-hero-image img { width: 100%; height: auto; display: block; }
+        .post-container { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
+        .post-tag { display: inline-block; padding: 4px 14px; background: var(--accent-subtle); color: var(--accent-light); border-radius: 100px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 1px; }
+        .post-title { font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 700; color: var(--text-primary); line-height: 1.2; margin-bottom: 16px; letter-spacing: -1px; }
+        .post-meta { display: flex; gap: 20px; color: var(--text-dim); font-size: 0.85rem; margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
+        .post-meta i { margin-right: 6px; color: var(--accent-primary); }
+        .post-content h2 { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 600; color: var(--text-primary); margin: 48px 0 16px; letter-spacing: -0.5px; }
+        .post-content h3 { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 600; color: var(--text-primary); margin: 32px 0 12px; }
+        .post-content p { font-size: 1rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 20px; }
+        .post-content strong { color: var(--text-primary); }
+        .post-content code { font-family: var(--font-mono); font-size: 0.85em; background: var(--bg-card); padding: 2px 8px; border-radius: 4px; color: var(--accent-light); border: 1px solid var(--border); }
+        .post-content pre { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px; margin: 24px 0; overflow-x: auto; }
+        .post-content pre code { background: none; border: none; padding: 0; font-size: 0.85rem; line-height: 1.7; }
+        .post-content blockquote { border-left: 3px solid var(--accent-primary); padding: 16px 24px; margin: 24px 0; background: rgba(var(--accent-primary-rgb), 0.05); border-radius: 0 var(--radius-md) var(--radius-md) 0; font-style: italic; color: var(--text-secondary); }
+        .post-content ul, .post-content ol { margin: 16px 0 16px 24px; color: var(--text-secondary); }
+        .post-content li { margin-bottom: 8px; line-height: 1.7; }
+        .post-back { display: inline-flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 32px; }
+        .post-back:hover { color: var(--accent-light); }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org", "@type": "TechArticle",
+        "headline": "Agentic Commerce: Multi-Stage Retrieval for Conversational Product Discovery",
+        "author": { "@type": "Person", "name": "Abhilash Ganji" },
+        "datePublished": "2025-12-01",
+        "url": "https://abhilashganji.com/research/agentic-commerce-system.html"
+    }
+    </script>
+</head>
+<body>
+    <header class="header scrolled" style="background:rgba(9,9,11,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(39,39,42,0.5);">
+        <nav class="nav container">
+            <a href="/" class="nav-logo"><span class="logo-bracket">{</span>AG<span class="logo-bracket">}</span></a>
+            <ul class="nav-menu" style="display:flex;">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/#projects" class="nav-link">Projects</a></li>
+                <li><a href="/#blog" class="nav-link active">Research</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="post-hero">
+        <div class="post-container">
+            <a href="/#blog" class="post-back"><i class="fas fa-arrow-left"></i> Back to Research</a>
+            <span class="post-tag">Agentic AI</span>
+            <h1 class="post-title">Agentic Commerce: Multi-Stage Retrieval for Conversational Product Discovery</h1>
+            <div class="post-meta">
+                <span><i class="fas fa-user"></i> Abhilash Ganji</span>
+                <span><i class="fas fa-calendar"></i> 2025</span>
+                <span><i class="fas fa-clock"></i> 18 min read</span>
+            </div>
+        </div>
+    </section>
+
+    <article class="post-container">
+        <div class="post-content">
+            <p>
+                Traditional e-commerce search is broken for complex purchase intent. When a user
+                types "I need a lightweight laptop for video editing under $1500 with good battery
+                life," keyword search returns noise. The user has to manually decompose their intent
+                into individual filter selections — and most give up. <strong>Agentic commerce
+                solves this by treating product discovery as a multi-turn reasoning problem.</strong>
+            </p>
+
+            <p>
+                At EPAM, I designed a multi-stage retrieval + ranking pipeline that enables
+                conversational product discovery across 10K+ product lines. This post covers
+                the architecture, the trade-offs between retrieval stages, and what actually
+                works at scale.
+            </p>
+
+            <h2>Why Single-Shot LLM Fails for Product Discovery</h2>
+
+            <p>
+                The naive approach: dump the product catalog into the LLM context and let it
+                reason. This fails for predictable reasons:
+            </p>
+
+            <ul>
+                <li><strong>Context window limits:</strong> 10K+ products exceed any reasonable context window. Even with summarization, the LLM can't process the full catalog.</li>
+                <li><strong>Hallucinated products:</strong> Without grounding in the actual catalog, LLMs confidently recommend products that don't exist or mix attributes from different items.</li>
+                <li><strong>Latency:</strong> Processing thousands of product descriptions per query is too slow for conversational UX — users expect sub-second responses.</li>
+                <li><strong>Cost:</strong> Token costs scale linearly with catalog size. At 10K+ products, every query becomes expensive.</li>
+            </ul>
+
+            <h2>The Multi-Stage Pipeline Architecture</h2>
+
+            <p>
+                The key insight: <strong>separate fast retrieval from expensive reasoning</strong>.
+                Each stage narrows the candidate set before the next stage does deeper analysis.
+            </p>
+
+            <pre><code>User Query
+    ↓
+[Stage 1] Embedding Retrieval (Top-100 candidates, ~50ms)
+    ↓
+[Stage 2] Intent Extraction (Parse constraints, categories, ~100ms)
+    ↓
+[Stage 3] LLM Reasoning + Re-ranking (Top-10 → Top-5, ~200ms)
+    ↓
+Personalized Results</code></pre>
+
+            <h3>Stage 1: Embedding Retrieval</h3>
+
+            <p>
+                Product descriptions are pre-embedded using a fine-tuned sentence transformer.
+                At query time, the user's natural language query is embedded and we retrieve the
+                top-100 most similar products via approximate nearest neighbor search. This stage
+                is <strong>fast (~50ms)</strong> and catches semantically relevant products that
+                keyword search would miss.
+            </p>
+
+            <pre><code># Product embedding at index time
+product_embedding = model.encode(f"{title} {description} {specs}")
+
+# Query-time retrieval
+query_embedding = model.encode(user_query)
+candidates = vector_store.search(query_embedding, top_k=100)</code></pre>
+
+            <p>
+                Critical decisions here: the embedding model must understand both product
+                language and purchase intent. We fine-tuned on (query, clicked_product) pairs
+                from historical search logs — this dramatically improved retrieval relevance
+                vs off-the-shelf models.
+            </p>
+
+            <h3>Stage 2: Intent Extraction</h3>
+
+            <p>
+                Before the LLM reasons about products, we extract structured intent from the
+                user's query. This is a lightweight LLM call (or fine-tuned classifier) that
+                parses:
+            </p>
+
+            <ul>
+                <li><strong>Hard constraints:</strong> Price range, brand, specific features ("under $1500", "USB-C")</li>
+                <li><strong>Soft preferences:</strong> Use case, priority signals ("for video editing", "lightweight")</li>
+                <li><strong>Category signals:</strong> Product type ("laptop", "camera")</li>
+                <li><strong>Conversational context:</strong> References to previous turns ("something similar but cheaper")</li>
+            </ul>
+
+            <pre><code># Intent extraction output
+{
+    "category": "laptop",
+    "hard_constraints": {
+        "price_max": 1500,
+        "weight": "lightweight"
+    },
+    "soft_preferences": ["video editing", "good battery life"],
+    "context_refs": []
+}</code></pre>
+
+            <p>
+                Hard constraints are applied as <strong>filters</strong> on the candidate set
+                (cheap operation). Soft preferences are passed to the LLM reasoning stage as
+                ranking signals. This reduces the candidate set from 100 → ~20-30 products
+                before the expensive LLM call.
+            </p>
+
+            <h3>Stage 3: LLM Reasoning + Re-ranking</h3>
+
+            <p>
+                The surviving candidates (20-30 products) are presented to the LLM along with
+                the extracted intent and conversation history. The LLM performs:
+            </p>
+
+            <ul>
+                <li><strong>Relevance scoring:</strong> How well does each product match the user's complete intent?</li>
+                <li><strong>Trade-off reasoning:</strong> "This laptop has better battery but is slightly heavier — mentioning the trade-off helps the user decide"</li>
+                <li><strong>Explanation generation:</strong> Why each recommendation was selected, in natural language</li>
+                <li><strong>Re-ranking:</strong> Final ordering based on holistic relevance, not just embedding similarity</li>
+            </ul>
+
+            <blockquote>
+                "The re-ranking stage adds ~200ms of latency but lifts precision@5 by 35%.
+                Without it, embedding retrieval returns semantically similar but not
+                purchase-relevant results — a hiking shoe review is semantically close to
+                hiking shoes, but it's not what the user wants to buy."
+            </blockquote>
+
+            <h2>Conversational Context Management</h2>
+
+            <p>
+                Multi-turn conversations are where agentic commerce differentiates from
+                traditional search. The system must maintain context across turns:
+            </p>
+
+            <pre><code>Turn 1: "I need a laptop for video editing"
+→ Shows top-5 laptops with GPU focus
+
+Turn 2: "Something cheaper"
+→ Understands "cheaper" is relative to previous results
+→ Filters by lower price range, maintains GPU preference
+
+Turn 3: "How about this one but with more RAM?"
+→ References a specific product from Turn 2
+→ Retrieves similar products with more RAM</code></pre>
+
+            <p>
+                We maintain a sliding context window of the last 5 turns plus a summary of
+                the user's evolving preferences. The intent extraction stage merges new signals
+                with existing context — if the user said "lightweight" three turns ago and
+                hasn't contradicted it, that preference persists.
+            </p>
+
+            <h2>Handling 10K+ Product Lines at Scale</h2>
+
+            <p>
+                Scale introduces specific challenges:
+            </p>
+
+            <ul>
+                <li><strong>Index freshness:</strong> Products change daily — prices, availability, new arrivals. We use incremental embedding updates (only re-embed changed products) rather than full re-indexing.</li>
+                <li><strong>Category diversity:</strong> A single embedding space for electronics, clothing, and food products leads to poor retrieval. We use category-aware embeddings with a shared base model + category-specific adapters.</li>
+                <li><strong>Cold-start products:</strong> New products with no interaction data get initial embeddings from their description + specs. As user interactions accumulate, embeddings are enriched with behavioral signals.</li>
+                <li><strong>Latency budget:</strong> Total pipeline must stay under 500ms for conversational UX. Each stage has a strict time budget: retrieval (50ms), intent (100ms), LLM reasoning (300ms).</li>
+            </ul>
+
+            <h2>Evaluation: What We Measured</h2>
+
+            <p>
+                Traditional IR metrics (precision, recall, NDCG) are necessary but not
+                sufficient. For conversational commerce, we also measure:
+            </p>
+
+            <ol>
+                <li><strong>Precision@5:</strong> Are the top-5 results all relevant? Our multi-stage pipeline achieves 0.78 vs 0.52 for keyword search.</li>
+                <li><strong>Intent satisfaction rate:</strong> Does the user find what they want within 3 turns? Measured via click-through and cart-add rates.</li>
+                <li><strong>Conversation depth:</strong> Average turns per session. Higher is good (engagement) up to a point — beyond 5 turns, the system is failing to understand intent.</li>
+                <li><strong>Fallback rate:</strong> How often does the system say "I can't find a match"? Too high means poor retrieval; too low means it's hallucinating matches.</li>
+            </ol>
+
+            <h2>Lessons from Production</h2>
+
+            <ol>
+                <li><strong>Start with retrieval quality.</strong> If Stage 1 misses the right products, no amount of LLM reasoning can fix it. Invest heavily in embedding quality and retrieval coverage.</li>
+                <li><strong>Intent extraction is the hardest stage.</strong> Users express purchase intent in wildly different ways. "I need something for my mom" requires reasoning about demographics, occasion, and price sensitivity — all implicit.</li>
+                <li><strong>Re-ranking is worth the latency.</strong> The 200ms cost of LLM re-ranking is repaid many times over in conversion improvement. Embedding similarity alone is not enough for purchase relevance.</li>
+                <li><strong>Conversation context has diminishing returns.</strong> Beyond 5 turns of history, the LLM starts getting confused by contradictory signals. Summarize aggressively.</li>
+                <li><strong>Monitor hallucinated products.</strong> Even with grounding, LLMs occasionally describe features that the actual product doesn't have. Automated validation against the product database catches these before they reach users.</li>
+            </ol>
+
+            <blockquote>
+                "Agentic commerce isn't about replacing search — it's about augmenting it
+                with reasoning. The best results come from combining fast, reliable retrieval
+                with slow, thoughtful reasoning. The multi-stage pipeline makes this economically
+                viable at scale."
+            </blockquote>
+        </div>
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border:none;padding:0;">
+                <p>&copy; 2026 Abhilash Ganji. Crafted with precision.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

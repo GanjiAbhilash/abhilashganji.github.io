@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5R5X8679DV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-5R5X8679DV');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Detection with LLM Explainability: From 8% to 1.2% — Abhilash Ganji</title>
+    <meta name="description" content="Building an end-to-end fraud detection system with ensemble ML pipeline and LLM-powered explainability — reducing fraud from 8% to 1.2% with human-readable explanations.">
+    <link rel="canonical" href="https://abhilashganji.com/research/fraud-detection-llm-explainability.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .post-hero { padding: 160px 0 0; }
+        .post-hero-image { max-width: 720px; margin: 32px auto 0; border-radius: 12px; overflow: hidden; border: 1px solid rgba(39,39,42,0.5); }
+        .post-hero-image img { width: 100%; height: auto; display: block; }
+        .post-container { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
+        .post-tag { display: inline-block; padding: 4px 14px; background: var(--accent-subtle); color: var(--accent-light); border-radius: 100px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 1px; }
+        .post-title { font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 700; color: var(--text-primary); line-height: 1.2; margin-bottom: 16px; letter-spacing: -1px; }
+        .post-meta { display: flex; gap: 20px; color: var(--text-dim); font-size: 0.85rem; margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
+        .post-meta i { margin-right: 6px; color: var(--accent-primary); }
+        .post-content h2 { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 600; color: var(--text-primary); margin: 48px 0 16px; letter-spacing: -0.5px; }
+        .post-content h3 { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 600; color: var(--text-primary); margin: 32px 0 12px; }
+        .post-content p { font-size: 1rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 20px; }
+        .post-content strong { color: var(--text-primary); }
+        .post-content code { font-family: var(--font-mono); font-size: 0.85em; background: var(--bg-card); padding: 2px 8px; border-radius: 4px; color: var(--accent-light); border: 1px solid var(--border); }
+        .post-content pre { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px; margin: 24px 0; overflow-x: auto; }
+        .post-content pre code { background: none; border: none; padding: 0; font-size: 0.85rem; line-height: 1.7; }
+        .post-content blockquote { border-left: 3px solid var(--accent-primary); padding: 16px 24px; margin: 24px 0; background: rgba(var(--accent-primary-rgb), 0.05); border-radius: 0 var(--radius-md) var(--radius-md) 0; font-style: italic; color: var(--text-secondary); }
+        .post-content ul, .post-content ol { margin: 16px 0 16px 24px; color: var(--text-secondary); }
+        .post-content li { margin-bottom: 8px; line-height: 1.7; }
+        .post-back { display: inline-flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 32px; }
+        .post-back:hover { color: var(--accent-light); }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org", "@type": "TechArticle",
+        "headline": "Fraud Detection with LLM Explainability: From 8% to 1.2%",
+        "author": { "@type": "Person", "name": "Abhilash Ganji" },
+        "datePublished": "2025-11-01",
+        "url": "https://abhilashganji.com/research/fraud-detection-llm-explainability.html"
+    }
+    </script>
+</head>
+<body>
+    <header class="header scrolled" style="background:rgba(9,9,11,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(39,39,42,0.5);">
+        <nav class="nav container">
+            <a href="/" class="nav-logo"><span class="logo-bracket">{</span>AG<span class="logo-bracket">}</span></a>
+            <ul class="nav-menu" style="display:flex;">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/#projects" class="nav-link">Projects</a></li>
+                <li><a href="/#blog" class="nav-link active">Research</a></li>
+                <li><a href="/#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="post-hero">
+        <div class="post-container">
+            <a href="/#blog" class="post-back"><i class="fas fa-arrow-left"></i> Back to Research</a>
+            <span class="post-tag">Fraud Detection</span>
+            <h1 class="post-title">Fraud Detection with LLM Explainability: From 8% to 1.2%</h1>
+            <div class="post-meta">
+                <span><i class="fas fa-user"></i> Abhilash Ganji</span>
+                <span><i class="fas fa-calendar"></i> 2025</span>
+                <span><i class="fas fa-clock"></i> 16 min read</span>
+            </div>
+        </div>
+    </section>
+
+    <article class="post-container">
+        <div class="post-content">
+            <p>
+                Fraud detection is a solved problem — until you need to explain why a transaction
+                was flagged. Traditional ML models (XGBoost, random forests) are excellent at
+                detecting patterns, but <strong>their explanations are incomprehensible to
+                compliance teams, customer support, and regulators</strong>. SHAP plots and feature
+                importance charts don't cut it when you need to justify a blocked transaction
+                to a frustrated customer.
+            </p>
+
+            <p>
+                At EPAM, I designed an end-to-end fraud detection system that combines an
+                ensemble ML pipeline for detection with LLM-powered explainability for
+                human-readable justifications. The result: fraud rate dropped from 8% to 1.2%,
+                with every flag accompanied by a clear, actionable explanation visible in a
+                Streamlit dashboard.
+            </p>
+
+            <h2>The Two-System Architecture</h2>
+
+            <p>
+                The critical design decision: <strong>separate detection from explanation</strong>.
+                Detection needs to be fast, deterministic, and reliable. Explanation can tolerate
+                higher latency but must be accurate and human-readable. Forcing one system to do
+                both creates unacceptable compromises.
+            </p>
+
+            <pre><code>Transaction Data
+    ↓
+[Detection Layer] Ensemble ML Pipeline (~50ms)
+    ├── XGBoost (tabular features)
+    ├── Rule Engine (hard business rules)
+    └── Velocity Checks (time-window aggregates)
+    ↓
+Fraud Score + Feature Contributions
+    ↓
+[Explanation Layer] LLM Explainability (~500ms)
+    ↓
+Human-Readable Explanation
+    ↓
+Streamlit Dashboard</code></pre>
+
+            <h3>Detection Layer: Ensemble ML Pipeline</h3>
+
+            <p>
+                The detection layer is a classic ensemble approach, but with careful engineering
+                for production reliability:
+            </p>
+
+            <ul>
+                <li><strong>XGBoost core model:</strong> Trained on 50+ features including transaction amount, merchant category, time-of-day patterns, device fingerprints, and historical behavior. XGBoost over deep learning because tabular data + interpretable feature importance + fast inference.</li>
+                <li><strong>Rule engine layer:</strong> Hard business rules that override model predictions. Known fraud patterns (gift card draining, velocity attacks) get rule-based detection because they're 100% precision — no need for probabilistic scoring.</li>
+                <li><strong>Velocity checks:</strong> Time-window aggregations that catch burst patterns. "5 transactions in 2 minutes from the same card" is a signal the model might miss if it evaluates transactions independently.</li>
+            </ul>
+
+            <pre><code># Ensemble scoring
+def score_transaction(txn):
+    xgb_score = xgb_model.predict_proba(txn.features)[1]
+    rule_flag = rule_engine.evaluate(txn)
+    velocity_flag = velocity_checker.check(txn.card_id, window="5min")
+
+    if rule_flag:
+        return 1.0, "rule_match"  # Hard override
+    if velocity_flag:
+        xgb_score = min(xgb_score * 1.5, 1.0)  # Boost score
+
+    return xgb_score, "model"</code></pre>
+
+            <h3>Explanation Layer: LLM Explainability</h3>
+
+            <p>
+                When a transaction is flagged (score > threshold), the explanation layer
+                generates a human-readable justification. The inputs to the LLM:
+            </p>
+
+            <ul>
+                <li><strong>Top-5 SHAP features:</strong> The most influential features that drove the model's decision, with their direction and magnitude.</li>
+                <li><strong>Transaction context:</strong> Amount, merchant, time, location, device — the raw facts.</li>
+                <li><strong>Historical baseline:</strong> What's "normal" for this customer — average transaction size, typical merchants, usual time patterns.</li>
+                <li><strong>Rule triggers:</strong> Which business rules were activated, if any.</li>
+            </ul>
+
+            <pre><code># LLM explanation prompt (simplified)
+EXPLAIN_PROMPT = """
+Given this flagged transaction and the model's reasoning,
+generate a clear, concise explanation for the compliance team.
+
+Transaction: {txn_details}
+Customer baseline: {baseline}
+Top risk factors: {shap_features}
+Rule triggers: {rules}
+
+Write 2-3 sentences explaining WHY this transaction was flagged.
+Focus on what's unusual compared to the customer's normal behavior.
+"""</code></pre>
+
+            <p>
+                Example output: <em>"This $2,340 purchase at an electronics retailer in Miami
+                was flagged because the customer's average transaction is $87 and they've
+                never shopped at this merchant before. Additionally, this is the 4th
+                transaction in the last 30 minutes, which is unusual for this account."</em>
+            </p>
+
+            <h2>Why Not End-to-End LLM?</h2>
+
+            <p>
+                The obvious question: why not use the LLM for both detection and explanation?
+                Three reasons:
+            </p>
+
+            <ol>
+                <li><strong>Latency:</strong> Detection must happen in <50ms for real-time scoring. LLM inference takes 500ms+. You can't block a payment for half a second.</li>
+                <li><strong>Determinism:</strong> The same transaction features must always produce the same fraud score. LLMs are stochastic — even with temperature=0, there's variance across runs. Regulators require consistent, reproducible decisions.</li>
+                <li><strong>Cost:</strong> Processing every transaction through an LLM would cost orders of magnitude more than XGBoost inference. The LLM is only called for flagged transactions (~2-5% of volume).</li>
+            </ol>
+
+            <h2>The Streamlit Dashboard</h2>
+
+            <p>
+                The end product is a Streamlit dashboard where the compliance team can:
+            </p>
+
+            <ul>
+                <li><strong>Review flagged transactions</strong> with LLM-generated explanations alongside raw model outputs.</li>
+                <li><strong>Approve or escalate</strong> flags with one click, creating an audit trail.</li>
+                <li><strong>View trends</strong> in fraud patterns — which merchants, time windows, and transaction types are most affected.</li>
+                <li><strong>Provide feedback</strong> that feeds back into model retraining. False positive flags become negative training examples.</li>
+            </ul>
+
+            <h2>Results: 8% → 1.2%</h2>
+
+            <p>
+                The combined system achieved dramatic fraud rate reduction:
+            </p>
+
+            <ul>
+                <li><strong>Fraud rate:</strong> 8% → 1.2% (85% reduction)</li>
+                <li><strong>False positive rate:</strong> Reduced by 40% vs previous rule-only system</li>
+                <li><strong>Review time:</strong> Compliance team reviews 3x faster with LLM explanations vs raw model outputs</li>
+                <li><strong>Detection latency:</strong> <50ms for scoring, ~500ms for explanation generation (async, non-blocking)</li>
+            </ul>
+
+            <h2>Lessons from Production</h2>
+
+            <ol>
+                <li><strong>Explanation quality matters more than model accuracy.</strong> A slightly less accurate model with clear explanations gets adopted. A highly accurate model with opaque decisions gets bypassed by compliance teams who don't trust it.</li>
+                <li><strong>LLM explanations need guardrails.</strong> Without constraints, the LLM occasionally generates explanations that contradict the model's actual reasoning. We validate that the explanation references the actual top SHAP features — not hallucinated reasoning.</li>
+                <li><strong>Feedback loops are essential.</strong> The compliance team's approve/reject decisions are the highest-quality labels you'll ever get. Feeding these back into model retraining creates a virtuous cycle.</li>
+                <li><strong>Rule engine handles known patterns.</strong> Don't force the ML model to learn patterns you already know. Hard-coded rules for known fraud signatures are faster, more reliable, and more interpretable.</li>
+                <li><strong>Monitor explanation drift.</strong> As the LLM model updates (or if you switch providers), explanation quality can silently degrade. Automated evaluation on a held-out set of flagged transactions catches this.</li>
+            </ol>
+
+            <blockquote>
+                "The best fraud detection system isn't the one with the highest precision —
+                it's the one that the compliance team actually uses. LLM explainability bridges
+                the gap between model intelligence and human trust."
+            </blockquote>
+        </div>
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border:none;padding:0;">
+                <p>&copy; 2026 Abhilash Ganji. Crafted with precision.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
