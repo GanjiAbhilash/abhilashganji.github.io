@@ -25,7 +25,7 @@
         },
         {
             category: 'genai',
-            image: 'assets/projects/genai-iam.svg',
+            image: 'assets/projects/agentic-commerce.svg',
             alt: 'Agentic Commerce System',
             tag: 'Agentic AI / LLM',
             company: 'EPAM',
@@ -205,7 +205,7 @@
             featured: true
         },
         {
-            image: 'assets/projects/genai-iam.svg',
+            image: 'assets/projects/blog-agentic-commerce.svg',
             alt: 'Agentic Commerce System',
             category: 'Agentic AI',
             date: 'Dec 2025',
@@ -249,7 +249,7 @@
             featured: false
         },
         {
-            image: 'assets/projects/genai-iam.svg',
+            image: 'assets/projects/blog-ml-system.svg',
             alt: 'ML System Design Principles',
             category: 'System Design',
             date: 'Nov 2024',
@@ -260,7 +260,7 @@
             featured: false
         },
         {
-            image: 'assets/projects/genai-iam.svg',
+            image: 'assets/projects/blog-agentic-ai.svg',
             alt: 'Agentic AI Orchestration',
             category: 'Agentic AI',
             date: 'Mar 2025',
@@ -282,7 +282,7 @@
             featured: false
         },
         {
-            image: 'assets/projects/genai-iam.svg',
+            image: 'assets/projects/blog-rag-chunking.svg',
             alt: 'RAG Chunking Strategies',
             category: 'RAG / Retrieval',
             date: 'Jan 2025',
