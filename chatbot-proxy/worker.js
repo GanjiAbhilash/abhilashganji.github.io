@@ -5,14 +5,22 @@
 const HF_API = 'https://router.huggingface.co/v1/chat/completions';
 const ALLOWED_ORIGIN = 'https://abhilashganji.github.io';
 
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-};
+function getCorsHeaders(request) {
+  const origin = request.headers.get('Origin') || '';
+  const allowedOrigin = origin.includes('localhost') || origin.includes('127.0.0.1')
+    ? origin
+    : ALLOWED_ORIGIN;
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
+}
 
 export default {
   async fetch(request, env) {
+    const CORS_HEADERS = getCorsHeaders(request);
+
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: CORS_HEADERS });
@@ -24,7 +32,7 @@ export default {
 
     // Origin check
     const origin = request.headers.get('Origin') || '';
-    if (origin && !origin.startsWith(ALLOWED_ORIGIN) && !origin.includes('localhost')) {
+    if (origin && !origin.startsWith(ALLOWED_ORIGIN) && !origin.includes('localhost') && !origin.includes('127.0.0.1')) {
       return new Response('Forbidden', { status: 403, headers: CORS_HEADERS });
     }
 

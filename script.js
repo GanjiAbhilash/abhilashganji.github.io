@@ -1099,8 +1099,14 @@ Rules: Keep answers under 120 words. If asked something outside Abhilash's work,
                 conversationHistory.push({ role: 'assistant', content: reply });
                 return reply;
             } catch (err) {
+                console.error('[Chatbot] fetch error:', err);
                 if (err.name === 'AbortError') {
                     return 'Request timed out. The model may be loading — please try again.';
+                }
+                if (retries < MAX_RETRIES) {
+                    conversationHistory.pop();
+                    await new Promise(function(r) { setTimeout(r, RETRY_DELAY); });
+                    return queryHuggingFace(userMessage, retries + 1);
                 }
                 return 'Network error — please check your connection and try again.';
             }

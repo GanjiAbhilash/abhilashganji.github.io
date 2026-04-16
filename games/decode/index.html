@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5R5X8679DV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-5R5X8679DV');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Decision Decoder — What Do Your Choices Reveal? | Abhilash Ganji</title>
+    <meta name="description" content="Answer 7 quick questions. Get a brutally honest personality archetype and a prediction about your next move. Built by an ML engineer exploring human behavior patterns.">
+    <link rel="canonical" href="https://abhilashganji.com/games/decode/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://abhilashganji.com/games/decode/">
+    <meta property="og:title" content="Life Decision Decoder — What Do Your Choices Reveal?">
+    <meta property="og:description" content="7 questions. 60 seconds. A brutally honest personality archetype. Built by an ML engineer exploring human behavior patterns.">
+    <meta property="og:image" content="https://abhilashganji.com/assets/images/og-image.png">
+    <meta property="og:site_name" content="Abhilash Ganji">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Life Decision Decoder — What Do Your Choices Reveal?">
+    <meta name="twitter:description" content="7 questions. 60 seconds. A brutally honest personality archetype.">
+    <meta name="twitter:image" content="https://abhilashganji.com/assets/images/og-image.png">
+
+    <link rel="icon" href="../../assets/images/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* ======================== DESIGN TOKENS ======================== */
+        :root {
+            --bg-primary: #09090b;
+            --bg-secondary: #0f0f13;
+            --bg-card: #16161a;
+            --bg-card-hover: #1c1c21;
+            --bg-elevated: #1e1e23;
+            --accent-primary: #7c3aed;
+            --accent-primary-rgb: 124, 58, 237;
+            --accent-hover: #8b5cf6;
+            --accent-light: #a78bfa;
+            --accent-subtle: rgba(124, 58, 237, 0.1);
+            --accent-glow: rgba(124, 58, 237, 0.3);
+            --accent-secondary: #06b6d4;
+            --accent-secondary-rgb: 6, 182, 212;
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --text-dim: #52525b;
+            --border: #27272a;
+            --border-light: #3f3f46;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 24px;
+            --transition-fast: 0.2s ease;
+            --transition-base: 0.3s ease;
+        }
+
+        /* ======================== RESET ======================== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--accent-primary) var(--bg-primary); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 3px; }
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            line-height: 1.7;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+        }
+        ::selection { background: var(--accent-primary); color: var(--text-primary); }
+
+        /* ======================== HEADER ======================== */
+        .header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            padding: 0 24px;
+            background: rgba(9,9,11,0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(39,39,42,0.5);
+        }
+        .nav {
+            display: flex; align-items: center; justify-content: space-between;
+            height: 72px; max-width: 1200px; margin: 0 auto;
+        }
+        .nav-logo {
+            font-family: var(--font-heading); font-size: 1.3rem; font-weight: 700;
+            color: var(--text-primary); text-decoration: none; letter-spacing: 1px;
+        }
+        .logo-bracket { color: var(--accent-primary); }
+        .nav-links { display: flex; gap: 8px; list-style: none; }
+        .nav-links a {
+            font-size: 0.875rem; font-weight: 500; color: var(--text-muted);
+            padding: 8px 16px; border-radius: var(--radius-sm);
+            transition: all var(--transition-fast); text-decoration: none;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--text-primary); background: var(--accent-subtle); }
+        @media (max-width: 600px) { .nav-links { display: none; } }
+
+        /* ======================== BG EFFECTS ======================== */
+        .bg-grid {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image:
+                linear-gradient(rgba(124,58,237,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(124,58,237,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+        }
+        .bg-glow {
+            position: fixed; top: -200px; left: 50%; transform: translateX(-50%);
+            width: 800px; height: 800px; pointer-events: none; z-index: 0;
+            background: radial-gradient(circle, rgba(var(--accent-primary-rgb),0.12) 0%, rgba(var(--accent-secondary-rgb),0.05) 40%, transparent 70%);
+            filter: blur(60px); animation: glow 8s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            0% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+            100% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+        }
+
+        /* ======================== MAIN CONTAINER ======================== */
+        .game-wrapper {
+            position: relative; z-index: 1;
+            max-width: 680px; margin: 0 auto; padding: 120px 24px 80px;
+            min-height: 100vh;
+        }
+
+        /* ======================== SCREENS ======================== */
+        .screen { display: none; animation: fadeIn 0.5s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ======================== INTRO SCREEN ======================== */
+        .intro-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 16px; background: rgba(124,58,237,0.1);
+            border: 1px solid rgba(124,58,237,0.2); border-radius: 100px;
+            font-size: 0.75rem; font-weight: 600; color: var(--accent-light);
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px;
+        }
+        .intro-title {
+            font-family: var(--font-heading); font-size: clamp(2.2rem, 5vw, 3.2rem);
+            font-weight: 800; color: var(--text-primary); line-height: 1.1;
+            letter-spacing: -2px; margin-bottom: 20px;
+        }
+        .intro-title .accent { color: var(--accent-light); }
+        .intro-desc {
+            font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 12px;
+            max-width: 520px; line-height: 1.7;
+        }
+        .intro-meta {
+            display: flex; gap: 20px; margin: 24px 0 40px;
+            font-size: 0.85rem; color: var(--text-muted);
+        }
+        .intro-meta i { color: var(--accent-light); margin-right: 6px; }
+        .btn-start {
+            display: inline-flex; align-items: center; gap: 10px; padding: 16px 40px;
+            background: var(--accent-primary); color: #fff; border: none;
+            border-radius: var(--radius-md); font-family: var(--font-heading);
+            font-size: 1.1rem; font-weight: 600; cursor: pointer;
+            transition: all var(--transition-base); letter-spacing: 0.5px;
+        }
+        .btn-start:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(var(--accent-primary-rgb),0.4); }
+        .intro-fine {
+            margin-top: 20px; font-size: 0.78rem; color: var(--text-dim);
+            font-style: italic;
+        }
+
+        /* ======================== QUESTION SCREEN ======================== */
+        .progress-bar {
+            width: 100%; height: 4px; background: var(--border);
+            border-radius: 2px; margin-bottom: 48px; overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 2px; transition: width 0.4s ease;
+        }
+        .q-counter {
+            font-family: var(--font-mono); font-size: 0.8rem;
+            color: var(--text-dim); margin-bottom: 12px; letter-spacing: 1px;
+        }
+        .q-text {
+            font-family: var(--font-heading); font-size: clamp(1.3rem, 3vw, 1.7rem);
+            font-weight: 700; color: var(--text-primary); line-height: 1.3;
+            margin-bottom: 40px; letter-spacing: -0.5px;
+        }
+
+        /* Slider */
+        .slider-container { margin-bottom: 48px; }
+        .slider-labels {
+            display: flex; justify-content: space-between; margin-bottom: 16px;
+            font-size: 0.82rem; color: var(--text-muted); gap: 20px;
+        }
+        .slider-labels span { max-width: 45%; }
+        .slider-labels .left { text-align: left; }
+        .slider-labels .right { text-align: right; }
+
+        input[type="range"] {
+            -webkit-appearance: none; appearance: none;
+            width: 100%; height: 6px; border-radius: 3px;
+            background: var(--border); outline: none; cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 24px; height: 24px; border-radius: 50%;
+            background: var(--accent-primary); cursor: pointer;
+            border: 3px solid var(--bg-primary);
+            box-shadow: 0 0 12px rgba(var(--accent-primary-rgb),0.5);
+            transition: transform 0.15s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+        input[type="range"]::-moz-range-thumb {
+            width: 24px; height: 24px; border-radius: 50%;
+            background: var(--accent-primary); cursor: pointer;
+            border: 3px solid var(--bg-primary);
+            box-shadow: 0 0 12px rgba(var(--accent-primary-rgb),0.5);
+        }
+        .slider-value {
+            text-align: center; margin-top: 12px;
+            font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-light);
+        }
+
+        .q-nav { display: flex; justify-content: space-between; gap: 16px; }
+        .btn-q {
+            padding: 12px 28px; border-radius: var(--radius-md); font-family: var(--font-heading);
+            font-size: 0.95rem; font-weight: 600; cursor: pointer; border: none;
+            transition: all var(--transition-fast);
+        }
+        .btn-back {
+            background: var(--bg-card); color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+        .btn-back:hover { color: var(--text-primary); border-color: var(--border-light); }
+        .btn-next { background: var(--accent-primary); color: #fff; }
+        .btn-next:hover { background: var(--accent-hover); transform: translateY(-1px); }
+
+        /* ======================== ANALYZING SCREEN ======================== */
+        .analyzing-screen { text-align: center; padding-top: 100px; }
+        .analyzing-brain {
+            font-size: 4rem; margin-bottom: 32px;
+            animation: pulse-brain 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse-brain {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.15); opacity: 1; }
+        }
+        .analyzing-title {
+            font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700;
+            color: var(--text-primary); margin-bottom: 16px;
+        }
+        .analyzing-sub {
+            font-size: 0.9rem; color: var(--text-muted); margin-bottom: 32px;
+        }
+        .analyzing-steps {
+            list-style: none; max-width: 340px; margin: 0 auto; text-align: left;
+        }
+        .analyzing-steps li {
+            font-size: 0.85rem; color: var(--text-dim); padding: 8px 0;
+            font-family: var(--font-mono); display: flex; align-items: center; gap: 10px;
+            opacity: 0; animation: stepIn 0.4s ease forwards;
+        }
+        .analyzing-steps li.done { color: var(--success); }
+        .analyzing-steps li .check { min-width: 18px; text-align: center; }
+        @keyframes stepIn { to { opacity: 1; } }
+
+        /* ======================== RESULT SCREEN ======================== */
+        .result-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-xl); padding: 40px 32px;
+            position: relative; overflow: hidden;
+        }
+        .result-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), var(--accent-primary));
+        }
+        .result-emoji {
+            font-size: 3rem; margin-bottom: 8px;
+        }
+        .result-label {
+            font-family: var(--font-mono); font-size: 0.75rem;
+            color: var(--text-dim); text-transform: uppercase;
+            letter-spacing: 2px; margin-bottom: 8px;
+        }
+        .result-archetype {
+            font-family: var(--font-heading); font-size: clamp(2rem, 5vw, 2.8rem);
+            font-weight: 800; color: var(--text-primary); letter-spacing: -1.5px;
+            margin-bottom: 12px;
+        }
+        .result-tagline {
+            font-size: 1.1rem; color: var(--accent-light);
+            font-style: italic; margin-bottom: 32px; line-height: 1.5;
+        }
+
+        /* Trait bars */
+        .trait-bars { margin-bottom: 32px; }
+        .trait-row {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 12px;
+        }
+        .trait-name {
+            font-family: var(--font-mono); font-size: 0.78rem;
+            color: var(--text-muted); min-width: 80px; text-align: right;
+        }
+        .trait-bar-track {
+            flex: 1; height: 8px; background: var(--border);
+            border-radius: 4px; overflow: hidden;
+        }
+        .trait-bar-fill {
+            height: 100%; border-radius: 4px; width: 0;
+            transition: width 1s ease;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+        }
+        .trait-pct {
+            font-family: var(--font-mono); font-size: 0.8rem;
+            color: var(--text-primary); min-width: 38px;
+        }
+
+        /* Prediction */
+        .prediction-box {
+            background: rgba(124,58,237,0.08); border: 1px solid rgba(124,58,237,0.2);
+            border-radius: var(--radius-md); padding: 20px 24px; margin-bottom: 12px;
+        }
+        .prediction-label {
+            font-family: var(--font-mono); font-size: 0.72rem;
+            color: var(--accent-light); text-transform: uppercase;
+            letter-spacing: 2px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+        }
+        .prediction-text {
+            font-size: 1rem; color: var(--text-primary); line-height: 1.6;
+        }
+
+        /* Share */
+        .share-section { margin-top: 32px; }
+        .share-title {
+            font-family: var(--font-mono); font-size: 0.75rem;
+            color: var(--text-dim); text-transform: uppercase;
+            letter-spacing: 2px; margin-bottom: 16px;
+        }
+        .share-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+            margin-bottom: 12px;
+        }
+        .share-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 12px 16px; border-radius: var(--radius-md); font-size: 0.85rem;
+            font-weight: 600; cursor: pointer; border: 1px solid var(--border);
+            background: var(--bg-elevated); color: var(--text-primary);
+            transition: all var(--transition-fast); text-decoration: none;
+            font-family: var(--font-body);
+        }
+        .share-btn:hover { transform: translateY(-2px); border-color: var(--border-light); }
+        .share-btn.twitter { background: rgba(29,155,240,0.1); border-color: rgba(29,155,240,0.3); color: #1d9bf0; }
+        .share-btn.twitter:hover { background: rgba(29,155,240,0.2); }
+        .share-btn.linkedin { background: rgba(10,102,194,0.1); border-color: rgba(10,102,194,0.3); color: #0a66c2; }
+        .share-btn.linkedin:hover { background: rgba(10,102,194,0.2); }
+        .share-btn.whatsapp { background: rgba(37,211,102,0.1); border-color: rgba(37,211,102,0.3); color: #25d366; }
+        .share-btn.whatsapp:hover { background: rgba(37,211,102,0.2); }
+        .share-btn.copy { background: var(--accent-subtle); border-color: rgba(var(--accent-primary-rgb),0.3); color: var(--accent-light); }
+        .share-btn.copy:hover { background: rgba(var(--accent-primary-rgb),0.15); }
+
+        .copy-toast {
+            position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px);
+            background: var(--success); color: #fff; padding: 12px 28px;
+            border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 600;
+            z-index: 9999; opacity: 0; transition: all 0.3s ease; pointer-events: none;
+        }
+        .copy-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* Retake */
+        .retake-section { text-align: center; margin-top: 40px; }
+        .btn-retake {
+            display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px;
+            background: var(--bg-card); color: var(--text-muted); border: 1px solid var(--border);
+            border-radius: var(--radius-md); font-family: var(--font-heading);
+            font-size: 0.9rem; font-weight: 600; cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        .btn-retake:hover { color: var(--text-primary); border-color: var(--border-light); }
+
+        /* ======================== FOOTER ======================== */
+        .footer {
+            position: relative; z-index: 1;
+            text-align: center; padding: 40px 24px; margin-top: 40px;
+            border-top: 1px solid var(--border);
+        }
+        .footer-brand {
+            font-size: 0.8rem; color: var(--text-dim);
+            font-style: italic; margin-bottom: 8px;
+        }
+        .footer-brand a { color: var(--accent-light); text-decoration: none; }
+        .footer-brand a:hover { color: var(--accent-hover); }
+        .footer-copy { font-size: 0.75rem; color: var(--text-dim); }
+
+        /* ======================== RESPONSIVE ======================== */
+        @media (max-width: 480px) {
+            .game-wrapper { padding: 100px 16px 60px; }
+            .result-card { padding: 28px 20px; }
+            .share-grid { grid-template-columns: 1fr; }
+            .intro-meta { flex-direction: column; gap: 8px; }
+            .trait-name { min-width: 65px; font-size: 0.72rem; }
+        }
+    </style>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Life Decision Decoder",
+        "description": "Answer 7 questions to decode your decision-making personality archetype. Built by an ML engineer exploring human behavior patterns.",
+        "url": "https://abhilashganji.com/games/decode/",
+        "author": { "@type": "Person", "name": "Abhilash Ganji" },
+        "applicationCategory": "Entertainment",
+        "operatingSystem": "Web"
+    }
+    </script>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<!-- Header -->
+<header class="header">
+    <nav class="nav">
+        <a href="/" class="nav-logo"><span class="logo-bracket">{</span>AG<span class="logo-bracket">}</span></a>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/games/decode/" class="active">Play</a></li>
+            <li><a href="/#contact">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="game-wrapper">
+
+    <!-- ==================== INTRO SCREEN ==================== -->
+    <div class="screen active" id="screenIntro">
+        <div class="intro-badge"><i class="fas fa-brain"></i> Behavioral Pattern Analysis</div>
+        <h1 class="intro-title">Life Decision <span class="accent">Decoder</span></h1>
+        <p class="intro-desc">
+            Answer 7 quick questions about how you make decisions. Get a brutally honest personality archetype — and a prediction about what you'll do next.
+        </p>
+        <p class="intro-desc" style="font-size:0.95rem; color:var(--text-muted);">
+            No sign-ups. No data stored. Just uncomfortable accuracy.
+        </p>
+        <div class="intro-meta">
+            <span><i class="fas fa-clock"></i> 60 seconds</span>
+            <span><i class="fas fa-bolt"></i> 7 questions</span>
+            <span><i class="fas fa-fingerprint"></i> 8 archetypes</span>
+        </div>
+        <button class="btn-start" id="btnStart">
+            Decode My Decisions <i class="fas fa-arrow-right"></i>
+        </button>
+        <p class="intro-fine">Built by an ML engineer exploring human behavior patterns.</p>
+    </div>
+
+    <!-- ==================== QUESTION SCREEN ==================== -->
+    <div class="screen" id="screenQuestion">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="q-counter" id="qCounter"></div>
+        <div class="q-text" id="qText"></div>
+        <div class="slider-container">
+            <div class="slider-labels">
+                <span class="left" id="labelLeft"></span>
+                <span class="right" id="labelRight"></span>
+            </div>
+            <input type="range" min="0" max="100" value="50" id="slider">
+            <div class="slider-value" id="sliderValue">50</div>
+        </div>
+        <div class="q-nav">
+            <button class="btn-q btn-back" id="btnBack"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="btn-q btn-next" id="btnNext">Next <i class="fas fa-arrow-right"></i></button>
+        </div>
+    </div>
+
+    <!-- ==================== ANALYZING SCREEN ==================== -->
+    <div class="screen" id="screenAnalyzing">
+        <div class="analyzing-screen">
+            <div class="analyzing-brain">🧠</div>
+            <div class="analyzing-title">Analyzing your patterns...</div>
+            <div class="analyzing-sub">Running behavioral classification model</div>
+            <ul class="analyzing-steps" id="analyzingSteps">
+                <li><span class="check">⏳</span> Mapping decision vectors</li>
+                <li><span class="check">⏳</span> Computing risk-reward profile</li>
+                <li><span class="check">⏳</span> Classifying behavioral archetype</li>
+                <li><span class="check">⏳</span> Generating prediction model</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ==================== RESULT SCREEN ==================== -->
+    <div class="screen" id="screenResult">
+        <div class="result-card" id="resultCard">
+            <div class="result-label">Your archetype</div>
+            <div class="result-emoji" id="resEmoji"></div>
+            <div class="result-archetype" id="resArchetype"></div>
+            <div class="result-tagline" id="resTagline"></div>
+
+            <div class="trait-bars" id="traitBars"></div>
+
+            <div class="prediction-box">
+                <div class="prediction-label"><i class="fas fa-chart-line"></i> Prediction</div>
+                <div class="prediction-text" id="resPrediction"></div>
+            </div>
+        </div>
+
+        <div class="share-section">
+            <div class="share-title">Post your result</div>
+            <div class="share-grid">
+                <button class="share-btn twitter" id="shareTwitter"><i class="fab fa-x-twitter"></i> Twitter / X</button>
+                <button class="share-btn linkedin" id="shareLinkedin"><i class="fab fa-linkedin-in"></i> LinkedIn</button>
+                <button class="share-btn whatsapp" id="shareWhatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                <button class="share-btn copy" id="shareCopy"><i class="fas fa-copy"></i> Copy Result</button>
+            </div>
+        </div>
+
+        <div class="retake-section">
+            <button class="btn-retake" id="btnRetake"><i class="fas fa-redo"></i> Take Again</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Toast -->
+<div class="copy-toast" id="copyToast">Copied to clipboard!</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <p class="footer-brand">Built by <a href="/">Abhilash Ganji</a> — ML engineer exploring human behavior patterns.</p>
+    <p class="footer-copy">&copy; 2026 Abhilash Ganji. No data is collected or stored.</p>
+</footer>
+
+<script>
+(function() {
+    'use strict';
+
+    /* ======================== QUESTIONS ======================== */
+    var QUESTIONS = [
+        {
+            text: "When it comes to career moves, where do you fall?",
+            left: "Stable paycheck forever — safety is freedom",
+            right: "Bet it all on my idea — risk is freedom",
+            traits: ['risk', 'ambition']
+        },
+        {
+            text: "How do you approach a brand new challenge?",
+            left: "Plan every detail before I start",
+            right: "Figure it out as I go",
+            traits: ['chaos', 'speed']
+        },
+        {
+            text: "You're comfortable where you are, but there's a bigger opportunity elsewhere.",
+            left: "Stay where I'm valued and trusted",
+            right: "Leave for growth, even if it's uncertain",
+            traits: ['ambition', 'risk']
+        },
+        {
+            text: "What ultimately drives your biggest decisions?",
+            left: "Optimize for money and financial security",
+            right: "Optimize for meaning and impact",
+            traits: ['meaning', 'ambition']
+        },
+        {
+            text: "If you had 10,000 hours to invest in yourself...",
+            left: "One deep skill — become the undeniable expert",
+            right: "Know a bit of everything — be the connector",
+            traits: ['generalist', 'chaos']
+        },
+        {
+            text: "When making decisions under pressure...",
+            left: "I'd rather be right than fast",
+            right: "I'd rather be fast than perfect",
+            traits: ['speed', 'risk']
+        },
+        {
+            text: "Think about the biggest risk you've ever taken.",
+            left: "It was worth it — I'd do it again",
+            right: "It was a mistake — I learned the hard way",
+            traits: ['regret', 'meaning']
+        }
+    ];
+
+    /* ======================== ARCHETYPES ======================== */
+    var ARCHETYPES = [
+        {
+            name: "The Architect",
+            emoji: "📐",
+            tagline: "You don't gamble — you engineer outcomes.",
+            condition: function(t) { return t.risk < 35 && t.chaos < 40 && t.speed < 45; },
+            prediction: "You'll pass on an exciting opportunity in the next 6 months because the timing isn't right. And you'll be at peace with that — because you know your plan is better than anyone's impulse.",
+            shareQuip: "I engineer outcomes, not gamble on them."
+        },
+        {
+            name: "The Operator",
+            emoji: "⚙️",
+            tagline: "You optimize for consistency. That's rarer than people think.",
+            condition: function(t) { return t.risk < 45 && t.ambition < 50 && t.chaos < 45; },
+            prediction: "Someone will try to pull you into a risky venture soon. You'll say no, and they'll fail — confirming what you already knew. Your instinct for sustainable moves is your superpower.",
+            shareQuip: "I optimize for consistency over hype."
+        },
+        {
+            name: "The Catalyst",
+            emoji: "⚡",
+            tagline: "You'd rather fail fast than succeed slowly.",
+            condition: function(t) { return t.risk >= 60 && t.speed >= 60 && t.meaning >= 50; },
+            prediction: "You'll break something that's working just fine — a job, a routine, a relationship — because 'fine' feels like failure to you. And honestly? The next thing will be better.",
+            shareQuip: "I'd rather fail fast than succeed slowly."
+        },
+        {
+            name: "The Maverick",
+            emoji: "🔥",
+            tagline: "You've burned more bridges than most people have crossed.",
+            condition: function(t) { return t.risk >= 65 && t.speed >= 55 && t.chaos >= 55; },
+            prediction: "Someone will call you reckless in the next few months. They'll be half right. But the results will prove them wrong — again.",
+            shareQuip: "I've burned more bridges than most people have crossed."
+        },
+        {
+            name: "The Philosopher",
+            emoji: "🔮",
+            tagline: "You optimize for understanding, not outcomes.",
+            condition: function(t) { return t.meaning >= 65 && t.speed < 50 && t.generalist < 55; },
+            prediction: "You'll turn down something lucrative because it doesn't align with what you actually care about. People won't understand — but you will, and that's enough.",
+            shareQuip: "I optimize for understanding, not outcomes."
+        },
+        {
+            name: "The Explorer",
+            emoji: "🧭",
+            tagline: "You've never met a comfort zone you didn't want to leave.",
+            condition: function(t) { return t.generalist >= 55 && t.meaning >= 55 && t.chaos >= 50; },
+            prediction: "You're about to dive into something completely new — a field, a skill, a city. You don't know the details yet, but the restlessness is already there. Trust it.",
+            shareQuip: "I've never met a comfort zone I didn't want to leave."
+        },
+        {
+            name: "The Builder",
+            emoji: "🏗️",
+            tagline: "You're building something. You just haven't told anyone yet.",
+            condition: function(t) { return t.risk >= 55 && t.ambition >= 60 && t.chaos < 60; },
+            prediction: "Within the next year, you'll start something on the side — or go all in on something you've been quietly planning. The silence before the leap is where you are right now.",
+            shareQuip: "I'm building something. I just haven't told anyone yet."
+        },
+        {
+            name: "The Strategist",
+            emoji: "♟️",
+            tagline: "You play long games that most people don't have the patience for.",
+            condition: function(t) { return t.ambition >= 50; },
+            prediction: "You'll make a major career move in the next 12 months. You've already been thinking about it. The difference is — you'll time it better than anyone expects.",
+            shareQuip: "I play long games most people don't have the patience for."
+        }
+    ];
+
+    /* ======================== STATE ======================== */
+    var currentQ = 0;
+    var answers = [50, 50, 50, 50, 50, 50, 50];
+
+    /* ======================== DOM HELPERS ======================== */
+    function $(sel) { return document.querySelector(sel); }
+
+    var screenIntro = $('#screenIntro');
+    var screenQuestion = $('#screenQuestion');
+    var screenAnalyzing = $('#screenAnalyzing');
+    var screenResult = $('#screenResult');
+    var progressFill = $('#progressFill');
+    var qCounter = $('#qCounter');
+    var qText = $('#qText');
+    var labelLeft = $('#labelLeft');
+    var labelRight = $('#labelRight');
+    var slider = $('#slider');
+    var sliderValue = $('#sliderValue');
+    var btnBack = $('#btnBack');
+    var btnNext = $('#btnNext');
+
+    /* ======================== SCREEN MANAGEMENT ======================== */
+    function showScreen(screen) {
+        [screenIntro, screenQuestion, screenAnalyzing, screenResult].forEach(function(s) {
+            s.classList.remove('active');
+        });
+        // Force reflow for animation
+        void screen.offsetWidth;
+        screen.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ======================== RENDER QUESTION ======================== */
+    function renderQuestion() {
+        var q = QUESTIONS[currentQ];
+        progressFill.style.width = ((currentQ + 1) / QUESTIONS.length * 100) + '%';
+        qCounter.textContent = 'QUESTION ' + (currentQ + 1) + ' OF ' + QUESTIONS.length;
+        qText.textContent = q.text;
+        labelLeft.textContent = q.left;
+        labelRight.textContent = q.right;
+        slider.value = answers[currentQ];
+        sliderValue.textContent = answers[currentQ];
+        btnBack.style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+        btnNext.innerHTML = currentQ === QUESTIONS.length - 1
+            ? 'Decode <i class="fas fa-brain"></i>'
+            : 'Next <i class="fas fa-arrow-right"></i>';
+    }
+
+    /* ======================== COMPUTE TRAITS ======================== */
+    function computeTraits() {
+        var sums = { risk: 0, chaos: 0, ambition: 0, meaning: 0, generalist: 0, speed: 0, regret: 0 };
+        var counts = { risk: 0, chaos: 0, ambition: 0, meaning: 0, generalist: 0, speed: 0, regret: 0 };
+
+        QUESTIONS.forEach(function(q, i) {
+            var val = answers[i];
+            q.traits.forEach(function(trait) {
+                sums[trait] += val;
+                counts[trait]++;
+            });
+        });
+
+        var traits = {};
+        for (var key in sums) {
+            traits[key] = counts[key] > 0 ? Math.round(sums[key] / counts[key]) : 50;
+        }
+        return traits;
+    }
+
+    /* ======================== CLASSIFY ======================== */
+    function classify(traits) {
+        for (var i = 0; i < ARCHETYPES.length; i++) {
+            if (ARCHETYPES[i].condition(traits)) return ARCHETYPES[i];
+        }
+        // Fallback to Strategist (last, most permissive condition)
+        return ARCHETYPES[ARCHETYPES.length - 1];
+    }
+
+    /* ======================== ANALYZING ANIMATION ======================== */
+    function showAnalyzing() {
+        showScreen(screenAnalyzing);
+        var steps = document.querySelectorAll('#analyzingSteps li');
+        steps.forEach(function(li, i) {
+            li.classList.remove('done');
+            li.querySelector('.check').textContent = '⏳';
+            li.style.animationDelay = (i * 0.5) + 's';
+        });
+
+        var step = 0;
+        var interval = setInterval(function() {
+            if (step < steps.length) {
+                steps[step].classList.add('done');
+                steps[step].querySelector('.check').textContent = '✓';
+                step++;
+            } else {
+                clearInterval(interval);
+                setTimeout(function() { showResult(); }, 400);
+            }
+        }, 650);
+    }
+
+    /* ======================== SHOW RESULT ======================== */
+    function showResult() {
+        var traits = computeTraits();
+        var archetype = classify(traits);
+
+        // Track in GA
+        if (typeof gtag === 'function') {
+            gtag('event', 'decode_result', {
+                event_category: 'game',
+                event_label: archetype.name
+            });
+        }
+
+        // Render archetype
+        $('#resEmoji').textContent = archetype.emoji;
+        $('#resArchetype').textContent = archetype.name;
+        $('#resTagline').textContent = '"' + archetype.tagline + '"';
+        $('#resPrediction').textContent = archetype.prediction;
+
+        // Trait bars
+        var displayTraits = [
+            { key: 'risk', label: 'Risk' },
+            { key: 'chaos', label: 'Chaos' },
+            { key: 'ambition', label: 'Ambition' },
+            { key: 'speed', label: 'Speed' },
+            { key: 'meaning', label: 'Meaning' }
+        ];
+
+        var barsHTML = displayTraits.map(function(t) {
+            var val = traits[t.key];
+            return '<div class="trait-row">'
+                + '<span class="trait-name">' + t.label + '</span>'
+                + '<div class="trait-bar-track"><div class="trait-bar-fill" data-target="' + val + '"></div></div>'
+                + '<span class="trait-pct">' + val + '%</span>'
+                + '</div>';
+        }).join('');
+        $('#traitBars').innerHTML = barsHTML;
+
+        showScreen(screenResult);
+
+        // Animate bars after DOM paint
+        requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+                document.querySelectorAll('.trait-bar-fill').forEach(function(bar) {
+                    bar.style.width = bar.dataset.target + '%';
+                });
+            });
+        });
+
+        // Store for share
+        window._decodeResult = { archetype: archetype, traits: traits };
+    }
+
+    /* ======================== SHARE HELPERS ======================== */
+    function getShareText(platform) {
+        var r = window._decodeResult;
+        if (!r) return '';
+        var a = r.archetype;
+        var t = r.traits;
+        var url = 'https://abhilashganji.com/games/decode/';
+
+        if (platform === 'twitter') {
+            return 'I\'m "' + a.name + '" on the Life Decision Decoder\n\n"' + a.shareQuip + '"\n\nRisk ' + t.risk + '% · Ambition ' + t.ambition + '% · Speed ' + t.speed + '%\n\nWhat are you? ' + a.emoji + '\n' + url;
+        }
+        if (platform === 'linkedin') {
+            return 'Just tried this Life Decision Decoder — scarily accurate.\n\nI\'m "' + a.name + '" — "' + a.tagline + '"\n\nRisk: ' + t.risk + '% · Ambition: ' + t.ambition + '% · Meaning: ' + t.meaning + '%\n\nCurious what you get → ' + url;
+        }
+        if (platform === 'whatsapp') {
+            return a.emoji + ' I got "' + a.name + '" on the Life Decision Decoder\n\n"' + a.tagline + '"\n\nRisk ' + t.risk + '% · Speed ' + t.speed + '% · Ambition ' + t.ambition + '%\n\nTry it, it\'s weirdly accurate: ' + url;
+        }
+        if (platform === 'copy') {
+            var bar = function(v) {
+                var filled = Math.round(v / 10);
+                var empty = 10 - filled;
+                var s = '';
+                for (var i = 0; i < filled; i++) s += '▓';
+                for (var j = 0; j < empty; j++) s += '░';
+                return s;
+            };
+            return a.emoji + ' Life Decision Decoder\n\nI\'m: ' + a.name.toUpperCase() + '\n"' + a.tagline + '"\n\nRisk      ' + bar(t.risk) + ' ' + t.risk + '%\nChaos     ' + bar(t.chaos) + ' ' + t.chaos + '%\nAmbition  ' + bar(t.ambition) + ' ' + t.ambition + '%\nSpeed     ' + bar(t.speed) + ' ' + t.speed + '%\nMeaning   ' + bar(t.meaning) + ' ' + t.meaning + '%\n\nTry it → ' + url;
+        }
+        return '';
+    }
+
+    function openShareWindow(url) {
+        window.open(url, '_blank', 'width=600,height=500,noopener,noreferrer');
+    }
+
+    function showToast() {
+        var toast = $('#copyToast');
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2000);
+    }
+
+    /* ======================== EVENT LISTENERS ======================== */
+    $('#btnStart').addEventListener('click', function() {
+        currentQ = 0;
+        answers = [50, 50, 50, 50, 50, 50, 50];
+        renderQuestion();
+        showScreen(screenQuestion);
+    });
+
+    slider.addEventListener('input', function() {
+        var val = parseInt(slider.value, 10);
+        answers[currentQ] = val;
+        sliderValue.textContent = val;
+    });
+
+    btnNext.addEventListener('click', function() {
+        answers[currentQ] = parseInt(slider.value, 10);
+        if (currentQ < QUESTIONS.length - 1) {
+            currentQ++;
+            renderQuestion();
+        } else {
+            showAnalyzing();
+        }
+    });
+
+    btnBack.addEventListener('click', function() {
+        if (currentQ > 0) {
+            answers[currentQ] = parseInt(slider.value, 10);
+            currentQ--;
+            renderQuestion();
+        }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        if (!screenQuestion.classList.contains('active')) return;
+        if (e.key === 'Enter') { e.preventDefault(); btnNext.click(); }
+        if (e.key === 'ArrowLeft' && document.activeElement !== slider && currentQ > 0) {
+            btnBack.click();
+        }
+    });
+
+    // Share buttons
+    $('#shareTwitter').addEventListener('click', function() {
+        var text = encodeURIComponent(getShareText('twitter'));
+        openShareWindow('https://twitter.com/intent/tweet?text=' + text);
+    });
+
+    $('#shareLinkedin').addEventListener('click', function() {
+        var url = encodeURIComponent('https://abhilashganji.com/games/decode/');
+        openShareWindow('https://www.linkedin.com/sharing/share-offsite/?url=' + url);
+    });
+
+    $('#shareWhatsapp').addEventListener('click', function() {
+        var text = encodeURIComponent(getShareText('whatsapp'));
+        openShareWindow('https://wa.me/?text=' + text);
+    });
+
+    $('#shareCopy').addEventListener('click', function() {
+        var text = getShareText('copy');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(showToast);
+        } else {
+            // Fallback for older browsers
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            showToast();
+        }
+    });
+
+    // Retake
+    $('#btnRetake').addEventListener('click', function() {
+        currentQ = 0;
+        answers = [50, 50, 50, 50, 50, 50, 50];
+        showScreen(screenIntro);
+    });
+
+})();
+</script>
+
+</body>
+</html>
