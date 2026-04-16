@@ -3,15 +3,23 @@
 // Set secret: npx wrangler secret put HF_TOKEN
 
 const HF_API = 'https://router.huggingface.co/v1/chat/completions';
-const ALLOWED_ORIGIN = 'https://abhilashganji.github.io';
+const ALLOWED_ORIGINS = [
+  'https://abhilashganji.github.io',
+  'https://abhilashganji.com',
+  'https://www.abhilashganji.com',
+];
+
+function isAllowedOrigin(origin) {
+  if (!origin) return false;
+  return ALLOWED_ORIGINS.includes(origin)
+    || origin.includes('localhost')
+    || origin.includes('127.0.0.1');
+}
 
 function getCorsHeaders(request) {
   const origin = request.headers.get('Origin') || '';
-  const allowedOrigin = origin.includes('localhost') || origin.includes('127.0.0.1')
-    ? origin
-    : ALLOWED_ORIGIN;
   return {
-    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Origin': isAllowedOrigin(origin) ? origin : ALLOWED_ORIGINS[0],
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
   };
@@ -32,7 +40,7 @@ export default {
 
     // Origin check
     const origin = request.headers.get('Origin') || '';
-    if (origin && !origin.startsWith(ALLOWED_ORIGIN) && !origin.includes('localhost') && !origin.includes('127.0.0.1')) {
+    if (origin && !isAllowedOrigin(origin)) {
       return new Response('Forbidden', { status: 403, headers: CORS_HEADERS });
     }
 
