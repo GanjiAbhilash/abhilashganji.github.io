@@ -11,8 +11,8 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Building a Multi-Market Personalized Offers Engine — Abhilash Ganji</title>
-    <meta name="description" content="How I built a hybrid recommendation system using LightFM and Snowflake to personalize restaurant offers across multiple markets — architecture, cold-start solutions, A/B testing, and real results.">
+    <title>Why My First Recommender System Failed in Production — Abhilash Ganji</title>
+    <meta name="description" content="What I assumed, what broke, and what I changed — real production scars from building a recommender system that looked great in notebooks but died on launch day.">
     <link rel="canonical" href="https://abhilashganji.com/blog/recommendation-systems.html">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,7 +29,7 @@
         .post-container { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
         .post-tag {
             display: inline-block; padding: 4px 14px;
-            background: var(--accent-subtle); color: var(--accent-light);
+            background: rgba(239,68,68,0.15); color: #f87171;
             border-radius: 100px; font-size: 0.75rem; font-weight: 600;
             text-transform: uppercase; margin-bottom: 16px; letter-spacing: 1px;
         }
@@ -73,9 +73,9 @@
             font-size: 0.85rem; line-height: 1.7;
         }
         .post-content blockquote {
-            border-left: 3px solid var(--accent-primary);
+            border-left: 3px solid #ef4444;
             padding: 16px 24px; margin: 24px 0;
-            background: rgba(var(--accent-primary-rgb), 0.05);
+            background: rgba(239,68,68,0.05);
             border-radius: 0 var(--radius-md) var(--radius-md) 0;
             font-style: italic; color: var(--text-secondary);
         }
@@ -88,27 +88,28 @@
             color: var(--text-muted); font-size: 0.85rem; margin-bottom: 32px;
         }
         .post-back:hover { color: var(--accent-light); }
-        .architecture-diagram {
-            background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: var(--radius-md); padding: 32px; margin: 24px 0;
-            text-align: center; font-family: var(--font-mono); font-size: 0.85rem;
-            line-height: 2; color: var(--text-secondary);
+        .failure-box {
+            background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2);
+            border-radius: var(--radius-md); padding: 24px; margin: 24px 0;
         }
-        .architecture-diagram strong { color: var(--accent-light); }
-        .metric-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px; margin: 24px 0;
+        .failure-box h4 {
+            color: #f87171; font-size: 0.85rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
         }
-        .metric-card {
-            background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: var(--radius-md); padding: 20px; text-align: center;
+        .fix-box {
+            background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);
+            border-radius: var(--radius-md); padding: 24px; margin: 24px 0;
         }
-        .metric-card .value {
-            font-family: var(--font-heading); font-size: 1.8rem; font-weight: 700;
-            color: var(--accent-light); display: block;
+        .fix-box h4 {
+            color: #4ade80; font-size: 0.85rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
         }
-        .metric-card .label {
-            font-size: 0.8rem; color: var(--text-dim); margin-top: 4px;
+        .timeline-marker {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 4px 14px; background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 100px; font-size: 0.75rem; font-weight: 600;
+            color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 16px;
         }
     </style>
 
@@ -116,11 +117,11 @@
     {
         "@context": "https://schema.org",
         "@type": "BlogPosting",
-        "headline": "Building a Multi-Market Personalized Offers Engine",
+        "headline": "Why My First Recommender System Failed in Production",
         "author": { "@type": "Person", "name": "Abhilash Ganji" },
         "datePublished": "2025-01-01",
-        "dateModified": "2026-04-10",
-        "description": "How I built a hybrid recommendation system using LightFM and Snowflake to personalize restaurant offers across multiple markets.",
+        "dateModified": "2026-04-16",
+        "description": "What I assumed, what broke, and what I changed — real production scars from building a recommender system.",
         "url": "https://abhilashganji.com/blog/recommendation-systems.html"
     }
     </script>
@@ -141,15 +142,12 @@
     <section class="post-hero">
         <div class="post-container">
             <a href="/blog/" class="post-back"><i class="fas fa-arrow-left"></i> Back to Blog</a>
-            <span class="post-tag">RecSys &middot; Case Study</span>
-            <h1 class="post-title">Building a Multi-Market Personalized Offers Engine</h1>
+            <span class="post-tag"><i class="fas fa-skull-crossbones"></i>&nbsp; Failure Story</span>
+            <h1 class="post-title">Why My First Recommender System Failed in Production</h1>
             <div class="post-meta">
                 <span><i class="fas fa-user"></i> Abhilash Ganji</span>
-                <span><i class="fas fa-calendar"></i> January 1, 2025 (Updated April 10, 2026)</span>
-                <span><i class="fas fa-clock"></i> 18 min read</span>
-            </div>
-            <div class="post-hero-image">
-                <img src="../assets/projects/recsys-offers.svg" alt="Personalized Offers Recommendation Architecture">
+                <span><i class="fas fa-calendar"></i> January 2025 (Updated April 2026)</span>
+                <span><i class="fas fa-clock"></i> 15 min read</span>
             </div>
         </div>
     </section>
@@ -157,270 +155,318 @@
     <article class="post-container">
         <div class="post-content">
 
+            <blockquote>
+                Everyone shows their successes. Almost nobody shows what failed and why.
+                This is the story of a recommender system that looked perfect in my Jupyter
+                notebook — and completely fell apart the day we turned it on in production.
+            </blockquote>
+
+            <h2>The Setup</h2>
+
             <p>
-                Most recommendation system tutorials end at <code>model.fit()</code>. The
-                real challenge starts after — when you need to serve personalized
-                predictions to thousands of loyalty users across multiple countries, handle
-                cold-start offers that appear weekly, run rigorous A/B tests against control
-                groups, and give the ops team a dashboard to manage it all.
+                I was building a <strong>personalized offer recommendation engine</strong>
+                for a global QSR (Quick Service Restaurant) chain. The goal was simple:
+                show each loyalty user the offers they're most likely to redeem, instead
+                of blasting everyone with the same promotions.
             </p>
             <p>
-                This post walks through how I designed and deployed a <strong>personalized
-                offers recommendation engine</strong> for a global QSR (Quick Service
-                Restaurant) chain — from the theory behind hybrid recommenders to the
-                Snowflake-native architecture that runs it in production across multiple
-                markets.
+                I had 8 months of redemption history, user behavioral features, and offer
+                metadata. Classic recommendation problem. I was confident.
+            </p>
+            <p>
+                <strong>Spoiler: my confidence was the first problem.</strong>
             </p>
 
-            <h2>The Problem</h2>
-            <p>
-                Loyalty programs in QSR generate a constant stream of promotional offers:
-                discounts, bundle deals, limited-time items. The challenge is
-                <strong>which offers to show which users</strong>. Random assignment
-                wastes impressions. Popularity-based ranking ignores individual taste.
-                We needed a system that learns each user's preferences from their
-                redemption history and personalizes the offer set per user, per market.
-            </p>
-            <p>Key constraints:</p>
-            <ul>
-                <li><strong>Multi-market:</strong> Each country has different offer catalogs, menu items, and user behavior patterns.</li>
-                <li><strong>Frequent cold start:</strong> New offers appear every 1–2 weeks. The model must handle items with zero interaction history.</li>
-                <li><strong>Measurable lift:</strong> Every assignment cycle needs A/B evaluation — test group (personalized) vs. control group (random/popularity).</li>
-                <li><strong>Ops-friendly:</strong> Non-technical stakeholders need to upload new offers, toggle flags, and view results without touching code.</li>
-            </ul>
+            <h2>What I Assumed</h2>
 
-            <h2>Why LightFM: The Hybrid Approach</h2>
+            <div class="failure-box">
+                <h4><i class="fas fa-times-circle"></i> Assumption #1: Collaborative Filtering Would Be Enough</h4>
+                <p>I started with pure collaborative filtering — matrix factorization using
+                user-item interaction data. If user A and user B redeemed similar offers,
+                recommend user A's unredeemed offers to user B. Classic. Textbook.</p>
+                <p>My offline metrics were solid: <strong>precision@3 = 0.31</strong>,
+                <strong>recall@10 = 0.42</strong>. I was ready to ship.</p>
+            </div>
 
-            <h3>The Three Recommendation Paradigms</h3>
-            <p>
-                Before diving into LightFM, here's a quick lay of the land:
-            </p>
-            <ul>
-                <li><strong>Collaborative Filtering (CF):</strong> "Users who redeemed similar offers in the past will redeem similar offers in the future." Works great with sufficient interaction data, but fails on new users and new items.</li>
-                <li><strong>Content-Based Filtering:</strong> Uses item features (protein type, discount tier, menu category) to recommend similar items. No cold-start for items, but creates filter bubbles.</li>
-                <li><strong>Hybrid:</strong> Combines collaborative signals with content features. Best of both worlds — and what we needed.</li>
-            </ul>
+            <div class="failure-box">
+                <h4><i class="fas fa-times-circle"></i> Assumption #2: The Data Was Clean Enough</h4>
+                <p>I assumed the interaction matrix was reliable. A user redeeming an offer
+                = positive signal. A user NOT redeeming an offer = negative signal. Simple
+                binary classification.</p>
+            </div>
 
-            <h3>LightFM's Key Insight</h3>
+            <div class="failure-box">
+                <h4><i class="fas fa-times-circle"></i> Assumption #3: One Model Fits All Markets</h4>
+                <p>We operated in multiple countries. I trained a single global model because
+                "more data is always better." Germany, Switzerland, and other markets all
+                pooled together.</p>
+            </div>
+
+            <h2>What Broke</h2>
+
+            <span class="timeline-marker"><i class="fas fa-calendar-day"></i> Week 1 — Launch Day</span>
+
+            <h3>Failure #1: New offers got zero recommendations</h3>
             <p>
-                LightFM represents each user and item as the <strong>sum of their feature
-                embeddings</strong> rather than a single ID embedding. The prediction for
-                user <em>u</em> and item <em>i</em> is:
+                The restaurant chain launched <strong>new promotional offers every 1-2
+                weeks</strong>. Pure collaborative filtering needs interaction history to
+                work. New offers had zero interactions → zero scores → never surfaced to
+                any user.
             </p>
+            <p>
+                The ops team uploaded 6 new offers on launch day. All 6 were invisible.
+                The model was recommending stale, expired-adjacent offers because those
+                had the most historical interactions.
+            </p>
+
+            <div class="failure-box">
+                <h4><i class="fas fa-bomb"></i> Impact</h4>
+                <p>100% of new offers got zero impressions in the first week.
+                The marketing team escalated within 48 hours.</p>
+            </div>
+
+            <span class="timeline-marker"><i class="fas fa-calendar-day"></i> Week 2 — The Data Lie</span>
+
+            <h3>Failure #2: Implicit feedback =&ne; explicit ratings</h3>
+            <p>
+                Here's what I didn't account for: <strong>the absence of a click doesn't mean
+                the user dislikes the item</strong>. It might mean they never saw it.
+            </p>
+            <p>
+                My interaction matrix treated all missing values as negative signals.
+                But users only see 3-5 offers per session out of 40+ available. 90% of
+                "negative" signals were actually <strong>missing data, not dislike</strong>.
+            </p>
+            <p>
+                This created a vicious cycle: popular offers got more impressions →
+                more interactions → higher scores → more impressions. New and niche
+                offers starved. The model was essentially a popularity ranker with extra
+                steps.
+            </p>
+
+            <span class="timeline-marker"><i class="fas fa-calendar-day"></i> Week 3 — Market Collapse</span>
+
+            <h3>Failure #3: The global model was wrong for every market</h3>
+            <p>
+                Germany and Switzerland have fundamentally different food preferences,
+                discount sensitivities, and seasonal patterns. When I trained one model
+                on pooled data, it averaged out the signal and performed poorly everywhere.
+            </p>
+            <p>
+                A/B test results from week 3: <strong>the personalized model performed
+                WORSE than random assignment</strong> in the Swiss market. Worse than
+                random. That's the kind of result that makes you question your career.
+            </p>
+
+            <div class="failure-box">
+                <h4><i class="fas fa-chart-bar"></i> The Numbers That Hurt</h4>
+                <p>
+                    <strong>Germany:</strong> +3% redemption lift vs control (barely significant)<br>
+                    <strong>Switzerland:</strong> -4% redemption vs control (worse than random)<br>
+                    <strong>New offers:</strong> 0 impressions in first 7 days<br>
+                    <strong>Popularity bias:</strong> Top 5 offers got 78% of all recommendations
+                </p>
+            </div>
+
+            <h2>What I Changed</h2>
+
+            <p>
+                I didn't throw everything away. I stepped back, diagnosed each failure mode,
+                and rebuilt the system piece by piece. Here's exactly what changed:
+            </p>
+
+            <h3>Fix #1: Hybrid model with feature-sum embeddings (LightFM)</h3>
+
+            <div class="fix-box">
+                <h4><i class="fas fa-check-circle"></i> The Solution</h4>
+                <p>
+                    Replaced pure collaborative filtering with <strong>LightFM's hybrid approach</strong>.
+                    The key insight: each user and item is represented as the <em>sum of their
+                    feature embeddings</em>, not a single ID embedding.
+                </p>
+                <p>
+                    A new offer with features [BURGER, DISCOUNT_30, COMBO] immediately gets
+                    a meaningful embedding vector — the sum of the learned embeddings for each
+                    feature. No interaction history required.
+                </p>
+            </div>
+
             <pre><code>score(u, i) = sigmoid( q_u · p_i + b_u + b_i )
 
 where:
-  q_u = sum of user u's feature embeddings
-  p_i = sum of item i's feature embeddings
-  b_u, b_i = user and item biases</code></pre>
+  q_u = SUM of user u's feature embeddings
+  p_i = SUM of item i's feature embeddings
+
+# New offers instantly get a representation
+# from their categorical features</code></pre>
+
             <p>
-                This means a brand-new offer with features [BURGER, DISCOUNT_30, COMBO]
-                immediately gets a meaningful embedding — the sum of the learned embeddings for
-                each of those features. No interaction history required.
-            </p>
-            <p>
-                We trained with <strong>WARP (Weighted Approximate-Rank Pairwise) loss</strong>,
-                which directly optimizes for top-K ranking quality. Unlike BPR or logistic loss,
-                WARP focuses gradient updates on items that violate the desired ranking — making
-                it ideal when you only care about the top 3 recommendations per user.
+                I also added a cold-start fallback: offers with zero interactions get their
+                identity features set to the <strong>average of interacted items' features</strong>.
+                This prevents new items from getting degenerate zero-vector representations.
             </p>
 
-            <h2>System Architecture</h2>
+            <h3>Fix #2: WARP loss instead of BPR</h3>
 
-            <div class="architecture-diagram">
-                <strong>Snowflake Feature Store</strong><br>
-                (User features + Offer features + Interaction history)<br>
-                &darr;<br>
-                <strong>Training Pipeline</strong> (Snowpark Notebooks)<br>
-                LightFM with WARP loss &middot; 128-dim embeddings &middot; per-market configs<br>
-                &darr;<br>
-                <strong>Model Artifact</strong> &rarr; Snowflake Internal Stage<br>
-                &darr;<br>
-                <strong>Prediction Pipeline</strong><br>
-                Top-3 personalized offers per user &middot; written to assignment table<br>
-                &darr;<br>
-                <strong>Streamlit Dashboard</strong><br>
-                Upload offers &middot; Manage flags &middot; View redemption rates &amp; A/B results
+            <div class="fix-box">
+                <h4><i class="fas fa-check-circle"></i> The Solution</h4>
+                <p>
+                    Switched from BPR (Bayesian Personalized Ranking) to <strong>WARP
+                    (Weighted Approximate-Rank Pairwise) loss</strong>. WARP specifically
+                    optimizes for top-K ranking quality by sampling negative items and focusing
+                    gradient updates on ranking violations.
+                </p>
+                <p>
+                    Crucially, WARP handles the implicit feedback problem better — it doesn't
+                    treat all missing interactions as equally negative. The number of sampling
+                    attempts before finding a violation is itself informative.
+                </p>
             </div>
 
-            <p>The entire pipeline runs natively on Snowflake — no external orchestrator, no separate model server. Here's each layer:</p>
+            <h3>Fix #3: Per-market models with YAML configs</h3>
 
-            <h3>1. Feature Engineering on Snowflake Feature Store</h3>
-            <p>
-                We used <strong>Snowflake's ML Feature Store</strong> to manage versioned
-                feature views for both users and offers:
-            </p>
-            <ul>
-                <li><strong>User features:</strong> Derived from loyalty transaction history — frequency of visits, average spend, preferred daypart, cuisine preferences. Refreshed incrementally.</li>
-                <li><strong>Offer features:</strong> Categorical attributes from the offer catalog — menu size, protein type, additional products, discount type. One-hot encoded at training time.</li>
-                <li><strong>Interactions:</strong> Implicit feedback matrix built from offer redemptions. A user redeeming an offer = positive signal. We used configurable training windows (e.g., data from the last 6–12 months).</li>
-            </ul>
-            <p>
-                Feature views are versioned per country, enabling independent iteration per market without
-                cross-contamination.
-            </p>
+            <div class="fix-box">
+                <h4><i class="fas fa-check-circle"></i> The Solution</h4>
+                <p>
+                    Killed the global model. Each market now has its own YAML config defining
+                    hyperparameters, feature sets, and training windows:
+                </p>
+            </div>
 
-            <h3>2. Per-Market Configuration</h3>
-            <p>
-                Each market has its own YAML config file defining model hyperparameters and
-                feature sets:
-            </p>
-            <pre><code># Example market config
+            <pre><code># Germany config
 model:
   training_data_start_date: "2025-01-01"
   offer_categorical_features:
     - MENU_SIZE
-    - ADDITIONAL_PRODUCT
     - PROTEIN
+    - DISCOUNT_TYPE
   number_of_predictions: 3
-  model_name: lightfm
 
 lightfm_model:
   item_alpha: 5e-4
   user_alpha: 1e-5
   no_components: 128
-  epochs: 8
-  num_threads: 4</code></pre>
+  epochs: 8</code></pre>
+
             <p>
-                This separation means adding a new country is just a new YAML file and deploying
-                market-specific Snowflake infra — the training and prediction code stays identical.
+                Germany and Switzerland ended up needing different features, different
+                embedding dimensions, and different training windows. The "more data is
+                better" assumption was wrong — <strong>more relevant data is better</strong>.
             </p>
 
-            <h3>3. Training Pipeline</h3>
-            <p>
-                Training runs in Snowpark-powered notebooks that:
-            </p>
-            <ol>
-                <li>Pull user features, offer features, and interactions from the Feature Store.</li>
-                <li>Build the LightFM <code>Dataset</code> with both user and item features.</li>
-                <li>Handle cold-start items — offers with no interactions get their identity features set to the average of interacted items' features.</li>
-                <li>Train the LightFM model with WARP loss and the market's hyperparameters.</li>
-                <li>Serialize and upload the model artifact to a Snowflake internal stage.</li>
-            </ol>
+            <h3>Fix #4: A/B testing every assignment cycle</h3>
 
-            <h3>4. Prediction and Assignment</h3>
-            <p>
-                The prediction pipeline loads the trained model, scores all active offers
-                for each loyalty user, and writes the <strong>top-N personalized
-                recommendations</strong> to an assignment table. Users are split into:
-            </p>
-            <ul>
-                <li><strong>TEST group:</strong> Gets personalized offer assignments from the model.</li>
-                <li><strong>CONTROL group:</strong> Gets random or popularity-based assignments.</li>
-            </ul>
-            <p>
-                This test/control split is maintained per assignment cycle, enabling clean
-                causal measurement of the model's impact.
-            </p>
-
-            <h3>5. Streamlit Ops Dashboard</h3>
-            <p>
-                The ops team uses a Streamlit app (deployed on Snowflake) to:
-            </p>
-            <ul>
-                <li><strong>Upload offers:</strong> Import new offer data from Excel, with validation on required columns and data types.</li>
-                <li><strong>Manage flags:</strong> Toggle which offers are in the full assignment list and which are reserved for the control group.</li>
-                <li><strong>View results:</strong> Interactive charts showing redemption rates, potential sales increase, and test-vs-control performance per assignment cycle.</li>
-            </ul>
-
-            <h2>Handling Cold Start in Practice</h2>
-            <p>
-                Cold start isn't a one-time problem — it's a recurring one. New offers launch
-                every 1–2 weeks. Here's how we handled it:
-            </p>
-            <ul>
-                <li><strong>New offers:</strong> Since LightFM uses feature-sum embeddings, a new offer immediately gets a representation from its categorical features (protein type, discount type, etc.). We also implemented a fallback: items with zero interactions get their identity features set to the <em>average</em> identity features of items that do have interactions. This prevents new items from getting degenerate zero-vector representations.</li>
-                <li><strong>New users:</strong> User features (visit frequency, spend patterns, daypart preferences) provide a baseline embedding even before any offer interactions.</li>
-                <li><strong>New markets:</strong> When launching in a new country with zero data, we use popularity-based fallbacks and transition to personalized recommendations as interaction data accumulates.</li>
-            </ul>
-
-            <h2>Evaluation: A/B Testing at Every Cycle</h2>
-            <p>
-                Offline metrics (precision@K, recall@K) validated the model during
-                development. But the real evaluation happened online:
-            </p>
-
-            <div class="metric-grid">
-                <div class="metric-card">
-                    <span class="value">+12%</span>
-                    <span class="label">Redemption rate lift<br>(test vs. control)</span>
-                </div>
-                <div class="metric-card">
-                    <span class="value">Top 3</span>
-                    <span class="label">Personalized offers<br>per user per cycle</span>
-                </div>
-                <div class="metric-card">
-                    <span class="value">2+</span>
-                    <span class="label">Markets live<br></span>
-                </div>
-                <div class="metric-card">
-                    <span class="value">128-d</span>
-                    <span class="label">Embedding<br>dimension</span>
-                </div>
+            <div class="fix-box">
+                <h4><i class="fas fa-check-circle"></i> The Solution</h4>
+                <p>
+                    Built-in test/control splits in every single assignment cycle. TEST group
+                    gets personalized offers from the model. CONTROL group gets random or
+                    popularity-based assignments. No more "trust the model" — measure
+                    everything, every cycle.
+                </p>
             </div>
 
-            <p>Every assignment cycle, the dashboard shows:</p>
+            <h2>The Results (After Fixes)</h2>
+
+            <p>
+                After 4 weeks of rebuilding and 2 assignment cycles of A/B testing:
+            </p>
+
             <ul>
-                <li><strong>Offer redemption rate:</strong> TEST vs. CONTROL — the primary success metric.</li>
-                <li><strong>Potential sales increase:</strong> Estimated revenue uplift from personalized assignments.</li>
-                <li><strong>Transaction performance:</strong> Pre-vs-post comparison of average transaction value for users receiving personalized offers.</li>
+                <li><strong>+12% redemption rate lift</strong> (test vs control) — consistently across cycles</li>
+                <li><strong>New offers surfaced within 24 hours</strong> of upload — no more cold-start blindness</li>
+                <li><strong>Per-market lift:</strong> Germany +14%, Switzerland +9% (from -4% to +9%!)</li>
+                <li><strong>Popularity bias reduced:</strong> Top 5 offers went from 78% to 34% of recommendations</li>
             </ul>
 
-            <blockquote>
-                "The absence of a click doesn't mean the user dislikes the item — it might
-                mean they never saw it. Treating all missing interactions as negative
-                examples is the most common mistake in production recommender systems."
-            </blockquote>
+            <h2>What I Learned (The Hard Way)</h2>
 
-            <h2>Implicit Feedback and Negative Sampling</h2>
-            <p>
-                We don't have explicit ratings — only implicit signals: offer redemptions.
-                This changes model training fundamentally. A user not redeeming an offer
-                could mean they weren't interested, or it could mean they never saw it.
-            </p>
-            <p>
-                LightFM's WARP loss handles this elegantly — it samples negative items during
-                training and focuses updates on violations where a non-interacted item scores
-                higher than an interacted one. The number of sampling attempts before finding
-                a violation is itself informative: if it takes many samples, the model is
-                already ranking well for that user.
-            </p>
-
-            <h2>Lessons Learned</h2>
             <ol>
-                <li><strong>Start simple, measure, then improve.</strong> Our first version was popularity-based assignment. It established the baseline. LightFM beat it consistently, but without that baseline, we'd have no way to quantify the lift.</li>
-                <li><strong>Feature engineering > model complexity.</strong> Adding offer categorical features (protein type, discount tier) improved precision@3 more than doubling the embedding dimension did.</li>
-                <li><strong>Per-market configs are essential.</strong> Germany and Switzerland had different optimal hyperparameters, different feature sets, and different training windows. A one-size-fits-all config would have underperformed in at least one market.</li>
-                <li><strong>Cold-start handling is a feature, not an afterthought.</strong> The identity-feature averaging trick for new offers was critical — without it, weekly new offers would get zero scores and never surface.</li>
-                <li><strong>Give ops the tools.</strong> The Streamlit dashboard reduced the feedback loop from "file a ticket and wait" to "upload, flag, and see results" — which meant faster iteration on the offer catalog itself.</li>
-                <li><strong>A/B test every cycle.</strong> We maintained test/control splits in every assignment. Two benefits: rigorous measurement of model lift, and a built-in fallback if the model ever degrades.</li>
+                <li>
+                    <strong>Your notebook metrics are lying to you.</strong> Precision@3 = 0.31
+                    in offline evaluation meant nothing when the model couldn't handle new items.
+                    Offline metrics don't capture cold-start, popularity bias, or real user behavior.
+                </li>
+                <li>
+                    <strong>Implicit feedback ≠ explicit ratings.</strong> The absence of a click
+                    is ambiguous. Treating it as a negative example is the most common mistake in
+                    production recommender systems. Use loss functions designed for implicit
+                    feedback (WARP, not BPR or logistic loss).
+                </li>
+                <li>
+                    <strong>"More data" isn't always better.</strong> Pooling markets destroyed
+                    per-market signal. Each market needed its own model with its own configuration.
+                    The overhead of per-market configs is worth it.
+                </li>
+                <li>
+                    <strong>Cold-start is a recurring problem, not a one-time fix.</strong>
+                    New offers every 1-2 weeks means cold-start is a feature of your system,
+                    not an edge case. Your architecture must handle it natively.
+                </li>
+                <li>
+                    <strong>Build the measurement infrastructure before the model.</strong>
+                    If I had A/B testing from day one, I would have caught these failures in
+                    week 1 with a controlled experiment instead of week 3 when the damage was done.
+                </li>
+                <li>
+                    <strong>Give ops the tools to see what's happening.</strong> The Streamlit
+                    dashboard we built later — showing redemption rates, test vs control, offer
+                    coverage — would have surfaced the new-offer problem immediately.
+                </li>
             </ol>
 
-            <h2>Tech Stack Summary</h2>
-            <ul>
-                <li><strong>Model:</strong> LightFM with WARP loss, 128-dimensional embeddings</li>
-                <li><strong>Data platform:</strong> Snowflake (Feature Store, Internal Stages, Snowpark)</li>
-                <li><strong>Training:</strong> Snowpark-powered Jupyter notebooks with per-market YAML configs</li>
-                <li><strong>Infrastructure:</strong> SQL-based deployments for common and market-specific infra</li>
-                <li><strong>Dashboard:</strong> Streamlit on Snowflake with Altair visualizations</li>
-                <li><strong>Languages:</strong> Python 3.11, SQL</li>
-                <li><strong>Libraries:</strong> LightFM, Pandas, SciPy, Pydantic, Altair, Snowpark ML</li>
-            </ul>
+            <blockquote>
+                The system around the model matters more than the model itself. A well-engineered
+                hybrid model with proper cold-start handling and rigorous A/B testing will outperform
+                a fancy deep learning model deployed blind.
+            </blockquote>
 
-            <h2>What's Next</h2>
+            <h2>The Architecture That Worked</h2>
+
             <p>
-                The current system works well for the scale we're at. Future directions:
+                After the rebuild, here's what the production system looks like:
             </p>
-            <ul>
-                <li><strong>Sequential models:</strong> Transformer-based approaches (SASRec, BERT4Rec) to capture temporal patterns in redemption sequences.</li>
-                <li><strong>Real-time re-ranking:</strong> Context-dependent signals (time of day, day of week, weather) applied at serving time.</li>
-                <li><strong>More markets:</strong> The per-market config pattern makes expansion straightforward — the bottleneck is data accumulation, not engineering.</li>
-            </ul>
+
+            <pre><code>Snowflake Feature Store
+  (User features + Offer features + Interaction history)
+    ↓
+Training Pipeline (Snowpark)
+  LightFM · WARP loss · 128-dim · per-market configs
+    ↓
+Model Artifact → Snowflake Internal Stage
+    ↓
+Prediction Pipeline
+  Top-3 personalized offers per user → assignment table
+    ↓
+Streamlit Dashboard
+  Upload offers · Manage flags · View A/B results</code></pre>
+
             <p>
-                The key takeaway: a well-engineered hybrid model with proper feature
-                engineering, cold-start handling, and rigorous A/B testing will outperform
-                a fancy deep learning model deployed without this infrastructure. <strong>The
-                system around the model matters more than the model itself.</strong>
+                The entire pipeline runs natively on Snowflake — no external orchestrator,
+                no separate model server. Adding a new country is just a new YAML config
+                file and market-specific Snowflake infra.
+            </p>
+
+            <h2>Would I Do It Differently Today?</h2>
+
+            <p>
+                Yes. Three things I'd change:
+            </p>
+            <ol>
+                <li><strong>Start with A/B infrastructure, not the model.</strong> Build the
+                measurement system first. You can't improve what you can't measure.</li>
+                <li><strong>Deploy the simplest possible model first</strong> (popularity ranking)
+                as a baseline. Establish the control, then iterate. My first version should
+                have been "most popular offers" — not collaborative filtering.</li>
+                <li><strong>Talk to the ops team before writing any code.</strong> They would
+                have told me about the weekly new-offer cadence on day one. I discovered it
+                on launch day.</li>
+            </ol>
+
+            <p>
+                This project gave me production scars that no textbook or course ever could.
+                Every recommender system I've built since follows the same principle:
+                <strong>measure first, build incrementally, and never trust your notebook.</strong>
             </p>
         </div>
     </article>
@@ -433,4 +479,5 @@ lightfm_model:
         </div>
     </footer>
 </body>
+</html>
 </html>
