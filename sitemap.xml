@@ -2,91 +2,91 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
         <loc>https://abhilashganji.com/</loc>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-04-17</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
         <loc>https://abhilashganji.com/blog/</loc>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-04-17</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://abhilashganji.com/blog/llm-architecture.html</loc>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-04-17</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
         <loc>https://abhilashganji.com/blog/recommendation-systems.html</loc>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-04-17</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
         <loc>https://abhilashganji.com/blog/forecasting-models.html</loc>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-04-17</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
         <loc>https://abhilashganji.com/blog/ml-system-design.html</loc>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-04-17</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
         <loc>https://abhilashganji.com/research/agentic-ai-orchestration.html</loc>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-04-17</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
         <loc>https://abhilashganji.com/research/anomaly-detection-comparison.html</loc>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-04-17</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
         <loc>https://abhilashganji.com/research/cnn-vs-resnet-inspection.html</loc>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-04-17</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
         <loc>https://abhilashganji.com/research/lora-vs-full-finetuning.html</loc>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-04-17</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
         <loc>https://abhilashganji.com/research/pyspark-glue-architecture.html</loc>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-04-17</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
         <loc>https://abhilashganji.com/research/rag-chunking-strategies.html</loc>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-04-17</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
         <loc>https://abhilashganji.com/research/agentic-commerce-system.html</loc>
-        <lastmod>2026-04-16</lastmod>
+        <lastmod>2026-04-17</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
         <loc>https://abhilashganji.com/research/fraud-detection-llm-explainability.html</loc>
-        <lastmod>2026-04-16</lastmod>
+        <lastmod>2026-04-17</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
         <loc>https://abhilashganji.com/games/decode/</loc>
-        <lastmod>2026-04-16</lastmod>
+        <lastmod>2026-04-17</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>

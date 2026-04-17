@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /blog/recommendation-systems-backup.html
 
 Sitemap: https://abhilashganji.com/sitemap.xml

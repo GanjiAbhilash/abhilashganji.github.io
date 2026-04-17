@@ -83,8 +83,14 @@
 
     <!-- Main Stylesheet -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://portfolio-chatbot.abhilashganji.workers.dev https://www.googletagmanager.com;">
 </head>
 <body>
+
+    <!-- Skip to content for accessibility -->
+    <a href="#about" class="skip-link">Skip to content</a>
 
     <!-- ======================== CURSOR GLOW ======================== -->
     <div class="cursor-glow" id="cursorGlow"></div>
@@ -838,15 +844,15 @@
                     <form class="contact-form" id="contactForm">
                         <div class="form-group">
                             <label for="name">Name</label>
-                            <input type="text" id="name" name="name" placeholder="Your name" required>
+                            <input type="text" id="name" name="name" placeholder="Your name" required aria-required="true">
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                            <input type="email" id="email" name="email" placeholder="your@email.com" required aria-required="true">
                         </div>
                         <div class="form-group">
                             <label for="subject">Subject</label>
-                            <select id="subject" name="subject" required>
+                            <select id="subject" name="subject" required aria-required="true">
                                 <option value="" disabled selected>Select a topic</option>
                                 <option value="opportunity">Job Opportunity</option>
                                 <option value="freelance">Freelance / Contract</option>
@@ -857,7 +863,7 @@
                         </div>
                         <div class="form-group">
                             <label for="message">Message</label>
-                            <textarea id="message" name="message" rows="5" placeholder="Tell me about your project or opportunity..." required></textarea>
+                            <textarea id="message" name="message" rows="5" placeholder="Tell me about your project or opportunity..." required aria-required="true"></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary btn-full">
                             <span>Send Message</span>
@@ -933,7 +939,7 @@
 
             <div class="footer-bottom">
                 <p>&copy; 2026 Abhilash Ganji. Crafted with precision.</p>
-                <p class="footer-seo">AI Engineer • Applied Scientist • Machine Learning • LLMs • RAG • Agentic AI • Generative AI • GenAI Engineer • Hyderabad</p>
+
             </div>
         </div>
     </footer>
@@ -977,104 +983,22 @@
             <a href="/games/decode/" class="game-promo-btn">Play Now <i class="fas fa-arrow-right"></i></a>
         </div>
     </div>
-    <style>
-        .game-promo {
-            position: fixed; bottom: 24px; left: 24px; z-index: 899;
-            background: rgba(22, 22, 26, 0.95); backdrop-filter: blur(20px);
-            border: 1px solid rgba(192, 132, 252, 0.25);
-            border-radius: 16px; padding: 20px 24px;
-            max-width: 380px; width: calc(100% - 48px);
-            transform: translateY(120%) scale(0.95); opacity: 0;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(124, 58, 237, 0.1);
-        }
-        .game-promo.show {
-            transform: translateY(0) scale(1); opacity: 1;
-        }
-        .game-promo-glow {
-            position: absolute; top: -40px; right: -40px;
-            width: 120px; height: 120px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(192, 132, 252, 0.15), transparent 70%);
-            pointer-events: none;
-        }
-        .game-promo-close {
-            position: absolute; top: 8px; right: 12px;
-            background: none; border: none; color: #71717a;
-            font-size: 1.4rem; cursor: pointer; padding: 4px 8px;
-            line-height: 1; transition: color 0.2s;
-        }
-        .game-promo-close:hover { color: #fafafa; }
-        .game-promo-content {
-            display: flex; align-items: center; gap: 16px;
-            position: relative; z-index: 1;
-        }
-        .game-promo-icon {
-            font-size: 2.2rem; flex-shrink: 0;
-            animation: promoIconPulse 2s ease-in-out infinite;
-        }
-        @keyframes promoIconPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1) rotate(5deg); }
-        }
-        .game-promo-text { flex: 1; min-width: 0; }
-        .game-promo-badge {
-            display: inline-block; padding: 2px 8px;
-            background: linear-gradient(135deg, #7c3aed, #c084fc);
-            color: #fff; border-radius: 4px; font-size: 0.6rem;
-            font-weight: 800; letter-spacing: 1.5px; margin-bottom: 4px;
-            animation: badgeShine 3s ease-in-out infinite;
-        }
-        @keyframes badgeShine {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        .game-promo-text strong {
-            display: block; color: #fafafa; font-size: 0.95rem;
-            font-family: 'Space Grotesk', sans-serif; margin-bottom: 2px;
-        }
-        .game-promo-text p {
-            color: #a1a1aa; font-size: 0.78rem; margin: 0; line-height: 1.4;
-        }
-        .game-promo-btn {
-            flex-shrink: 0; padding: 10px 18px;
-            background: linear-gradient(135deg, #7c3aed, #a855f7);
-            color: #fff; border-radius: 10px; font-size: 0.8rem;
-            font-weight: 600; text-decoration: none; white-space: nowrap;
-            transition: all 0.2s ease; display: inline-flex;
-            align-items: center; gap: 6px;
-            font-family: 'Space Grotesk', sans-serif;
-        }
-        .game-promo-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
-            color: #fff;
-        }
-        .game-promo-btn i { font-size: 0.7rem; transition: transform 0.2s; }
-        .game-promo-btn:hover i { transform: translateX(3px); }
-        @media (max-width: 480px) {
-            .game-promo { bottom: 16px; left: 16px; max-width: calc(100% - 32px); padding: 16px; }
-            .game-promo-content { gap: 12px; }
-            .game-promo-icon { font-size: 1.8rem; }
-            .game-promo-btn { padding: 8px 14px; font-size: 0.75rem; }
-        }
-    </style>
     <script>
     (function() {
         var promo = document.getElementById('gamePromo');
         var closeBtn = document.getElementById('gamePromoClose');
         if (!promo || !closeBtn) return;
-        // Don't show if on the game page itself or if dismissed recently
         if (window.location.pathname.indexOf('/games/') !== -1) return;
         var dismissed = sessionStorage.getItem('gamePromoDismissed');
         if (dismissed) return;
-        // Show after 4 seconds
-        setTimeout(function() { promo.classList.add('show'); }, 4000);
+        // Show game promo 2s after chat auto-closes
+        document.addEventListener('chatAutoClosed', function() {
+            setTimeout(function() { promo.classList.add('show'); }, 2000);
+        });
         closeBtn.addEventListener('click', function() {
             promo.classList.remove('show');
             sessionStorage.setItem('gamePromoDismissed', '1');
         });
-        // Auto-hide after 15 seconds if not interacted
         setTimeout(function() {
             if (promo.classList.contains('show') && !sessionStorage.getItem('gamePromoDismissed')) {
                 promo.classList.remove('show');
@@ -1086,4 +1010,5 @@
     <!-- ======================== SCRIPTS ======================== -->
     <script src="script.js"></script>
 </body>
+</html>
 </html>
