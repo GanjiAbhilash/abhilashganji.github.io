@@ -1086,7 +1086,7 @@
             return 'I just took the Life Decision Decoder — 7 questions that analyze how you actually make decisions.\n\nMy result: ' + a.emoji + ' ' + a.name.toUpperCase() + '\n\n"' + a.shareQuip + '"\n\nMy scores:\n→ Risk tolerance: ' + t.risk + '%\n→ Ambition: ' + t.ambition + '%\n→ Need for meaning: ' + t.meaning + '%\n→ Speed: ' + t.speed + '%\n\nTook me 60 seconds and was scarily accurate.\n\nCurious what you\'d get? Play using this link → ' + url;
         }
         if (platform === 'whatsapp') {
-            return a.emoji + ' I just took this Life Decision Decoder quiz\n\nI got: *' + a.name + '*\n\n"' + a.shareQuip + '"\n\nRisk ' + t.risk + '% · Speed ' + t.speed + '% · Ambition ' + t.ambition + '%\n\nOnly 7 questions, weirdly accurate — try it: ' + url;
+            return a.emoji + ' I just took this Life Decision Decoder game\n\nI got: *' + a.name + '*\n\n"' + a.shareQuip + '"\n\nRisk ' + t.risk + '% · Speed ' + t.speed + '% · Ambition ' + t.ambition + '%\n\nOnly 7 questions, weirdly accurate — try it: ' + url;
         }
         if (platform === 'copy') {
             var bar = function(v) {
