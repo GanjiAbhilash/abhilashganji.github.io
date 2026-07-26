@@ -142,12 +142,15 @@ export default {
       // 4. Filter out persona injection attempts from user messages
       const isGKM = origin.includes('krishnamurthyganji') || body.site === 'gkm';
       const INJECTION_PATTERNS = [
-        /you are now/i, /act as/i, /pretend to be/i, /ignore all previous/i,
-        /ignore your instructions/i, /new persona/i, /forget your rules/i,
+        /you are now/i, /you are a .{0,20} now/i, /act as/i, /pretend to be/i,
+        /ignore all previous/i, /ignore your instructions/i, /ignore the above/i,
+        /new persona/i, /forget your rules/i, /forget everything/i,
         /repeat your (system|prompt|instructions|rules)/i,
         /show me your (prompt|instructions|rules|system)/i,
         /what are your (instructions|rules)/i, /reveal your/i,
         /output your/i, /print your/i, /display your/i,
+        /behave as/i, /roleplay as/i, /switch to .{0,20} mode/i,
+        /from now on you/i, /you must now/i, /your new role/i,
       ];
       for (const msg of body.messages) {
         if (msg.role === 'user') {
